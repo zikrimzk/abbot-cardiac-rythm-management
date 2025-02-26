@@ -2,11 +2,11 @@
  <nav class="pc-sidebar">
      <div class="navbar-wrapper">
          <div class="m-header">
-            <a href="##" class="b-brand text-primary">
-                <img src="../assets/images/logo/abbott-logo.png" class="img-fluid" width="120" height="60"
-                    alt="logo" />
-            </a>
-        </div>
+             <a href="##" class="b-brand text-primary">
+                 <img src="../assets/images/logo/abbott-logo.png" class="img-fluid" width="120" height="60"
+                     alt="logo" />
+             </a>
+         </div>
          <div class="navbar-content">
              <ul class="pc-navbar">
                  <li class="pc-item pc-caption">
@@ -114,60 +114,67 @@
                  </li>
 
                  <li class="pc-item pc-hasmenu">
-                    <a href="#!" class="pc-link">
-                        <span class="pc-micon">
-                            <svg class="pc-icon">
-                                <use xlink:href="#custom-layer"></use>
-                            </svg>
-                        </span>
-                        <span class="pc-mtext">Hospital & Doctor</span>
-                        <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                    </a>
-                    <ul class="pc-submenu">
-                        <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage Hospital</a>
-                        </li>
-                        <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage Doctor</a>
-                        </li>
-                    </ul>
-                </li>
+                     <a href="#!" class="pc-link">
+                         <span class="pc-micon">
+                             <svg class="pc-icon">
+                                 <use xlink:href="#custom-layer"></use>
+                             </svg>
+                         </span>
+                         <span class="pc-mtext">Hospital & Doctor</span>
+                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                     </a>
+                     <ul class="pc-submenu">
+                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage
+                                 Hospital</a>
+                         </li>
+                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage
+                                 Doctor</a>
+                         </li>
+                     </ul>
+                 </li>
 
-                <li class="pc-item pc-hasmenu">
-                    <a href="#!" class="pc-link">
-                        <span class="pc-micon">
-                            <svg class="pc-icon">
-                                <use xlink:href="#custom-layer"></use>
-                            </svg>
-                        </span>
-                        <span class="pc-mtext">Model</span>
-                        <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                    </a>
-                    <ul class="pc-submenu">
-                        <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage Model Category</a>
-                        </li>
-                        <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage Model</a>
-                        </li>
-                        <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage Generator</a>
-                        </li>
-                    </ul>
-                </li>
+                 <li class="pc-item pc-hasmenu">
+                     <a href="#!" class="pc-link">
+                         <span class="pc-micon">
+                             <svg class="pc-icon">
+                                 <use xlink:href="#custom-layer"></use>
+                             </svg>
+                         </span>
+                         <span class="pc-mtext">Model</span>
+                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                     </a>
+                     <ul class="pc-submenu">
+                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage Model
+                                 Category</a>
+                         </li>
+                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage
+                                 Model</a>
+                         </li>
+                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage
+                                 Generator</a>
+                         </li>
+                     </ul>
+                 </li>
 
-                <li class="pc-item pc-hasmenu">
-                    <a href="#!" class="pc-link">
-                        <span class="pc-micon">
-                            <svg class="pc-icon">
-                                <use xlink:href="#custom-layer"></use>
-                            </svg>
-                        </span>
-                        <span class="pc-mtext">Others</span>
-                        <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                    </a>
-                    <ul class="pc-submenu">
-                        <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage Product Group</a>
-                        </li>
-                        <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage Region</a>
-                        </li>
-                    </ul>
-                </li>
+                 <li class="pc-item pc-hasmenu">
+                     <a href="#!" class="pc-link">
+                         <span class="pc-micon">
+                             <svg class="pc-icon">
+                                 <use xlink:href="#custom-layer"></use>
+                             </svg>
+                         </span>
+                         <span class="pc-mtext">Others</span>
+                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                     </a>
+                     <ul class="pc-submenu">
+                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage Product
+                                 Group</a>
+                         </li>
+                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage
+                                 Region</a>
+                         </li>
+                     </ul>
+                 </li>
              </ul>
          </div>
      </div>

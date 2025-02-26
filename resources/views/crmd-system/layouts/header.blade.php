@@ -1,25 +1,18 @@
  <!-- [ Header Topbar ] start -->
  <header class="pc-header">
      <div class="header-wrapper"> 
+        
         <!-- [Mobile Media Block] start -->
          <div class="me-auto pc-mob-drp">
              <ul class="list-unstyled">
-                 <!-- ======= Menu collapse Icon ===== -->
-                 <li class="pc-h-item pc-sidebar-collapse">
-                     <a href="#" class="pc-head-link ms-0" id="sidebar-hide">
-                         <i class="ti ti-menu-2"></i>
-                     </a>
-                 </li>
                  <li class="pc-h-item pc-sidebar-popup">
                      <a href="#" class="pc-head-link ms-0" id="mobile-collapse">
                          <i class="ti ti-menu-2"></i>
                      </a>
                  </li>
                  <li class="pc-h-item">
-                    <div class="fw-bold d-none d-md-block">Cardiac Rythm Management Division</div>
+                    <div class="fw-bold f-16 text-uppercase text-dark d-none d-md-block">Cardiac Rythm Management Division</div>
                 </li>
-
-               
              </ul>
          </div>
          <!-- [Mobile Media Block end] -->
@@ -55,6 +48,7 @@
                          </a>
                      </div>
                  </li>
+
                  <li class="dropdown pc-h-item">
                      <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
                          role="button" aria-haspopup="false" aria-expanded="false">

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RouteController;
+use App\Http\Controllers\StaffController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +26,14 @@ Route::prefix('auth')->group(function () {
 
 Route::prefix('staff')->group(function () {
     Route::get('/dashboard',[RouteController::class,'staffDashboard'])->name('staff-dashboard-page');
+
+    //Manage Department 
     Route::get('/manage-department',[RouteController::class,'manageDepartment'])->name('manage-department-page');
+    Route::post('/add-department',[StaffController::class,'addDepartment'])->name('add-department-post');
+    Route::post('/update-department/{id}',[StaffController::class,'updateDepartment'])->name('update-department-post');
+    Route::get('/delete-department/{id}',[StaffController::class,'deleteDepartment'])->name('delete-department-get');
+
+
 
 });
 

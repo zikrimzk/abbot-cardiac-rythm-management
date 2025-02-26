@@ -8,10 +8,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="description"
-        content="Abbott - Cardiac Rythm Management Division System" />
-    <meta name="keywords"
-        content="abbott, crmd, cardiac, rythm, management, division, system" />
+    <meta name="description" content="Abbott - Cardiac Rythm Management Division System" />
+    <meta name="keywords" content="abbott, crmd, cardiac, rythm, management, division, system" />
     <meta name="author" content="Muhammad Zikri Kashim | Zeeke Software Solution" />
 
     <!-- [Favicon] icon -->
@@ -31,11 +29,22 @@
     <!-- [Template CSS Files] -->
     <link rel="stylesheet" href="../assets/css/style.css" id="main-style-link" />
     <link rel="stylesheet" href="../assets/css/style-preset.css" />
+    <!-- [DataTables Links & File] -->
+    <link rel="stylesheet" href="../assets/css/plugins/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="../assets/css/plugins/responsive.bootstrap5.min.css" />
+    <link href="../assets/css/plugins/animate.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="../assets/js/plugins/dataTables.min.js"></script>
+    <script src="../assets/js/plugins/dataTables.bootstrap5.min.js"></script>
+    <script src="../assets/js/plugins/dataTables.responsive.min.js"></script>
+    <script src="../assets/js/plugins/responsive.bootstrap5.min.js"></script>
+    <script src="../assets/js/plugins/sweetalert2.all.min.js"></script>
 
 </head>
 <!-- [Head] end -->
 
 <!-- [Body] Start -->
+
 <body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-layout="vertical" data-pc-direction="ltr"
     data-pc-theme_contrast="" data-pc-theme="light">
 
@@ -115,8 +124,7 @@
                                 <div class="col-4">
                                     <div class="d-grid">
                                         <button class="preset-btn btn active" data-value="true"
-                                            onclick="layout_change('light');" data-bs-toggle="tooltip"
-                                            title="Light">
+                                            onclick="layout_change('light');" data-bs-toggle="tooltip" title="Light">
                                             <svg class="pc-icon text-warning">
                                                 <use xlink:href="#custom-sun-1"></use>
                                             </svg>
@@ -126,8 +134,7 @@
                                 <div class="col-4">
                                     <div class="d-grid">
                                         <button class="preset-btn btn" data-value="false"
-                                            onclick="layout_change('dark');" data-bs-toggle="tooltip"
-                                            title="Dark">
+                                            onclick="layout_change('dark');" data-bs-toggle="tooltip" title="Dark">
                                             <svg class="pc-icon">
                                                 <use xlink:href="#custom-moon"></use>
                                             </svg>
@@ -139,8 +146,7 @@
                                         <button class="preset-btn btn" data-value="default"
                                             onclick="layout_change_default();" data-bs-toggle="tooltip"
                                             title="Automatically sets the theme based on user's operating system's color scheme.">
-                                            <span
-                                                class="pc-lay-icon d-flex align-items-center justify-content-center">
+                                            <span class="pc-lay-icon d-flex align-items-center justify-content-center">
                                                 <i class="ph-duotone ph-cpu"></i>
                                             </span>
                                         </button>
@@ -212,8 +218,7 @@
                                 <img src="../assets/images/customizer/caption-on.svg" alt="img"
                                     class="img-fluid" />
                             </a>
-                            <a href="#!" data-bs-toggle="tooltip" title="Horizontal"
-                                data-value="horizontal">
+                            <a href="#!" data-bs-toggle="tooltip" title="Horizontal" data-value="horizontal">
                                 <img src="../assets/images/customizer/horizontal.svg" alt="img"
                                     class="img-fluid" />
                             </a>
