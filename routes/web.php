@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RouteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::prefix('auth')->group(function () {
+    Route::get('/login',[RouteController::class,'loginpage'])->name('login-page');
+});
+
+Route::prefix('staff')->group(function () {
+    Route::get('/dashboard',[RouteController::class,'staffDashboard'])->name('staff-dashboard-page');
+    Route::get('/manage-department',[RouteController::class,'manageDepartment'])->name('manage-department-page');
+
+});
+
+
+
