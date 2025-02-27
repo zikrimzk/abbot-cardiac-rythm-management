@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('staff_name');
             $table->string('staff_idno')->nullable();
             $table->integer('staff_role');
+            $table->integer('staff_status');
             $table->string('email')->unique();
             $table->string('password');
             $table->foreignId('department_id')->constrained('departments');

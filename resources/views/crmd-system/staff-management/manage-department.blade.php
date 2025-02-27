@@ -63,8 +63,9 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#addDepartmentModal">Add Department</button>
+                                <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-2" data-bs-toggle="modal"
+                                    data-bs-target="#addDepartmentModal"><i class="ti ti-plus f-18"></i>Add
+                                    Department</button>
                             </div>
                         </div>
                     </div>
@@ -170,8 +171,8 @@
                                                 <div class="d-flex justify-content-between gap-3 align-items-center">
                                                     <button type="button" class="btn btn-light btn-pc-default w-100"
                                                         data-bs-dismiss="modal">Cancel</button>
-                                                    <button type="submit" class="btn btn-primary w-100"
-                                                        id="addApplicationBtn">Save changes</button>
+                                                    <button type="submit" class="btn btn-primary w-100">Save
+                                                        changes</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -207,11 +208,11 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
-                                            <div class="d-flex justify-content-center gap-3 align-items-center">
-                                                <button type="reset" class="btn btn-light btn-pc-default"
+                                            <div class="d-flex justify-content-between gap-3 align-items-center">
+                                                <button type="reset" class="btn btn-light btn-pc-default w-50"
                                                     data-bs-dismiss="modal">Cancel</button>
                                                 <a href="{{ route('delete-department-get', $dep->id) }}"
-                                                    class="btn btn-danger">Delete Anyways</a>
+                                                    class="btn btn-danger w-100">Delete Anyways</a>
                                             </div>
                                         </div>
                                     </div>

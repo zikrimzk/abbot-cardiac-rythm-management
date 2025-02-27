@@ -8,6 +8,7 @@
              </a>
          </div>
          <div class="navbar-content">
+
              <ul class="pc-navbar">
                  <li class="pc-item pc-caption">
                      <label>Main</label>
@@ -24,7 +25,7 @@
                      </a>
                  </li>
 
-                 <li class="pc-item pc-caption">
+                 {{-- <li class="pc-item pc-caption">
                      <label>Management</label>
                  </li>
 
@@ -88,7 +89,7 @@
                          </span>
                          <span class="pc-mtext">Quotation</span>
                      </a>
-                 </li>
+                 </li> --}}
 
                  <li class="pc-item pc-caption">
                      <label>System</label>
@@ -108,12 +109,12 @@
                          <li class="pc-item"><a class="pc-link" href="{{ route('manage-department-page') }}">Manage
                                  Department</a>
                          </li>
-                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage Staff</a>
+                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-staff-page') }}">Manage Staff</a>
                          </li>
                      </ul>
                  </li>
 
-                 <li class="pc-item pc-hasmenu">
+                 {{-- <li class="pc-item pc-hasmenu">
                      <a href="#!" class="pc-link">
                          <span class="pc-micon">
                              <svg class="pc-icon">
@@ -174,7 +175,7 @@
                                  Region</a>
                          </li>
                      </ul>
-                 </li>
+                 </li> --}}
              </ul>
          </div>
      </div>

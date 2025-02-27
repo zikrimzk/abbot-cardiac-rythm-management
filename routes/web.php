@@ -33,6 +33,12 @@ Route::prefix('staff')->group(function () {
     Route::post('/update-department/{id}',[StaffController::class,'updateDepartment'])->name('update-department-post');
     Route::get('/delete-department/{id}',[StaffController::class,'deleteDepartment'])->name('delete-department-get');
 
+    //Manage Staff
+    Route::get('/manage-staff',[RouteController::class,'manageStaff'])->name('manage-staff-page');
+    Route::post('/add-staff',[StaffController::class,'addStaff'])->name('add-staff-post');
+    Route::post('/update-staff/{id}',[StaffController::class,'updateStaff'])->name('update-staff-post');
+    Route::get('/delete-staff/{id}',[StaffController::class,'deleteStaff'])->name('delete-staff-get');
+
 
 
 });

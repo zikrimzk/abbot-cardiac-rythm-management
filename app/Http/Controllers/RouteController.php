@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -47,7 +48,7 @@ class RouteController extends Controller
                     ';
                 if (!$isReferenced) {
                     $buttonRemove =
-                    '
+                        '
                         <a href="#" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
                             data-bs-target="#deleteModal-' . $row->id . '">
                             <i class="ti ti-trash f-20"></i>
@@ -66,6 +67,73 @@ class RouteController extends Controller
         }
         return view('crmd-system.staff-management.manage-department', [
             'title' => 'CRMD System | Manage Department',
+            'deps' => Department::all()
+        ]);
+    }
+
+    // Manage Department Route
+    public function manageStaff(Request $req)
+    {
+        if ($req->ajax()) {
+
+            $data = DB::table('users')
+                ->select('id', 'staff_name','staff_idno', 'staff_role', 'staff_status', 'email', 'department_id')
+                ->get();
+
+            $table = DataTables::of($data)->addIndexColumn();
+
+            $table->addColumn('department', function ($row) {
+                $deps = '';
+                $deps = Department::find($row->department_id);
+                $deps = $deps->department_name;
+                return $deps;
+            });
+
+            $table->addColumn('role', function ($row) {
+                $role = '';
+                if ($row->staff_role == 1) {
+                    $role = '<span class="badge bg-danger">' . 'Administator' . '</span>';
+                } elseif ($row->staff_role == 2) {
+                    $role = '<span class="badge bg-light-info">' . 'Staff' . '</span>';
+                }
+
+                return $role;
+            });
+
+            $table->addColumn('status', function ($row) {
+                $status = '';
+                if ($row->staff_status == 1) {
+                    $status = '<span class="badge bg-light-success">' . 'Active' . '</span>';
+                } elseif ($row->staff_status == 2) {
+                    $status = '<span class="badge bg-light-danger">' . 'Inactive' . '</span>';
+                }
+
+                return $status;
+            });
+
+            $table->addColumn('action', function ($row) {
+                $button =
+                    '
+                        <a href="#" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
+                            data-bs-target="#updateStaffModal-' . $row->id . '">
+                            <i class="ti ti-edit f-20"></i>
+                        </a>
+                         <a href="#" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal-' . $row->id . '">
+                            <i class="ti ti-trash f-20"></i>
+                        </a>
+                    ';
+
+                return $button;
+            });
+
+            $table->rawColumns(['department','role','status','action']);
+
+            return $table->make(true);
+        }
+        return view('crmd-system.staff-management.manage-staff', [
+            'title' => 'CRMD System | Manage Staff',
+            'sts' => User::all(),
             'deps' => Department::all()
         ]);
     }
