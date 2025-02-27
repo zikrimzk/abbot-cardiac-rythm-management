@@ -36,12 +36,12 @@
         <div class="auth-wrapper v1">
             <div class="auth-form">
                 <div class="text-center">
-                    <a href=""><img src="../assets/images/logo/abbott-logo.png" alt="img"
-                            class="img-fluid" width="150" height="100" /></a>
+                    <a href=""><img src="../assets/images/logo/abbott-logo.png" alt="img" class="img-fluid"
+                            width="150" height="100" /></a>
                 </div>
 
                 <div class="card my-5 shadow shadow-lg">
-                    <form action="" method="POST">
+                    <form action="{{ route('staff-login-post') }}" method="POST">
                         @csrf
                         <div class="card-body">
 
@@ -84,7 +84,7 @@
 
                             <div class="form-floating mb-3">
                                 <input type="email" class="form-control" id="email" placeholder="Email"
-                                    name="email" value="{{ old('email') }}" autocomplete="off" required/>
+                                    name="email" value="{{ old('email') }}" autocomplete="off" required />
                                 <label for="email">Email</label>
                             </div>
                             <div class="form-floating mb-3">

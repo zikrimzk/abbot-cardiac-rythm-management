@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 class StaffController extends Controller
 {
     // Manage Department Functions
-
     public function addDepartment(Request $req){
         $validated = $req->validate([
             'department_name'=>'required|string',

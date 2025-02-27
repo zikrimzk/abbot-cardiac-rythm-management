@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class RouteController extends Controller
@@ -13,9 +14,14 @@ class RouteController extends Controller
     // Login Route 
     public function loginpage()
     {
-        return view('crmd-system.login-page', [
-            'title' => 'CRMD System | Login'
-        ]);
+        if (!Auth::check()) {
+            return view('crmd-system.login-page', [
+                'title' => 'CRMD System | Login'
+            ]);
+        } else {
+            return redirect()->route('staff-dashboard-page');
+        }
+       
     }
 
     // Staff Dashboard Route

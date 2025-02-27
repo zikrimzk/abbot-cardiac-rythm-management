@@ -13,7 +13,7 @@
                         <ul class="breadcrumb">
                             <li class="breadcrumb-item"><a href="../dashboard/index.html">Main</a></li>
                             <li class="breadcrumb-item"><a href="javascript: void(0)">Dashboard</a></li>
-                            <li class="breadcrumb-item" aria-current="page">Sample Page</li>
+                            {{-- <li class="breadcrumb-item" aria-current="page">Sample Page</li> --}}
                         </ul>
                     </div>
                     <div class="col-md-12">
@@ -33,7 +33,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Hello card</h5>
+                        <h5>{{ Auth::user()->staff_name }}</h5>
                     </div>
                     <div class="card-body"> </div>
                 </div>

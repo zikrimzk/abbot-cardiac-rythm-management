@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthenticateController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\StaffController;
@@ -22,10 +23,15 @@ Route::get('/', function () {
 
 Route::prefix('auth')->group(function () {
     Route::get('/login',[RouteController::class,'loginpage'])->name('login-page');
+    Route::post('/authenticate-staff',[AuthenticateController::class,'staffLogin'])->name('staff-login-post');
 });
 
-Route::prefix('staff')->group(function () {
+Route::prefix('staff')->middleware('auth')->group(function () {
+    //Homepage
     Route::get('/dashboard',[RouteController::class,'staffDashboard'])->name('staff-dashboard-page');
+
+    //Account Setting
+    Route::get('/logout',[AuthenticateController::class,'staffLogout'])->name('staff-logout-get');
 
     //Manage Department 
     Route::get('/manage-department',[RouteController::class,'manageDepartment'])->name('manage-department-page');

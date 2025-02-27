@@ -59,7 +59,7 @@
                              <i class="ti ti-user"></i>
                              <span>My Account</span>
                          </a>
-                         <a href="#!" class="dropdown-item">
+                         <a href="{{ route('staff-logout-get') }}" class="dropdown-item">
                              <i class="ti ti-power"></i>
                              <span>Logout</span>
                          </a>
