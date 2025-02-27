@@ -57,7 +57,7 @@ class StaffController extends Controller
         $password = Str::random(12); 
         $validated['password'] = bcrypt($password);
         User::create($validated);
-        return back()->with('success','Staff registered successfully.'. 'Password: '.$password);
+        return back()->with('success','Staff added successfully.'. 'Password: '.$password);
     }
 
     public function updateStaff(Request $req,$id){

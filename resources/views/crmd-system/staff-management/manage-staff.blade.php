@@ -421,7 +421,7 @@
 
             $(function() {
 
-                // DATATABLE : DEPARTMENT
+                // DATATABLE : STAFF
                 var table = $('.data-table').DataTable({
                     processing: true,
                     serverSide: true,
