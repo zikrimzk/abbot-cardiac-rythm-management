@@ -17,9 +17,7 @@
                  <li class="pc-item">
                      <a href="{{ route('staff-dashboard-page') }}" class="pc-link">
                          <span class="pc-micon">
-                             <svg class="pc-icon">
-                                 <use xlink:href="#custom-status-up"></use>
-                             </svg>
+                             <i class="fas fa-home pc-icon"></i>
                          </span>
                          <span class="pc-mtext">Dashboard</span>
                      </a>
@@ -50,7 +48,7 @@
                  </li>
 
                  <li class="pc-item">
-                     <a href="#!" class="pc-link">
+                     <a href="javascript: void(0)" class="pc-link">
                          <span class="pc-micon">
                              <svg class="pc-icon">
                                  <use xlink:href="#custom-status-up"></use>
@@ -96,11 +94,9 @@
                  </li>
 
                  <li class="pc-item pc-hasmenu">
-                     <a href="#!" class="pc-link">
+                     <a href="javascript: void(0)" class="pc-link">
                          <span class="pc-micon">
-                             <svg class="pc-icon">
-                                 <use xlink:href="#custom-layer"></use>
-                             </svg>
+                             <i class="pc-icon fas fa-users-cog"></i>
                          </span>
                          <span class="pc-mtext">Staff</span>
                          <span class="pc-arrow"><i data-feather="chevron-right"></i></span>

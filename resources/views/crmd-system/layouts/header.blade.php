@@ -52,9 +52,7 @@
                  <li class="dropdown pc-h-item">
                      <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
                          role="button" aria-haspopup="false" aria-expanded="false">
-                         <svg class="pc-icon">
-                             <use xlink:href="#custom-setting-2"></use>
-                         </svg>
+                         <i class="fas fa-user-circle"></i>
                      </a>
                      <div class="dropdown-menu dropdown-menu-end pc-h-dropdown">
                          <a href="#!" class="dropdown-item">
