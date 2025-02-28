@@ -16,10 +16,6 @@ use App\Http\Controllers\StaffController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 
 Route::prefix('auth')->group(function () {
     Route::get('/login',[RouteController::class,'loginpage'])->name('login-page');

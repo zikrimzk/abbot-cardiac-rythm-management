@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Department;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Mail\PasswordNotifyMail;
+use Illuminate\Support\Facades\Mail;
 
 class StaffController extends Controller
 {
@@ -36,6 +39,18 @@ class StaffController extends Controller
     }
 
     // Manage Staff Functions
+
+    /* Send Password Notification */
+    private function sendPasswordMail($data,$password)
+    {
+        Mail::to($data->email)->send(new PasswordNotifyMail([
+            'name' => Str::headline($data->staff_name),
+            'email' => $data->email,
+            'date' => Carbon::now()->format('d F Y g:i A'),
+            'password' => $password,
+        ]));
+    }
+
     public function addStaff(Request $req){
         $validated = $req->validate([
             'staff_name'=>'required|string',
@@ -56,6 +71,7 @@ class StaffController extends Controller
         $password = Str::random(12); 
         $validated['password'] = bcrypt($password);
         User::create($validated);
+        $this->sendPasswordMail(User::where('email', $validated['email'])->first(),$password);
         return back()->with('success','Staff added successfully.'. 'Password: '.$password);
     }
 
