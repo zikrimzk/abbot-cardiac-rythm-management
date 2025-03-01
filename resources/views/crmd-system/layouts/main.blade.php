@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <!-- [Head] start -->
-
 <head>
     <title>{{ $title }}</title>
     <!-- [Meta] -->
@@ -41,8 +40,6 @@
     <script src="../assets/js/plugins/sweetalert2.all.min.js"></script>
 
     <style>
-       
-
         /* Optional: Ensure all table cells do not force a single line */
         .data-table td {
             white-space: normal !important;
