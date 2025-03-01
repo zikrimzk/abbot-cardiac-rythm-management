@@ -27,6 +27,7 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::get('/dashboard',[RouteController::class,'staffDashboard'])->name('staff-dashboard-page');
 
     //Account Setting
+    Route::get('/my-profile',[RouteController::class,'staffProfile'])->name('staff-profile-page');
     Route::get('/logout',[AuthenticateController::class,'staffLogout'])->name('staff-logout-get');
 
     //Manage Department 

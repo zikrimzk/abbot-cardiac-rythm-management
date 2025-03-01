@@ -55,9 +55,9 @@
                          <i class="fas fa-user-circle"></i>
                      </a>
                      <div class="dropdown-menu dropdown-menu-end pc-h-dropdown">
-                         <a href="#!" class="dropdown-item">
+                         <a href="{{ route('staff-profile-page') }}" class="dropdown-item">
                              <i class="ti ti-user"></i>
-                             <span>My Account</span>
+                             <span>My Profile</span>
                          </a>
                          <a href="{{ route('staff-logout-get') }}" class="dropdown-item">
                              <i class="ti ti-power"></i>

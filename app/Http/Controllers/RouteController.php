@@ -32,6 +32,14 @@ class RouteController extends Controller
         ]);
     }
 
+    // Staff Profile Route
+    public function staffProfile()
+    {
+        return view('crmd-system.staff.staff-profile',[
+            'title'=>'CRMD System | My Profile'
+        ]);
+    }
+
     // Manage Department Route
     public function manageDepartment(Request $req)
     {
