@@ -63,8 +63,9 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-2" data-bs-toggle="modal"
-                                    data-bs-target="#addDepartmentModal"><i class="ti ti-plus f-18"></i>Add
+                                <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-2"
+                                    data-bs-toggle="modal" data-bs-target="#addDepartmentModal"><i
+                                        class="ti ti-plus f-18"></i>Add
                                     Department</button>
                             </div>
                         </div>
@@ -80,6 +81,7 @@
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">Department Name</th>
+                                            <th scope="col">Created On</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -231,10 +233,14 @@
 
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {
-            @if ($errors->any())
-                var modal = new bootstrap.Modal(document.getElementById('addDepartmentModal'));
-                modal.show();
-            @endif
+            var modalToShow = "{{ session('modal') }}"; // Ambil modal yang perlu dibuka dari session
+            if (modalToShow) {
+                var modalElement = document.getElementById(modalToShow);
+                if (modalElement) {
+                    var modal = new bootstrap.Modal(modalElement);
+                    modal.show();
+                }
+            }
         });
 
         $(document).ready(function() {
@@ -245,7 +251,8 @@
                 var table = $('.data-table').DataTable({
                     processing: true,
                     serverSide: true,
-                    responsive: true,
+                    responsive: false,
+                    autoWidth: false, 
                     ajax: {
                         url: "{{ route('manage-department-page') }}",
                     },
@@ -257,6 +264,12 @@
                         {
                             data: 'department_name',
                             name: 'department_name'
+                        },
+                        {
+                            data: 'created_at',
+                            name: 'created_at',
+                            searchable: false
+
                         },
                         {
                             data: 'action',

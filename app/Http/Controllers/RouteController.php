@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Department;
 use Illuminate\Http\Request;
@@ -21,7 +22,6 @@ class RouteController extends Controller
         } else {
             return redirect()->route('staff-dashboard-page');
         }
-       
     }
 
     // Staff Dashboard Route
@@ -38,10 +38,14 @@ class RouteController extends Controller
         if ($req->ajax()) {
 
             $data = DB::table('departments')
-                ->select('id', 'department_name')
+                ->select('id', 'department_name','created_at')
                 ->get();
 
             $table = DataTables::of($data)->addIndexColumn();
+
+            $table->addColumn('created_at', function ($row) {
+                return Carbon::parse($row->created_at)->format('d F Y g:i A');
+            });
 
             $table->addColumn('action', function ($row) {
                 $isReferenced = DB::table('users')->where('department_id', $row->id)->exists();
@@ -67,7 +71,7 @@ class RouteController extends Controller
                 return $buttonEdit . $buttonRemove;
             });
 
-            $table->rawColumns(['action']);
+            $table->rawColumns(['created_at','action']);
 
             return $table->make(true);
         }
@@ -83,7 +87,7 @@ class RouteController extends Controller
         if ($req->ajax()) {
 
             $data = DB::table('users')
-                ->select('id', 'staff_name','staff_idno', 'staff_role', 'staff_status', 'email', 'department_id')
+                ->select('id', 'staff_name', 'staff_idno', 'staff_role', 'staff_status', 'email', 'department_id')
                 ->get();
 
             $table = DataTables::of($data)->addIndexColumn();
@@ -100,7 +104,7 @@ class RouteController extends Controller
                 if ($row->staff_role == 1) {
                     $role = '<span class="badge bg-danger">' . 'Administator' . '</span>';
                 } elseif ($row->staff_role == 2) {
-                    $role = '<span class="badge bg-light-info">' . 'Staff' . '</span>';
+                    $role = '<span class="badge bg-info">' . 'Staff' . '</span>';
                 }
 
                 return $role;
@@ -111,15 +115,25 @@ class RouteController extends Controller
                 if ($row->staff_status == 1) {
                     $status = '<span class="badge bg-light-success">' . 'Active' . '</span>';
                 } elseif ($row->staff_status == 2) {
-                    $status = '<span class="badge bg-light-danger">' . 'Inactive' . '</span>';
+                    $status = '<span class="badge bg-light-secondary">' . 'Inactive' . '</span>';
                 }
 
                 return $status;
             });
 
             $table->addColumn('action', function ($row) {
-                $button =
-                    '
+
+                if ($row->staff_status == 2) {
+                    $button =
+                        '
+                        <a href="#" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
+                            data-bs-target="#updateStaffModal-' . $row->id . '">
+                            <i class="ti ti-edit f-20"></i>
+                        </a>
+                    ';
+                } else {
+                    $button =
+                        '
                         <a href="#" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
                             data-bs-target="#updateStaffModal-' . $row->id . '">
                             <i class="ti ti-edit f-20"></i>
@@ -129,11 +143,13 @@ class RouteController extends Controller
                             <i class="ti ti-trash f-20"></i>
                         </a>
                     ';
+                }
+
 
                 return $button;
             });
 
-            $table->rawColumns(['department','role','status','action']);
+            $table->rawColumns(['department', 'role', 'status', 'action']);
 
             return $table->make(true);
         }

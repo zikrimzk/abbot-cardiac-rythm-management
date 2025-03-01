@@ -411,10 +411,14 @@
 
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {
-            @if ($errors->any())
-                var modal = new bootstrap.Modal(document.getElementById('addStaffModal'));
-                modal.show();
-            @endif
+            var modalToShow = "{{ session('modal') }}"; // Ambil modal yang perlu dibuka dari session
+            if (modalToShow) {
+                var modalElement = document.getElementById(modalToShow);
+                if (modalElement) {
+                    var modal = new bootstrap.Modal(modalElement);
+                    modal.show();
+                }
+            }
         });
 
         $(document).ready(function() {
@@ -425,7 +429,8 @@
                 var table = $('.data-table').DataTable({
                     processing: true,
                     serverSide: true,
-                    responsive: true,
+                    responsive: false,
+                    autoWidth: false, 
                     ajax: {
                         url: "{{ route('manage-staff-page') }}",
                     },
@@ -436,11 +441,14 @@
                         },
                         {
                             data: 'staff_name',
-                            name: 'staff_name'
+                            name: 'staff_name',
+                            className: "avoid-long-column"
                         },
                         {
                             data: 'email',
-                            name: 'email'
+                            name: 'email',
+                            className: "avoid-long-column"
+
                         },
                         {
                             data: 'department',
