@@ -89,7 +89,7 @@ class RouteController extends Controller
         ]);
     }
 
-    // Manage Department Route
+    // Manage Staff Route
     public function manageStaff(Request $req)
     {
         if ($req->ajax()) {
@@ -165,6 +165,20 @@ class RouteController extends Controller
             'title' => 'CRMD System | Manage Staff',
             'sts' => User::all(),
             'deps' => Department::all()
+        ]);
+    }
+
+    public function manageImplant(Request $req)
+    {
+        return view('crmd-system.implant-management.manage-implant', [
+            'title' => 'CRMD System | Manage Implant'
+        ]);
+    }
+
+    public function addImplant(Request $req)
+    {
+        return view('crmd-system.implant-management.add-implant', [
+            'title' => 'CRMD System | Add Implant'
         ]);
     }
 }

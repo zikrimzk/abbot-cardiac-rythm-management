@@ -44,6 +44,10 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::post('/update-staff/{id}',[StaffController::class,'updateStaff'])->name('update-staff-post');
     Route::get('/delete-staff/{id}',[StaffController::class,'deleteStaff'])->name('delete-staff-get');
 
+    //Manage Implant
+    Route::get('/manage-implant',[RouteController::class,'manageImplant'])->name('manage-implant-page');
+    Route::get('/add-implant',[RouteController::class,'addImplant'])->name('add-implant-page');
+
 
 
 });

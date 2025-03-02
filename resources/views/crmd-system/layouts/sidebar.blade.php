@@ -23,22 +23,20 @@
                      </a>
                  </li>
 
-                 {{-- <li class="pc-item pc-caption">
+                 <li class="pc-item pc-caption">
                      <label>Management</label>
                  </li>
 
                  <li class="pc-item pc-hasmenu">
                      <a href="#!" class="pc-link">
                          <span class="pc-micon">
-                             <svg class="pc-icon">
-                                 <use xlink:href="#custom-layer"></use>
-                             </svg>
+                                <i class="pc-icon fas fa-file-medical"></i>
                          </span>
                          <span class="pc-mtext">Implant</span>
                          <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                      </a>
                      <ul class="pc-submenu">
-                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage
+                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-implant-page') }}">Manage
                                  Implant</a>
                          </li>
                          <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Upload Implant
@@ -47,7 +45,7 @@
                      </ul>
                  </li>
 
-                 <li class="pc-item">
+                 {{-- <li class="pc-item">
                      <a href="javascript: void(0)" class="pc-link">
                          <span class="pc-micon">
                              <svg class="pc-icon">
@@ -56,10 +54,10 @@
                          </span>
                          <span class="pc-mtext">Patient ID Card</span>
                      </a>
-                 </li>
+                 </li> --}}
 
 
-                 <li class="pc-item pc-hasmenu">
+                 {{-- <li class="pc-item pc-hasmenu">
                      <a href="#!" class="pc-link">
                          <span class="pc-micon">
                              <svg class="pc-icon">
@@ -76,9 +74,9 @@
                                  Document</a>
                          </li>
                      </ul>
-                 </li>
+                 </li> --}}
 
-                 <li class="pc-item">
+                 {{-- <li class="pc-item">
                      <a href="../widget/w_statistics.html" class="pc-link">
                          <span class="pc-micon">
                              <svg class="pc-icon">

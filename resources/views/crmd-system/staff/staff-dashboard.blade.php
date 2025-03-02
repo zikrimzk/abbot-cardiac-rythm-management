@@ -31,12 +31,7 @@
         <div class="row">
             <!-- [ sample-page ] start -->
             <div class="col-sm-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>{{ Auth::user()->staff_name }}</h5>
-                    </div>
-                    <div class="card-body"> </div>
-                </div>
+             
             </div>
             <!-- [ sample-page ] end -->
         </div>
