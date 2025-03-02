@@ -94,6 +94,16 @@
                 flex-basis: 50%;
                 text-transform: capitalize;
             }
+
+            .nav-tabs.profile-tabs .nav-item {
+                flex: 1 1 auto;
+                text-align: center;
+            }
+
+            .nav-tabs.profile-tabs .nav-link {
+                display: block;
+                width: 100%;
+            }
         }
     </style>
 

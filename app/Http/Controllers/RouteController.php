@@ -33,9 +33,9 @@ class RouteController extends Controller
     }
 
     // Staff Profile Route
-    public function staffProfile()
+    public function staffAccount()
     {
-        return view('crmd-system.staff.staff-profile',[
+        return view('crmd-system.staff.staff-account',[
             'title'=>'CRMD System | My Profile'
         ]);
     }

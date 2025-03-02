@@ -8,20 +8,21 @@
 @section('content')
     <div class="pc-container">
         <div class="pc-content">
+
             <!-- [ breadcrumb ] start -->
             <div class="page-header">
                 <div class="page-block">
                     <div class="row align-items-center">
                         <div class="col-md-12">
                             <ul class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="javascript: void(0)">My Profile</a></li>
+                                <li class="breadcrumb-item"><a href="javascript: void(0)">My Account</a></li>
                                 <li class="breadcrumb-item" aria-current="page"><a href="javascript: void(0)"
                                         class="text-uppercase">{{ Auth::user()->staff_name }}</a></li>
                             </ul>
                         </div>
                         <div class="col-md-12">
                             <div class="page-header-title">
-                                <h2 class="mb-0">My Profile</h2>
+                                <h2 class="mb-0">My Account</h2>
                             </div>
                         </div>
                     </div>
@@ -32,8 +33,39 @@
 
             <!-- [ Main Content ] start -->
             <div class="row">
-                <!-- [ Profile ] start -->
 
+                <!-- [ Alert ] start -->
+                <div class="col-sm-12">
+                    @if (session()->has('success'))
+                        <div class="alert alert-success alert-dismissible" role="alert">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="alert-heading">
+                                    <i class="fas fa-check-circle"></i>
+                                    Success
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                            <p class="mb-0">{{ session('success') }}</p>
+                        </div>
+                    @endif
+                    @if (session()->has('error'))
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="alert-heading">
+                                    <i class="fas fa-info-circle"></i>
+                                    Error
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                            <p class="mb-0">{{ session('error') }}</p>
+                        </div>
+                    @endif
+                </div>
+                <!-- [ Alert ] end -->
+
+                <!-- [ Tab Menu ] start -->
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body py-0">
@@ -54,78 +86,75 @@
                         </div>
                     </div>
                 </div>
+                <!-- [ Tab Menu ] end -->
 
+                <!-- [ Tab Content ] start -->
                 <div class="col-sm-12">
                     <div class="tab-content">
 
                         <!-- [ Account Details ] Tab Start -->
                         <div class="tab-pane fade {{ session('active_tab', 'profile-1') == 'profile-1' ? 'show active' : '' }} "
                             id="profile-1" role="tabpanel" aria-labelledby="profile-tab-1">
-                            <form action="" method="POST" enctype="multipart/form-data">
+                            <form action="{{ route('staff-account-update-post', Auth::user()->id) }}" method="POST">
                                 @csrf
                                 <div class="row">
-                                    <div class="col-lg-12">
+                                    <div class="col-sm-12">
                                         <div class="card">
                                             <div class="card-header">
                                                 <h5>Account Details</h5>
                                             </div>
                                             <div class="card-body">
                                                 <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="row">
 
-                                                            <!-- Name -->
-                                                            <div class="col-md-12 mb-3">
-                                                                <label class="form-label">Name</label>
-                                                                <input type="text"
-                                                                    class="form-control @error('staff_name') is-invalid @enderror"
-                                                                    name="staff_name"
-                                                                    value="{{ Auth::user()->staff_name }}">
-                                                                @error('staff_name')
-                                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                                @enderror
-                                                            </div>
+                                                    <!-- Name -->
+                                                    <div class="col-md-12 mb-3">
+                                                        <label class="form-label">Name</label>
+                                                        <input type="text"
+                                                            class="form-control @error('staff_name') is-invalid @enderror"
+                                                            name="staff_name" value="{{ Auth::user()->staff_name }}">
+                                                        @error('staff_name')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
 
-                                                            <!-- Staff ID Number-->
-                                                            <div class="col-md-12 mb-3">
-                                                                <label class="form-label">Staff ID Number</label>
-                                                                <input type="text"
-                                                                    class="form-control @error('staff_idno') is-invalid @enderror"
-                                                                    name="staff_idno" placeholder="Staff ID Number"
-                                                                    value="{{ Auth::user()->staff_idno }}">
-                                                                @error('staff_idno')
-                                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                                @enderror
-                                                            </div>
+                                                    <!-- Staff ID Number-->
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label">Staff ID Number</label>
+                                                        <input type="text"
+                                                            class="form-control @error('staff_idno') is-invalid @enderror"
+                                                            name="staff_idno" placeholder="Staff ID Number"
+                                                            value="{{ Auth::user()->staff_idno }}">
+                                                        @error('staff_idno')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
 
-                                                            <!-- Email -->
-                                                            <div class="col-md-12 mb-3">
-                                                                <label class="form-label">Email</label>
-                                                                <input type="text" class="form-control" name="email"
-                                                                    value="{{ Auth::user()->email }}" readonly />
-                                                            </div>
+                                                    <!-- Email -->
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label">Email</label>
+                                                        <input type="text" class="form-control"
+                                                            value="{{ Auth::user()->email }}" readonly />
+                                                    </div>
 
-                                                            <!-- Department -->
-                                                            <div class="col-md-12 mb-3">
-                                                                <label class="form-label">Department</label>
-                                                                <input type="text" class="form-control"
-                                                                    value="{{ Department::find(Auth::user()->department_id)->department_name }}"
-                                                                    readonly />
-                                                            </div>
+                                                    <!-- Department -->
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label">Department</label>
+                                                        <input type="text" class="form-control"
+                                                            value="{{ Department::find(Auth::user()->department_id)->department_name }}"
+                                                            readonly />
+                                                    </div>
 
-                                                            <!-- Role -->
-                                                            <div class="col-md-12 mb-3">
-                                                                <label class="form-label">Role</label>
-                                                                <input type="text" class="form-control"
-                                                                    value="@if (Auth::user()->staff_role == 1) Administrator @else Staff @endif"
-                                                                    readonly />
-                                                            </div>
-                                                        </div>
+                                                    <!-- Role -->
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label">Role</label>
+                                                        <input type="text" class="form-control"
+                                                            value="@if (Auth::user()->staff_role == 1) Administrator @else Staff @endif"
+                                                            readonly />
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="card-footer">
-                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            <div class="card-footer text-end">
+                                                <button type="submit" class="btn btn-primary">Save changes</button>
                                             </div>
                                         </div>
                                     </div>
@@ -139,7 +168,7 @@
                         <!-- [ Change Password ] Tab Start -->
                         <div class="tab-pane fade {{ session('active_tab') == 'profile-2' ? 'show active' : '' }}"
                             id="profile-2" role="tabpanel" aria-labelledby="profile-tab-2">
-                            <form action="" method="POST">
+                            <form action="{{ route('staff-password-update-post', Auth::user()->id) }}" method="POST">
                                 @csrf
                                 <div class="card">
                                     <div class="card-header">
@@ -149,11 +178,11 @@
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Old Password</label>
+                                                    <label class="form-label">Current Password</label>
                                                     <div class="input-group mb-3">
                                                         <input type="password"
                                                             class="form-control @error('oldPass') is-invalid @enderror"
-                                                            name="oldPass" id="oldpassword" />
+                                                            name="oldPass" id="oldpassword" placeholder="Current Password" required />
                                                         <button class="btn btn-light border border-1 border-secondary"
                                                             type="button" id="show-old-password">
                                                             <i id="toggle-icon-old-password" class="ti ti-eye"></i>
@@ -169,7 +198,7 @@
                                                     <div class="input-group mb-3">
                                                         <input type="password"
                                                             class="form-control @error('newPass') is-invalid @enderror"
-                                                            id="passwords" name="newPass" />
+                                                            id="passwords" name="newPass" placeholder="New Password" required/>
                                                         <button class="btn btn-light border border-1 border-secondary"
                                                             type="button" id="show-password">
                                                             <i id="toggle-icon-password" class="ti ti-eye"></i>
@@ -186,7 +215,7 @@
                                                     <div class="input-group mb-3">
                                                         <input type="password"
                                                             class="form-control @error('cpassword') is-invalid @enderror"
-                                                            name="renewPass" id="cpassword" />
+                                                            name="renewPass" id="cpassword" placeholder="Confirm Password" required />
                                                         <button class="btn btn-light border border-1 border-secondary"
                                                             type="button" id="show-password-confirm">
                                                             <i id="toggle-icon-confirm-password" class="ti ti-eye"></i>
@@ -231,17 +260,16 @@
                         </div>
                         <!-- [ Change Password ] Tab End -->
 
-
                     </div>
                 </div>
+                <!-- [ Tab Content ] start -->
 
-                <!-- [ Profile ] end -->
             </div>
             <!-- [ Main Content ] end -->
         </div>
     </div>
 
-    
+
     <script>
         document.getElementById('passwords').addEventListener('input', function() {
             const password = this.value;
@@ -353,6 +381,7 @@
             $('.nav-link[href="#' + activeTab + '"]').tab('show');
 
         });
+        
     </script>
 @endsection
 <!-- [ Main Content ] end -->

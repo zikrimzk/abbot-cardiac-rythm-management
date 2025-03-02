@@ -27,7 +27,9 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::get('/dashboard',[RouteController::class,'staffDashboard'])->name('staff-dashboard-page');
 
     //Account Setting
-    Route::get('/my-profile',[RouteController::class,'staffProfile'])->name('staff-profile-page');
+    Route::get('/my-account',[RouteController::class,'staffAccount'])->name('staff-account-page');
+    Route::post('/update-account/{id}',[AuthenticateController::class,'staffAccountUpdate'])->name('staff-account-update-post');
+    Route::post('/ipdate-password/{id}',[AuthenticateController::class,'staffPasswordUpdate'])->name('staff-password-update-post');
     Route::get('/logout',[AuthenticateController::class,'staffLogout'])->name('staff-logout-get');
 
     //Manage Department 
