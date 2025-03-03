@@ -61,7 +61,8 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex gap-2">
-                                <a href="{{ route('add-implant-page') }}" class="btn btn-primary d-inline-flex align-items-center gap-2">
+                                <a href="{{ route('add-implant-page') }}"
+                                    class="btn btn-primary d-inline-flex align-items-center gap-2">
                                     <i class="ti ti-plus f-18"></i>
                                     Add Implant
                                 </a>
@@ -69,11 +70,87 @@
                         </div>
                     </div>
                 </div>
-                
+
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="dt-responsive table-responsive">
+                                <table class="table data-table table-hover nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Implant Date</th>
+                                            <th scope="col">Patient</th>
+                                            <th scope="col">IC Number</th>
+                                            <th scope="col">Implant Form</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- [ Manage Implant ] end -->
             </div>
             <!-- [ Main Content ] end -->
         </div>
     </div>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            var modalToShow = "{{ session('modal') }}"; // Ambil modal yang perlu dibuka dari session
+            if (modalToShow) {
+                var modalElement = document.getElementById(modalToShow);
+                if (modalElement) {
+                    var modal = new bootstrap.Modal(modalElement);
+                    modal.show();
+                }
+            }
+        });
+
+        $(document).ready(function() {
+
+            $(function() {
+
+                // DATATABLE : IMPLANT [TO BE IMPLEMENTED]
+                var table = $('.data-table').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    responsive: false,
+                    autoWidth: false,
+                    ajax: {
+                        url: "{{ route('manage-department-page') }}",
+                    },
+                    columns: [{
+                            data: 'DT_RowIndex',
+                            name: 'DT_RowIndex',
+                            searchable: false
+                        },
+                        {
+                            data: 'department_name',
+                            name: 'department_name'
+                        },
+                        {
+                            data: 'created_at',
+                            name: 'created_at',
+                            searchable: false
+
+                        },
+                        {
+                            data: 'action',
+                            name: 'action',
+                            orderable: false,
+                            searchable: false
+                        }
+                    ]
+
+                });
+
+            });
+
+        });
+    </script>
 @endsection
 <!-- [ Main Content ] end -->

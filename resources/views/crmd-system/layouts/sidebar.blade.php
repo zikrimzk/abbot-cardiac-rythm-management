@@ -27,10 +27,10 @@
                      <label>Management</label>
                  </li>
 
-                 <li class="pc-item pc-hasmenu">
+                 {{-- <li class="pc-item pc-hasmenu">
                      <a href="#!" class="pc-link">
                          <span class="pc-micon">
-                                <i class="pc-icon fas fa-file-medical"></i>
+                             <i class="pc-icon fas fa-file-medical"></i>
                          </span>
                          <span class="pc-mtext">Implant</span>
                          <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
@@ -43,6 +43,15 @@
                                  Form</a>
                          </li>
                      </ul>
+                 </li> --}}
+
+                 <li class="pc-item">
+                     <a href="{{ route('manage-implant-page') }}" class="pc-link">
+                        <span class="pc-micon">
+                            <i class="pc-icon fas fa-file-medical"></i>
+                        </span>
+                         <span class="pc-mtext">Implant</span>
+                     </a>
                  </li>
 
                  {{-- <li class="pc-item">
