@@ -24,7 +24,7 @@ class User extends Authenticatable
         'staff_status',
         'email',
         'password',
-        'department_id'
+        'designation_id'
     ];
 
     /**

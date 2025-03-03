@@ -121,7 +121,7 @@
                     responsive: false,
                     autoWidth: false,
                     ajax: {
-                        url: "{{ route('manage-department-page') }}",
+                        url: "{{ route('manage-designation-page') }}",
                     },
                     columns: [{
                             data: 'DT_RowIndex',

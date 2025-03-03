@@ -109,8 +109,8 @@
                          <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                      </a>
                      <ul class="pc-submenu">
-                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-department-page') }}">Manage
-                                 Department</a>
+                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-designation-page') }}">Manage
+                                 Designation</a>
                          </li>
                          <li class="pc-item"><a class="pc-link" href="{{ route('manage-staff-page') }}">Manage Staff</a>
                          </li>

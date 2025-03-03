@@ -81,7 +81,7 @@
                                             <th scope="col">#</th>
                                             <th scope="col">Fullname</th>
                                             <th scope="col">Email</th>
-                                            <th scope="col">Department</th>
+                                            <th scope="col">Designation</th>
                                             <th scope="col">Role</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Action</th>
@@ -150,17 +150,17 @@
 
                                         <div class="col-sm-12">
                                             <div class="mb-3">
-                                                <label for="deps" class="form-label">Department<span
+                                                <label for="des" class="form-label">Designation<span
                                                         class="text-danger">*</span></label>
-                                                <select name="department_id" id="deps"
-                                                    class="form-select @error('department_id') is-invalid @enderror">
-                                                    <option value="">Select Department</option>
-                                                    @foreach ($deps as $dep)
-                                                        <option value="{{ $dep->id }}">{{ $dep->department_name }}
+                                                <select name="designation_id" id="des"
+                                                    class="form-select @error('designation_id') is-invalid @enderror">
+                                                    <option value="">Select Designation</option>
+                                                    @foreach ($des as $dep)
+                                                        <option value="{{ $dep->id }}">{{ $dep->designation_name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                                @error('department_id')
+                                                @error('designation_id')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
@@ -278,21 +278,21 @@
 
                                             <div class="col-sm-12">
                                                 <div class="mb-3">
-                                                    <label for="deps" class="form-label">Department<span
+                                                    <label for="des" class="form-label">Designation<span
                                                             class="text-danger">*</span></label>
-                                                    <select name="department_id" id="deps"
-                                                        class="form-select @error('department_id') is-invalid @enderror">
-                                                        @foreach ($deps as $dep)
-                                                            @if ($st->department_id == $dep->id)
+                                                    <select name="designation_id" id="des"
+                                                        class="form-select @error('designation_id') is-invalid @enderror">
+                                                        @foreach ($des as $dep)
+                                                            @if ($st->desination_id == $dep->id)
                                                                 <option value="{{ $dep->id }}" selected>
-                                                                    {{ $dep->department_name }}</option>
+                                                                    {{ $dep->designation_name }}</option>
                                                             @else
                                                                 <option value="{{ $dep->id }}">
-                                                                    {{ $dep->department_name }}</option>
+                                                                    {{ $dep->designation_name }}</option>
                                                             @endif
                                                         @endforeach
                                                     </select>
-                                                    @error('department_id')
+                                                    @error('designation_id')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
                                                 </div>
@@ -430,7 +430,7 @@
                     processing: true,
                     serverSide: true,
                     responsive: false,
-                    autoWidth: false, 
+                    autoWidth: false,
                     ajax: {
                         url: "{{ route('manage-staff-page') }}",
                     },
@@ -451,8 +451,8 @@
 
                         },
                         {
-                            data: 'department',
-                            name: 'department'
+                            data: 'designation',
+                            name: 'designation'
                         },
                         {
                             data: 'role',

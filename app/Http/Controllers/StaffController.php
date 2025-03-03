@@ -5,70 +5,70 @@ namespace App\Http\Controllers;
 use Exception;
 use Carbon\Carbon;
 use App\Models\User;
-use App\Models\Department;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Mail\PasswordNotifyMail;
+use App\Models\Designation;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class StaffController extends Controller
 {
-    // Manage Department Functions
-    public function addDepartment(Request $req)
+    // Manage Designation Functions
+    public function addDesignation(Request $req)
     {
         $validator = Validator::make($req->all(), [
-            'department_name' => 'required|string',
+            'designation_name' => 'required|string',
         ], [], [
-            'department_name' => 'department name',
+            'designation_name' => 'designation name',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput()
-                ->with('modal', 'addDepartmentModal'); // Pastikan modal yang betul dipaparkan
+                ->with('modal', 'addDesignationModal'); // Pastikan modal yang betul dipaparkan
         }
 
         try {
-            Department::create($validator->validated());
-            return back()->with('success', 'Department added successfully.');
+            Designation::create($validator->validated());
+            return back()->with('success', 'Designation added successfully.');
         } catch (Exception $e) {
             return redirect()->back()
                 ->with('error', 'Something went wrong. Please try again.')
-                ->with('modal', 'addDepartmentModal');
+                ->with('modal', 'addDesignationModal');
         }
     }
 
-    public function updateDepartment(Request $req, $id)
+    public function updateDesignation(Request $req, $id)
     {
         $validator = Validator::make($req->all(), [
-            'department_name' => 'required|string',
+            'designation_name' => 'required|string',
         ], [], [
-            'department_name' => 'department name',
+            'designation_name' => 'designation name',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput()
-                ->with('modal', 'updateDepartmentModal-' . $id);
+                ->with('modal', 'updateDesignationModal-' . $id);
         }
 
         try {
-            Department::find($id)->update($validator->validated());
-            return back()->with('success', 'Department updated successfully.');
+            Designation::find($id)->update($validator->validated());
+            return back()->with('success', 'Designation updated successfully.');
         } catch (Exception $e) {
             return redirect()->back()
                 ->with('error', 'Something went wrong. Please try again.')
-                ->with('modal', 'updateDepartmentModal-' . $id);
+                ->with('modal', 'updateDesignationModal-' . $id);
         }
     }
 
-    public function deleteDepartment($id)
+    public function deleteDesignation($id)
     {
-        Department::find($id)->delete();
-        return back()->with('success', 'Department deleted successfully.');
+        Designation::find($id)->delete();
+        return back()->with('success', 'Designation deleted successfully.');
     }
 
     // Manage Staff Functions
@@ -92,14 +92,14 @@ class StaffController extends Controller
             'staff_role' => 'required|integer',
             'staff_status' => 'required|integer',
             'email' => 'required|email|unique:users,email',
-            'department_id' => 'required|integer',
+            'designation_id' => 'required|integer',
         ], [], [
             'staff_name' => 'staff name',
             'staff_idno' => 'staff id number',
             'staff_role' => 'staff role',
             'staff_status' => 'staff status',
             'email' => 'staff email',
-            'department_id' => 'staff department',
+            'designation_id' => 'staff designation',
         ]);
 
         if ($validator->fails()) {
@@ -134,7 +134,7 @@ class StaffController extends Controller
             'staff_role' => 'required|integer',
             'staff_status' => 'required|integer',
             'email' => 'required|email|unique:users,email,' . $id,
-            'department_id' => 'required|integer',
+            'designation_id' => 'required|integer',
 
         ], [], [
             'staff_name' => 'staff name',
@@ -142,7 +142,7 @@ class StaffController extends Controller
             'staff_role' => 'staff role',
             'staff_status' => 'staff status',
             'email' => 'staff email',
-            'department_id' => 'staff department',
+            'designation_id' => 'staff designation',
         ]);
 
         if ($validator->fails()) {

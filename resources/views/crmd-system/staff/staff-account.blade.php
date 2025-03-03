@@ -1,6 +1,6 @@
 <!-- [ Extend Layouts ] -->
 @php
-    use App\Models\Department;
+    use App\Models\Designation;
 @endphp
 @extends('crmd-system.layouts.main')
 
@@ -136,11 +136,11 @@
                                                             value="{{ Auth::user()->email }}" readonly />
                                                     </div>
 
-                                                    <!-- Department -->
+                                                    <!-- Designation -->
                                                     <div class="col-md-6 mb-3">
-                                                        <label class="form-label">Department</label>
+                                                        <label class="form-label">Designation</label>
                                                         <input type="text" class="form-control"
-                                                            value="{{ Department::find(Auth::user()->department_id)->department_name }}"
+                                                            value="{{ Designation::find(Auth::user()->designation_id)->designation_name }}"
                                                             readonly />
                                                     </div>
 

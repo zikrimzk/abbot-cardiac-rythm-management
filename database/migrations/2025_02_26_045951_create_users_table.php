@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('staff_status');
             $table->string('email')->unique();
             $table->string('password');
-            $table->foreignId('department_id')->constrained('departments');
+            $table->foreignId('designation_id')->constrained('designations');
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

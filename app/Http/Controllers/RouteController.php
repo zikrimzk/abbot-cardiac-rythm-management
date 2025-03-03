@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\User;
-use App\Models\Department;
+use App\Models\Designation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -40,13 +40,13 @@ class RouteController extends Controller
         ]);
     }
 
-    // Manage Department Route
-    public function manageDepartment(Request $req)
+    // Manage Designation Route
+    public function manageDesignation(Request $req)
     {
         if ($req->ajax()) {
 
-            $data = DB::table('departments')
-                ->select('id', 'department_name','created_at')
+            $data = DB::table('designations')
+                ->select('id', 'designation_name','created_at')
                 ->get();
 
             $table = DataTables::of($data)->addIndexColumn();
@@ -56,11 +56,11 @@ class RouteController extends Controller
             });
 
             $table->addColumn('action', function ($row) {
-                $isReferenced = DB::table('users')->where('department_id', $row->id)->exists();
+                $isReferenced = DB::table('users')->where('designation_id', $row->id)->exists();
                 $buttonEdit =
                     '
                         <a href="#" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
-                            data-bs-target="#updateDepartmentModal-' . $row->id . '">
+                            data-bs-target="#updateDesignationModal-' . $row->id . '">
                             <i class="ti ti-edit f-20"></i>
                         </a>
                     ';
@@ -83,9 +83,9 @@ class RouteController extends Controller
 
             return $table->make(true);
         }
-        return view('crmd-system.staff-management.manage-department', [
-            'title' => 'CRMD System | Manage Department',
-            'deps' => Department::all()
+        return view('crmd-system.staff-management.manage-designation', [
+            'title' => 'CRMD System | Manage Designation',
+            'des' => Designation::all()
         ]);
     }
 
@@ -95,16 +95,16 @@ class RouteController extends Controller
         if ($req->ajax()) {
 
             $data = DB::table('users')
-                ->select('id', 'staff_name', 'staff_idno', 'staff_role', 'staff_status', 'email', 'department_id')
+                ->select('id', 'staff_name', 'staff_idno', 'staff_role', 'staff_status', 'email', 'designation_id')
                 ->get();
 
             $table = DataTables::of($data)->addIndexColumn();
 
-            $table->addColumn('department', function ($row) {
-                $deps = '';
-                $deps = Department::find($row->department_id);
-                $deps = $deps->department_name;
-                return $deps;
+            $table->addColumn('designation', function ($row) {
+                $des = '';
+                $des = Designation::find($row->designation_id);
+                $des = $des->designation_name;
+                return $des;
             });
 
             $table->addColumn('role', function ($row) {
@@ -157,14 +157,14 @@ class RouteController extends Controller
                 return $button;
             });
 
-            $table->rawColumns(['department', 'role', 'status', 'action']);
+            $table->rawColumns(['designation', 'role', 'status', 'action']);
 
             return $table->make(true);
         }
         return view('crmd-system.staff-management.manage-staff', [
             'title' => 'CRMD System | Manage Staff',
             'sts' => User::all(),
-            'deps' => Department::all()
+            'des' => Designation::all()
         ]);
     }
 

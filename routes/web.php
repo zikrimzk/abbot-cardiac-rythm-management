@@ -32,11 +32,11 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::post('/ipdate-password/{id}',[AuthenticateController::class,'staffPasswordUpdate'])->name('staff-password-update-post');
     Route::get('/logout',[AuthenticateController::class,'staffLogout'])->name('staff-logout-get');
 
-    //Manage Department 
-    Route::get('/manage-department',[RouteController::class,'manageDepartment'])->name('manage-department-page');
-    Route::post('/add-department',[StaffController::class,'addDepartment'])->name('add-department-post');
-    Route::post('/update-department/{id}',[StaffController::class,'updateDepartment'])->name('update-department-post');
-    Route::get('/delete-department/{id}',[StaffController::class,'deleteDepartment'])->name('delete-department-get');
+    //Manage Designation
+    Route::get('/manage-designation',[RouteController::class,'manageDesignation'])->name('manage-designation-page');
+    Route::post('/add-designation',[StaffController::class,'addDesignation'])->name('add-designation-post');
+    Route::post('/update-designation/{id}',[StaffController::class,'updateDesignation'])->name('update-designation-post');
+    Route::get('/delete-designation/{id}',[StaffController::class,'deleteDesignation'])->name('delete-designation-get');
 
     //Manage Staff
     Route::get('/manage-staff',[RouteController::class,'manageStaff'])->name('manage-staff-page');

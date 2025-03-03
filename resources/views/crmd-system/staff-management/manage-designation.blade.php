@@ -13,12 +13,12 @@
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="javascript: void(0)">System</a></li>
                                 <li class="breadcrumb-item"><a href="javascript: void(0)">Staff</a></li>
-                                <li class="breadcrumb-item" aria-current="page">Manage Department</li>
+                                <li class="breadcrumb-item" aria-current="page">Manage Designation</li>
                             </ul>
                         </div>
                         <div class="col-md-12">
                             <div class="page-header-title">
-                                <h2 class="mb-0">Manage Department</h2>
+                                <h2 class="mb-0">Manage Designation</h2>
                             </div>
                         </div>
                     </div>
@@ -58,15 +58,16 @@
 
             <!-- [ Main Content ] start -->
             <div class="row">
-                <!-- [ Manage Department ] start -->
+                <!-- [ Manage Designation ] start -->
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex gap-2">
                                 <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-2"
-                                    data-bs-toggle="modal" data-bs-target="#addDepartmentModal"><i
-                                        class="ti ti-plus f-18"></i>Add
-                                    Department</button>
+                                    data-bs-toggle="modal" data-bs-target="#addDesignationModal"><i
+                                        class="ti ti-plus f-18"></i>
+                                    Add Designation
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -80,7 +81,7 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Department Name</th>
+                                            <th scope="col">Designation Name</th>
                                             <th scope="col">Created On</th>
                                             <th scope="col">Action</th>
                                         </tr>
@@ -91,28 +92,28 @@
                     </div>
                 </div>
 
-                <!-- [ Add Department Modal ] start -->
-                <form action="{{ route('add-department-post') }}" method="POST">
+                <!-- [ Add Designation Modal ] start -->
+                <form action="{{ route('add-designation-post') }}" method="POST">
                     @csrf
-                    <div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="addDepartmentModalLabel"
+                    <div class="modal fade" id="addDesignationModal" tabindex="-1" aria-labelledby="addDesignationModal"
                         aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
 
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="addDepartmentModalLabel">Add Department</h5>
+                                    <h5 class="modal-title" id="addDesignationModalLabel">Add Designation</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
 
                                 <div class="modal-body">
                                     <div class="mb-3">
-                                        <label for="departmentName" class="form-label">Department Name <span
+                                        <label for="designationName" class="form-label">Designation Name <span
                                                 class="text-danger">*</span></label>
                                         <input type="text"
-                                            class="form-control @error('department_name') is-invalid @enderror"
-                                            id="departmentName" name="department_name" placeholder="Department Name">
-                                        @error('department_name')
+                                            class="form-control @error('designation_name') is-invalid @enderror"
+                                            id="designationName" name="designation_name" placeholder="Designation Name">
+                                        @error('designation_name')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -126,7 +127,7 @@
                                                     data-bs-dismiss="modal">Cancel</button>
                                                 <button type="submit" class="btn btn-primary w-100"
                                                     id="addApplicationBtn">Add
-                                                    Department</button>
+                                                    Designation</button>
                                             </div>
                                         </div>
                                     </div>
@@ -136,32 +137,32 @@
                         </div>
                     </div>
                 </form>
-                <!-- [ Add Department Modal ] end -->
+                <!-- [ Add Designation Modal ] end -->
 
-                @foreach ($deps as $dep)
-                    <!-- [ Edit Department Modal ] start -->
-                    <form action="{{ route('update-department-post', $dep->id) }}" method="POST">
+                @foreach ($des as $dep)
+                    <!-- [ Edit Designation Modal ] start -->
+                    <form action="{{ route('update-designation-post', $dep->id) }}" method="POST">
                         @csrf
-                        <div class="modal fade" id="updateDepartmentModal-{{ $dep->id }}" tabindex="-1"
-                            aria-labelledby="updateDepartmentModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="updateDesignationModal-{{ $dep->id }}" tabindex="-1"
+                            aria-labelledby="updateDesignationModal" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
 
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="updateDepartmentModalLabel">Update Department</h5>
+                                        <h5 class="modal-title" id="updateDesignationModalLabel">Update Designation</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
 
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="departmentName" class="form-label">Department Name <span
+                                            <label for="designationName" class="form-label">Designation Name <span
                                                     class="text-danger">*</span></label>
                                             <input type="text"
-                                                class="form-control @error('department_name') is-invalid @enderror"
-                                                id="departmentName" name="department_name" placeholder="Department Name"
-                                                value="{{ $dep->department_name }}">
-                                            @error('department_name')
+                                                class="form-control @error('designation_name') is-invalid @enderror"
+                                                id="designationName" name="designation_name" placeholder="Designation Name"
+                                                value="{{ $dep->designation_name }}">
+                                            @error('designation_name')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -184,7 +185,7 @@
                             </div>
                         </div>
                     </form>
-                    <!-- [ Edit Department Modal ] end -->
+                    <!-- [ Edit Designation Modal ] end -->
 
                     <!-- [ Delete Modal ] start -->
                     <div class="modal fade" id="deleteModal-{{ $dep->id }}" data-bs-keyboard="false" tabindex="-1"
@@ -213,7 +214,7 @@
                                             <div class="d-flex justify-content-between gap-3 align-items-center">
                                                 <button type="reset" class="btn btn-light btn-pc-default w-50"
                                                     data-bs-dismiss="modal">Cancel</button>
-                                                <a href="{{ route('delete-department-get', $dep->id) }}"
+                                                <a href="{{ route('delete-designation-get', $dep->id) }}"
                                                     class="btn btn-danger w-100">Delete Anyways</a>
                                             </div>
                                         </div>
@@ -225,7 +226,7 @@
                     <!-- [ Delete Modal ] end -->
                 @endforeach
 
-                <!-- [ Manage Department ] end -->
+                <!-- [ Manage Designation ] end -->
             </div>
             <!-- [ Main Content ] end -->
         </div>
@@ -247,14 +248,14 @@
 
             $(function() {
 
-                // DATATABLE : DEPARTMENT
+                // DATATABLE : DESIGNATION
                 var table = $('.data-table').DataTable({
                     processing: true,
                     serverSide: true,
                     responsive: false,
-                    autoWidth: false, 
+                    autoWidth: false,
                     ajax: {
-                        url: "{{ route('manage-department-page') }}",
+                        url: "{{ route('manage-designation-page') }}",
                     },
                     columns: [{
                             data: 'DT_RowIndex',
@@ -262,8 +263,8 @@
                             searchable: false
                         },
                         {
-                            data: 'department_name',
-                            name: 'department_name'
+                            data: 'designation_name',
+                            name: 'designation_name'
                         },
                         {
                             data: 'created_at',
