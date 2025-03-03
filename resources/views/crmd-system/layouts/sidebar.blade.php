@@ -48,7 +48,7 @@
                  <li class="pc-item">
                      <a href="{{ route('manage-implant-page') }}" class="pc-link">
                         <span class="pc-micon">
-                            <i class="pc-icon fas fa-file-medical"></i>
+                            <i class="pc-icon fas fa-file-medical-alt"></i>
                         </span>
                          <span class="pc-mtext">Implant</span>
                      </a>
@@ -64,35 +64,35 @@
                  </li>
 
 
-                 {{-- <li class="pc-item pc-hasmenu">
-                     <a href="#!" class="pc-link">
+                 <li class="pc-item pc-hasmenu">
+                     <a href="javascript: void(0)" class="pc-link">
                          <span class="pc-micon">
-                             <svg class="pc-icon">
-                                 <use xlink:href="#custom-layer"></use>
-                             </svg>
+                            <span class="pc-micon">
+                                <i class="pc-icon fas fa-file-invoice-dollar"></i>
+                            </span>
                          </span>
                          <span class="pc-mtext">Sales Billing</span>
                          <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                      </a>
                      <ul class="pc-submenu">
-                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Generate Bill</a>
+                         <li class="pc-item"><a class="pc-link" href="javascript: void(0)">Generate Bill</a>
                          </li>
-                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Upload
+                         <li class="pc-item"><a class="pc-link" href="javascript: void(0)">Upload
                                  Document</a>
                          </li>
                      </ul>
-                 </li> --}}
+                 </li>
 
-                 {{-- <li class="pc-item">
-                     <a href="../widget/w_statistics.html" class="pc-link">
-                         <span class="pc-micon">
-                             <svg class="pc-icon">
-                                 <use xlink:href="#custom-story"></use>
-                             </svg>
+                 <li class="pc-item">
+                     <a href="javascript: void(0)" class="pc-link">
+                        <span class="pc-micon">
+                            <span class="pc-micon">
+                                <i class="pc-icon fas fa-folder"></i>
+                            </span>
                          </span>
                          <span class="pc-mtext">Quotation</span>
                      </a>
-                 </li> --}}
+                 </li>
 
                  <li class="pc-item pc-caption">
                      <label>System</label>

@@ -168,6 +168,7 @@ class RouteController extends Controller
         ]);
     }
 
+    // Manage Implant Route
     public function manageImplant(Request $req)
     {
         return view('crmd-system.implant-management.manage-implant', [
@@ -175,6 +176,7 @@ class RouteController extends Controller
         ]);
     }
 
+    // Add Implant Route
     public function addImplant(Request $req)
     {
         return view('crmd-system.implant-management.add-implant', [
@@ -182,6 +184,7 @@ class RouteController extends Controller
         ]);
     }
 
+    // Generate Patient ID Card Route
     public function generatePatientIdCard(Request $req)
     {
         return view('crmd-system.patient-management.generate-patient-id-card', [
