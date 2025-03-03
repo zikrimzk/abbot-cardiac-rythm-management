@@ -49,6 +49,10 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::get('/add-implant',[RouteController::class,'addImplant'])->name('add-implant-page');
 
 
+    //Generate Patient ID Card
+    Route::get('/generate-patient-id-card',[RouteController::class,'generatePatientIdCard'])->name('generate-patient-id-card-page');
+
+
 
 });
 

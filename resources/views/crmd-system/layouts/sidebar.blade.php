@@ -54,16 +54,14 @@
                      </a>
                  </li>
 
-                 {{-- <li class="pc-item">
-                     <a href="javascript: void(0)" class="pc-link">
+                 <li class="pc-item">
+                     <a href="{{ route('generate-patient-id-card-page') }}" class="pc-link">
                          <span class="pc-micon">
-                             <svg class="pc-icon">
-                                 <use xlink:href="#custom-status-up"></use>
-                             </svg>
+                            <i class="pc-icon fas fa-id-card"></i>
                          </span>
                          <span class="pc-mtext">Patient ID Card</span>
                      </a>
-                 </li> --}}
+                 </li>
 
 
                  {{-- <li class="pc-item pc-hasmenu">

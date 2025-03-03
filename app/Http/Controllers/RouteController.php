@@ -181,4 +181,11 @@ class RouteController extends Controller
             'title' => 'CRMD System | Add Implant'
         ]);
     }
+
+    public function generatePatientIdCard(Request $req)
+    {
+        return view('crmd-system.patient-management.generate-patient-id-card', [
+            'title' => 'CRMD System | Generate Patient ID Card'
+        ]);
+    }
 }
