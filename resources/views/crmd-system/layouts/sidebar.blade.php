@@ -23,79 +23,71 @@
                      </a>
                  </li>
 
-                 <li class="pc-item pc-caption">
+                 {{-- <li class="pc-item pc-caption">
                      <label>Management</label>
-                 </li>
-
-                 {{-- <li class="pc-item pc-hasmenu">
-                     <a href="#!" class="pc-link">
-                         <span class="pc-micon">
-                             <i class="pc-icon fas fa-file-medical"></i>
-                         </span>
-                         <span class="pc-mtext">Implant</span>
-                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                     </a>
-                     <ul class="pc-submenu">
-                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-implant-page') }}">Manage
-                                 Implant</a>
-                         </li>
-                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Upload Implant
-                                 Form</a>
-                         </li>
-                     </ul>
                  </li> --}}
 
-                 <li class="pc-item">
+                 {{-- <li class="pc-item">
                      <a href="{{ route('manage-implant-page') }}" class="pc-link">
-                        <span class="pc-micon">
-                            <i class="pc-icon fas fa-file-medical-alt"></i>
-                        </span>
+                         <span class="pc-micon">
+                             <i class="pc-icon fas fa-file-medical-alt"></i>
+                         </span>
                          <span class="pc-mtext">Implant</span>
                      </a>
-                 </li>
+                 </li> --}}
 
-                 <li class="pc-item">
+                 {{-- <li class="pc-item">
                      <a href="{{ route('generate-patient-id-card-page') }}" class="pc-link">
                          <span class="pc-micon">
-                            <i class="pc-icon fas fa-id-card"></i>
+                             <i class="pc-icon fas fa-id-card"></i>
                          </span>
                          <span class="pc-mtext">Patient ID Card</span>
                      </a>
-                 </li>
+                 </li> --}}
 
-
-                 <li class="pc-item pc-hasmenu">
+                 {{-- <li class="pc-item pc-hasmenu">
                      <a href="javascript: void(0)" class="pc-link">
                          <span class="pc-micon">
-                            <span class="pc-micon">
-                                <i class="pc-icon fas fa-file-invoice-dollar"></i>
-                            </span>
+                             <span class="pc-micon">
+                                 <i class="pc-icon fas fa-file-invoice-dollar"></i>
+                             </span>
                          </span>
                          <span class="pc-mtext">Sales Billing</span>
                          <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                      </a>
                      <ul class="pc-submenu">
+                         <li class="pc-item"><a class="pc-link" href="javascript: void(0)">Update Model</a>
+                         </li>
                          <li class="pc-item"><a class="pc-link" href="javascript: void(0)">Generate Bill</a>
                          </li>
                          <li class="pc-item"><a class="pc-link" href="javascript: void(0)">Upload
                                  Document</a>
                          </li>
                      </ul>
-                 </li>
+                 </li> --}}
 
-                 <li class="pc-item">
+                 {{-- <li class="pc-item pc-hasmenu">
                      <a href="javascript: void(0)" class="pc-link">
-                        <span class="pc-micon">
-                            <span class="pc-micon">
-                                <i class="pc-icon fas fa-folder"></i>
-                            </span>
+                         <span class="pc-micon">
+                             <span class="pc-micon">
+                                 <i class="pc-icon fas fa-folder"></i>
+                             </span>
                          </span>
                          <span class="pc-mtext">Quotation</span>
+                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                      </a>
-                 </li>
+                     <ul class="pc-submenu">
+                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-designation-page') }}">Generate
+                                 Quotation</a>
+                         </li>
+                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-staff-page') }}">Assign Generator
+                                 & Model</a>
+                         </li>
+                     </ul>
+                 </li> --}}
 
                  <li class="pc-item pc-caption">
-                     <label>System</label>
+                     <label>Setting</label>
                  </li>
 
                  <li class="pc-item pc-hasmenu">
@@ -115,27 +107,25 @@
                      </ul>
                  </li>
 
-                 {{-- <li class="pc-item pc-hasmenu">
-                     <a href="#!" class="pc-link">
-                         <span class="pc-micon">
-                             <svg class="pc-icon">
-                                 <use xlink:href="#custom-layer"></use>
-                             </svg>
-                         </span>
+                 <li class="pc-item pc-hasmenu">
+                     <a href="javascript: void(0)" class="pc-link">
+                        <span class="pc-micon">
+                            <i class="pc-icon fas fa-hospital-alt"></i>
+                        </span>
                          <span class="pc-mtext">Hospital & Doctor</span>
                          <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                      </a>
                      <ul class="pc-submenu">
-                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage
+                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-hospital-page') }}">Manage
                                  Hospital</a>
                          </li>
-                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage
+                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-doctor-page') }}">Manage
                                  Doctor</a>
                          </li>
                      </ul>
                  </li>
 
-                 <li class="pc-item pc-hasmenu">
+                 {{-- <li class="pc-item pc-hasmenu">
                      <a href="#!" class="pc-link">
                          <span class="pc-micon">
                              <svg class="pc-icon">
@@ -156,9 +146,9 @@
                                  Generator</a>
                          </li>
                      </ul>
-                 </li>
+                 </li> --}}
 
-                 <li class="pc-item pc-hasmenu">
+                 {{-- <li class="pc-item pc-hasmenu">
                      <a href="#!" class="pc-link">
                          <span class="pc-micon">
                              <svg class="pc-icon">
@@ -174,6 +164,8 @@
                          </li>
                          <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage
                                  Region</a>
+                         </li>
+                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage Stock Loaction</a>
                          </li>
                      </ul>
                  </li> --}}

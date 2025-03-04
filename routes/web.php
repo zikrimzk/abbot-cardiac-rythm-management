@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthenticateController;
+use App\Http\Controllers\HospitalDoctorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\StaffController;
@@ -32,6 +33,13 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::post('/ipdate-password/{id}',[AuthenticateController::class,'staffPasswordUpdate'])->name('staff-password-update-post');
     Route::get('/logout',[AuthenticateController::class,'staffLogout'])->name('staff-logout-get');
 
+     //Manage Implant
+     Route::get('/manage-implant',[RouteController::class,'manageImplant'])->name('manage-implant-page');
+     Route::get('/add-implant',[RouteController::class,'addImplant'])->name('add-implant-page');
+ 
+     //Generate Patient ID Card
+     Route::get('/generate-patient-id-card',[RouteController::class,'generatePatientIdCard'])->name('generate-patient-id-card-page');
+
     //Manage Designation
     Route::get('/manage-designation',[RouteController::class,'manageDesignation'])->name('manage-designation-page');
     Route::post('/add-designation',[StaffController::class,'addDesignation'])->name('add-designation-post');
@@ -44,13 +52,21 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::post('/update-staff/{id}',[StaffController::class,'updateStaff'])->name('update-staff-post');
     Route::get('/delete-staff/{id}',[StaffController::class,'deleteStaff'])->name('delete-staff-get');
 
-    //Manage Implant
-    Route::get('/manage-implant',[RouteController::class,'manageImplant'])->name('manage-implant-page');
-    Route::get('/add-implant',[RouteController::class,'addImplant'])->name('add-implant-page');
+    //Manage Hospital
+    Route::get('/manage-hospital',[RouteController::class,'manageHospital'])->name('manage-hospital-page');
+    Route::post('/add-hospital',[HospitalDoctorController::class,'addHospital'])->name('add-hospital-post');
+    Route::post('/update-hospital/{id}',[HospitalDoctorController::class,'updateHospital'])->name('update-hospital-post');
+    Route::get('/delete-hospital/{id}',[HospitalDoctorController::class,'deleteHospital'])->name('delete-hospital-get');
 
 
-    //Generate Patient ID Card
-    Route::get('/generate-patient-id-card',[RouteController::class,'generatePatientIdCard'])->name('generate-patient-id-card-page');
+    //Manage Doctor
+    Route::get('/manage-doctor',[RouteController::class,'manageDoctor'])->name('manage-doctor-page');
+    Route::post('/add-doctor',[HospitalDoctorController::class,'addDoctor'])->name('add-doctor-post');
+    Route::post('/update-doctor/{id}',[HospitalDoctorController::class,'updateDoctor'])->name('update-doctor-post');
+    Route::get('/delete-doctor/{id}',[HospitalDoctorController::class,'deleteDoctor'])->name('delete-doctor-get');
+
+
+   
 
 
 

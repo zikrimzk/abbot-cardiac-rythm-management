@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Hospital;
 use App\Models\Designation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -35,8 +36,32 @@ class RouteController extends Controller
     // Staff Profile Route
     public function staffAccount()
     {
-        return view('crmd-system.staff.staff-account',[
-            'title'=>'CRMD System | My Profile'
+        return view('crmd-system.staff.staff-account', [
+            'title' => 'CRMD System | My Profile'
+        ]);
+    }
+
+    // Manage Implant Route
+    public function manageImplant(Request $req)
+    {
+        return view('crmd-system.implant-management.manage-implant', [
+            'title' => 'CRMD System | Manage Implant'
+        ]);
+    }
+
+    // Add Implant Route
+    public function addImplant(Request $req)
+    {
+        return view('crmd-system.implant-management.add-implant', [
+            'title' => 'CRMD System | Add Implant'
+        ]);
+    }
+
+    // Generate Patient ID Card Route
+    public function generatePatientIdCard(Request $req)
+    {
+        return view('crmd-system.patient-management.generate-patient-id-card', [
+            'title' => 'CRMD System | Generate Patient ID Card'
         ]);
     }
 
@@ -46,7 +71,7 @@ class RouteController extends Controller
         if ($req->ajax()) {
 
             $data = DB::table('designations')
-                ->select('id', 'designation_name','created_at')
+                ->select('id', 'designation_name', 'created_at')
                 ->get();
 
             $table = DataTables::of($data)->addIndexColumn();
@@ -79,7 +104,7 @@ class RouteController extends Controller
                 return $buttonEdit . $buttonRemove;
             });
 
-            $table->rawColumns(['created_at','action']);
+            $table->rawColumns(['created_at', 'action']);
 
             return $table->make(true);
         }
@@ -168,27 +193,66 @@ class RouteController extends Controller
         ]);
     }
 
-    // Manage Implant Route
-    public function manageImplant(Request $req)
+    //Manage Hospital Route
+    public function manageHospital(Request $req)
     {
-        return view('crmd-system.implant-management.manage-implant', [
-            'title' => 'CRMD System | Manage Implant'
+        if ($req->ajax()) {
+
+            $data = DB::table('hospitals')
+                ->select('id', 'hospital_name', 'hospital_code', 'hospital_address', 'hospital_phoneno', 'hospital_visibility')
+                ->get();
+
+            $table = DataTables::of($data)->addIndexColumn();
+
+            $table->addColumn('hospital_visibility', function ($row) {
+                $visibility = '';
+                if ($row->hospital_visibility == 1) {
+                    $visibility = '<span class="badge bg-light-success">' . 'Show' . '</span>';
+                } elseif ($row->hospital_visibility == 2) {
+                    $visibility = '<span class="badge bg-light-danger">' . 'Hide' . '</span>';
+                }
+                return $visibility;
+            });
+
+            $table->addColumn('action', function ($row) {
+                $isReferenced = DB::table('doctors')->where('hospital_id', $row->id)->exists();
+                $buttonEdit =
+                    '
+                        <a href="#" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
+                            data-bs-target="#updateHospitalModal-' . $row->id . '">
+                            <i class="ti ti-edit f-20"></i>
+                        </a>
+                    ';
+                if (!$isReferenced) {
+                    $buttonRemove =
+                        '
+                        <a href="#" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal-' . $row->id . '">
+                            <i class="ti ti-trash f-20"></i>
+                        </a>
+                    ';
+                } else {
+                    $buttonRemove = '';
+                }
+
+                return $buttonEdit . $buttonRemove;
+            });
+
+            $table->rawColumns(['hospital_visibility', 'action']);
+
+            return $table->make(true);
+        }
+        return view('crmd-system.setting.manage-hospital', [
+            'title' => 'CRMD System | Manage Hospital',
+            'hosp'=>Hospital::all()
         ]);
     }
 
-    // Add Implant Route
-    public function addImplant(Request $req)
+    //Manage Hospital Route
+    public function manageDoctor(Request $req)
     {
-        return view('crmd-system.implant-management.add-implant', [
-            'title' => 'CRMD System | Add Implant'
-        ]);
-    }
-
-    // Generate Patient ID Card Route
-    public function generatePatientIdCard(Request $req)
-    {
-        return view('crmd-system.patient-management.generate-patient-id-card', [
-            'title' => 'CRMD System | Generate Patient ID Card'
+        return view('crmd-system.setting.manage-doctor', [
+            'title' => 'CRMD System | Manage Doctor'
         ]);
     }
 }
