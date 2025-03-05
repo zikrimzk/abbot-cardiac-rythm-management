@@ -109,9 +109,9 @@
 
                  <li class="pc-item pc-hasmenu">
                      <a href="javascript: void(0)" class="pc-link">
-                        <span class="pc-micon">
-                            <i class="pc-icon fas fa-hospital-alt"></i>
-                        </span>
+                         <span class="pc-micon">
+                             <i class="pc-icon fas fa-hospital-alt"></i>
+                         </span>
                          <span class="pc-mtext">Hospital & Doctor</span>
                          <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                      </a>
@@ -128,23 +128,28 @@
                  <li class="pc-item pc-hasmenu">
                      <a href="javascript: void(0)" class="pc-link">
                          <span class="pc-micon">
-                             <svg class="pc-icon">
-                                 <use xlink:href="#custom-layer"></use>
-                             </svg>
+                             <i class="pc-icon fas fa-box"></i>
                          </span>
                          <span class="pc-mtext">Model</span>
                          <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                      </a>
                      <ul class="pc-submenu">
-                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-model-category-page') }}">Manage Model
-                                 Category</a>
+                         <li class="pc-item">
+                             <a class="pc-link" href="{{ route('manage-model-category-page') }}">
+                                 Manage Model Category
+                             </a>
                          </li>
-                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-model-page') }}">Manage
-                                 Model</a>
+                         <li class="pc-item">
+                             <a class="pc-link" href="{{ route('manage-generator-page') }}">
+                                 Manage Generator
+                             </a>
                          </li>
-                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage
-                                 Generator</a>
+                         <li class="pc-item">
+                             <a class="pc-link" href="{{ route('manage-model-page') }}">
+                                 Manage Model
+                             </a>
                          </li>
+
                      </ul>
                  </li>
 

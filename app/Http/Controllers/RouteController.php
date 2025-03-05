@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Doctor;
 use App\Models\Hospital;
 use App\Models\Designation;
+use App\Models\Generator;
 use Illuminate\Http\Request;
 use App\Models\ModelCategory;
 use Illuminate\Support\Facades\DB;
@@ -480,6 +481,68 @@ class RouteController extends Controller
             'title' => 'CRMD System | Manage Model',
             'mcs' => ModelCategory::all(),
             'ms' => AbbottModel::all(),
+        ]);
+    }
+
+    //Manage Model Route
+    public function manageGenerator(Request $req)
+    {
+        if ($req->ajax()) {
+
+            $data = DB::table('generators')
+                ->select('id', 'generator_name', 'generator_code', 'generator_status')
+                ->get();
+
+            $table = DataTables::of($data)->addIndexColumn();
+
+            $table->addColumn('generator_status', function ($row) {
+                $status = '';
+                if ($row->generator_status == 1) {
+                    $status = '<span class="badge bg-light-success ">' . 'In Use' . '</span>';
+                } elseif ($row->generator_status == 2) {
+                    $status = '<span class="badge bg-light-danger">' . 'Not In Use' . '</span>';
+                }
+                return $status;
+            });
+
+            $table->addColumn('action', function ($row) {
+                $isReferenced = false;
+                // $isReferenced = DB::table('implants')->where('model_id', $row->id)->exists();
+                $buttonEdit =
+                    '
+                        <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
+                            data-bs-target="#updateGeneratorModal-' . $row->id . '">
+                            <i class="ti ti-edit f-20"></i>
+                        </a>
+                    ';
+                if (!$isReferenced) {
+                    $buttonRemove =
+                        '
+                        <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal-' . $row->id . '">
+                            <i class="ti ti-trash f-20"></i>
+                        </a>
+                    ';
+                } else {
+                    $buttonRemove =
+                        '
+                        <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger disabled-a" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal">
+                            <i class="ti ti-trash f-20"></i>
+                        </a>
+                    ';
+                }
+
+                return $buttonEdit . $buttonRemove;
+            });
+
+            $table->rawColumns(['generator_status', 'action']);
+
+            return $table->make(true);
+        }
+        return view('crmd-system.setting.manage-generator', [
+            'title' => 'CRMD System | Manage Generator',
+            'gs' => Generator::all(),
         ]);
     }
 }
