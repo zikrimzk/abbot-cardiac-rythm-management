@@ -25,6 +25,34 @@
             </div>
             <!-- [ breadcrumb ] end -->
 
+             <!-- [ Alert ] start -->
+             <div>
+                @if (session()->has('success'))
+                    <div class="alert alert-success alert-dismissible" role="alert">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="alert-heading">
+                                <i class="fas fa-check-circle"></i>
+                                Success
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <p class="mb-0">{{ session('success') }}</p>
+                    </div>
+                @endif
+                @if (session()->has('error'))
+                    <div class="alert alert-danger alert-dismissible" role="alert">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="alert-heading">
+                                <i class="fas fa-info-circle"></i>
+                                Error
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <p class="mb-0">{{ session('error') }}</p>
+                    </div>
+                @endif
+            </div>
+            <!-- [ Alert ] end -->
 
             <!-- [ Main Content ] start -->
             <div class="row">
@@ -373,19 +401,6 @@
                                                 <label for="hospital_phoneno" class="form-label">Phone Number</label>
                                                 <input type="text" id="hospital_phoneno" class="form-control"
                                                     placeholder="Empty" value="{{ $hs->hospital_phoneno }}" readonly>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-sm-12">
-                                            <div class="mb-3">
-                                                <label for="hospital_visibility" class="form-label">Visibility</label>
-                                                <select id="hospital_visibility" class="form-select" readonly>
-                                                    @if ($hs->hospital_visibility == 1)
-                                                        <option value="1" selected>Show</option>
-                                                    @elseif($hs->hospital_visibility == 2)
-                                                        <option value="2" selected>Hide</option>
-                                                    @endif
-                                                </select>
                                             </div>
                                         </div>
                                     </div>

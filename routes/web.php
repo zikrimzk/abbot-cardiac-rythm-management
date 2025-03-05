@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\AuthenticateController;
-use App\Http\Controllers\HospitalDoctorController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ModelController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\AuthenticateController;
+use App\Http\Controllers\HospitalDoctorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,6 +65,12 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::post('/add-doctor',[HospitalDoctorController::class,'addDoctor'])->name('add-doctor-post');
     Route::post('/update-doctor/{id}',[HospitalDoctorController::class,'updateDoctor'])->name('update-doctor-post');
     Route::get('/delete-doctor/{id}',[HospitalDoctorController::class,'deleteDoctor'])->name('delete-doctor-get');
+
+    //Manage Model Category
+    Route::get('/manage-model-category',[RouteController::class,'manageModelCategory'])->name('manage-model-category-page');
+    Route::post('/add-model-category',[ModelController::class,'addModelCategory'])->name('add-model-category-post');
+    Route::post('/update-model-category/{id}',[ModelController::class,'updateModelCategory'])->name('update-model-category-post');
+    Route::get('/delete-model-category/{id}',[ModelController::class,'deleteModelCategory'])->name('delete-model-category-get');
 
 
    

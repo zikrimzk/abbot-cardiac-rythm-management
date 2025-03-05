@@ -92,7 +92,7 @@ class RouteController extends Controller
                     ';
                 if (!$isReferenced) {
                     $buttonRemove =
-                    '
+                        '
                         <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
                             data-bs-target="#deleteModal-' . $row->id . '">
                             <i class="ti ti-trash f-20"></i>
@@ -100,7 +100,7 @@ class RouteController extends Controller
                     ';
                 } else {
                     $buttonRemove =
-                    '
+                        '
                         <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger disabled-a" data-bs-toggle="modal"
                             data-bs-target="#deleteModal">
                             <i class="ti ti-trash f-20"></i>
@@ -165,7 +165,7 @@ class RouteController extends Controller
 
                 if ($row->staff_status == 2) {
                     $button =
-                    '
+                        '
                         <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
                             data-bs-target="#updateStaffModal-' . $row->id . '">
                             <i class="ti ti-edit f-20"></i>
@@ -173,7 +173,7 @@ class RouteController extends Controller
                     ';
                 } else {
                     $button =
-                    '
+                        '
                         <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
                             data-bs-target="#updateStaffModal-' . $row->id . '">
                             <i class="ti ti-edit f-20"></i>
@@ -242,15 +242,15 @@ class RouteController extends Controller
                     ';
                 if (!$isReferenced) {
                     $buttonRemove =
-                    '
+                        '
                         <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
                             data-bs-target="#deleteModal-' . $row->id . '">
                             <i class="ti ti-trash f-20"></i>
                         </a>
                     ';
                 } else {
-                    $buttonRemove = 
-                    '
+                    $buttonRemove =
+                        '
                         <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger disabled-a" data-bs-toggle="modal"
                             data-bs-target="#deleteModal">
                             <i class="ti ti-trash f-20"></i>
@@ -272,7 +272,7 @@ class RouteController extends Controller
         ]);
     }
 
-    //Manage Hospital Route
+    //Manage Doctor Route
     public function manageDoctor(Request $req)
     {
         if ($req->ajax()) {
@@ -324,15 +324,15 @@ class RouteController extends Controller
                     ';
                 if (!$isReferenced) {
                     $buttonRemove =
-                    '
+                        '
                         <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
                             data-bs-target="#deleteModal-' . $row->id . '">
                             <i class="ti ti-trash f-20"></i>
                         </a>
                     ';
                 } else {
-                    $buttonRemove = 
-                    '
+                    $buttonRemove =
+                        '
                         <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger disabled-a" data-bs-toggle="modal"
                             data-bs-target="#deleteModal">
                             <i class="ti ti-trash f-20"></i>
@@ -350,8 +350,69 @@ class RouteController extends Controller
         return view('crmd-system.setting.manage-doctor', [
             'title' => 'CRMD System | Manage Doctor',
             'hosp' => Hospital::all(),
-            'docs'=> Doctor::all()
+            'docs' => Doctor::all()
 
+        ]);
+    }
+
+    //Manage Model Category Route
+    public function manageModelCategory(Request $req)
+    {
+        if ($req->ajax()) {
+
+            $data = DB::table('model_categories')
+                ->select('id', 'mcategory_name', 'mcategory_isimplant')
+                ->get();
+
+            $table = DataTables::of($data)->addIndexColumn();
+
+            $table->addColumn('mcategory_isimplant', function ($row) {
+                $isImplant = '';
+                if ($row->mcategory_isimplant == 0) {
+                    $isImplant = '<span class="badge bg-light-danger ">' . 'No' . '</span>';
+                } elseif ($row->mcategory_isimplant == 1) {
+                    $isImplant = '<span class="badge bg-light-success">' . 'Yes' . '</span>';
+                }
+                return $isImplant;
+            });
+
+            $table->addColumn('action', function ($row) {
+                $isReferenced = false;
+                // $isReferenced = DB::table('models')->where('mcategory_id', $row->id)->exists();
+                $buttonEdit =
+                    '
+                        <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
+                            data-bs-target="#updateModalCategoryModal-' . $row->id . '">
+                            <i class="ti ti-edit f-20"></i>
+                        </a>
+                    ';
+                if (!$isReferenced) {
+                    $buttonRemove =
+                        '
+                        <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal-' . $row->id . '">
+                            <i class="ti ti-trash f-20"></i>
+                        </a>
+                    ';
+                } else {
+                    $buttonRemove =
+                        '
+                        <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger disabled-a" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal">
+                            <i class="ti ti-trash f-20"></i>
+                        </a>
+                    ';
+                }
+
+                return $buttonEdit . $buttonRemove;
+            });
+
+            $table->rawColumns(['mcategory_isimplant', 'action']);
+
+            return $table->make(true);
+        }
+        return view('crmd-system.setting.manage-model-category', [
+            'title' => 'CRMD System | Manage Model Category',
         ]);
     }
 }

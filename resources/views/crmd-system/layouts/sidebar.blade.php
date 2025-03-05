@@ -125,8 +125,8 @@
                      </ul>
                  </li>
 
-                 {{-- <li class="pc-item pc-hasmenu">
-                     <a href="#!" class="pc-link">
+                 <li class="pc-item pc-hasmenu">
+                     <a href="javascript: void(0)" class="pc-link">
                          <span class="pc-micon">
                              <svg class="pc-icon">
                                  <use xlink:href="#custom-layer"></use>
@@ -136,7 +136,7 @@
                          <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                      </a>
                      <ul class="pc-submenu">
-                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage Model
+                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-model-category-page') }}">Manage Model
                                  Category</a>
                          </li>
                          <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage
@@ -146,7 +146,7 @@
                                  Generator</a>
                          </li>
                      </ul>
-                 </li> --}}
+                 </li>
 
                  {{-- <li class="pc-item pc-hasmenu">
                      <a href="#!" class="pc-link">
