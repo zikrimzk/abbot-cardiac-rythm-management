@@ -307,7 +307,7 @@
                                                     <button type="button" class="btn btn-light btn-pc-default w-100"
                                                         data-bs-dismiss="modal">Cancel</button>
                                                     <button type="submit" class="btn btn-primary w-100"
-                                                        id="updateApplicationBtn">Update Doctor</button>
+                                                        id="updateApplicationBtn">Save changes</button>
                                                 </div>
                                             </div>
                                         </div>

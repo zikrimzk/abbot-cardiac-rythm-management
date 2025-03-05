@@ -8,6 +8,7 @@ use App\Models\Doctor;
 use App\Models\Hospital;
 use App\Models\Designation;
 use Illuminate\Http\Request;
+use App\Models\ModelCategory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
@@ -413,6 +414,7 @@ class RouteController extends Controller
         }
         return view('crmd-system.setting.manage-model-category', [
             'title' => 'CRMD System | Manage Model Category',
+            'mcs'=>ModelCategory::all()
         ]);
     }
 }
