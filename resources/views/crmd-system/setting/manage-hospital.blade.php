@@ -80,8 +80,8 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Code</th>
-                                            <th scope="col">Name</th>
+                                            <th scope="col">Hospital Code</th>
+                                            <th scope="col">Hospital Name</th>
                                             <th scope="col">Visibility</th>
                                             <th scope="col">Action</th>
                                         </tr>

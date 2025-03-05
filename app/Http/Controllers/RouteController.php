@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AbbottModel;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Doctor;
@@ -378,12 +379,12 @@ class RouteController extends Controller
             });
 
             $table->addColumn('action', function ($row) {
-                $isReferenced = false;
-                // $isReferenced = DB::table('models')->where('mcategory_id', $row->id)->exists();
+                // $isReferenced = false;
+                $isReferenced = DB::table('abbott_models')->where('mcategory_id', $row->id)->exists();
                 $buttonEdit =
                     '
                         <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
-                            data-bs-target="#updateModalCategoryModal-' . $row->id . '">
+                            data-bs-target="#updateModelCategoryModal-' . $row->id . '">
                             <i class="ti ti-edit f-20"></i>
                         </a>
                     ';
@@ -414,7 +415,71 @@ class RouteController extends Controller
         }
         return view('crmd-system.setting.manage-model-category', [
             'title' => 'CRMD System | Manage Model Category',
-            'mcs'=>ModelCategory::all()
+            'mcs' => ModelCategory::all()
+        ]);
+    }
+
+    //Manage Model Route
+    public function manageModel(Request $req)
+    {
+        if ($req->ajax()) {
+
+            $data = DB::table('abbott_models as a')
+                ->join('model_categories as b','b.id','=','a.mcategory_id')
+                ->select('a.id', 'a.model_name', 'a.model_code', 'a.model_status', 'b.mcategory_name')
+                ->get();
+
+            $table = DataTables::of($data)->addIndexColumn();
+
+            $table->addColumn('model_status', function ($row) {
+                $status = '';
+                if ($row->model_status == 1) {
+                    $status = '<span class="badge bg-light-success ">' . 'In Use' . '</span>';
+                } elseif ($row->model_status == 2) {
+                    $status = '<span class="badge bg-light-danger">' . 'Not In Use' . '</span>';
+                }
+                return $status;
+            });
+
+            $table->addColumn('action', function ($row) {
+                $isReferenced = false;
+                // $isReferenced = DB::table('implants')->where('model_id', $row->id)->exists();
+                $buttonEdit =
+                    '
+                        <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
+                            data-bs-target="#updateModelModal-' . $row->id . '">
+                            <i class="ti ti-edit f-20"></i>
+                        </a>
+                    ';
+                if (!$isReferenced) {
+                    $buttonRemove =
+                        '
+                        <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal-' . $row->id . '">
+                            <i class="ti ti-trash f-20"></i>
+                        </a>
+                    ';
+                } else {
+                    $buttonRemove =
+                        '
+                        <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger disabled-a" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal">
+                            <i class="ti ti-trash f-20"></i>
+                        </a>
+                    ';
+                }
+
+                return $buttonEdit . $buttonRemove;
+            });
+
+            $table->rawColumns(['model_status', 'action']);
+
+            return $table->make(true);
+        }
+        return view('crmd-system.setting.manage-model', [
+            'title' => 'CRMD System | Manage Model',
+            'mcs' => ModelCategory::all(),
+            'ms' => AbbottModel::all(),
         ]);
     }
 }

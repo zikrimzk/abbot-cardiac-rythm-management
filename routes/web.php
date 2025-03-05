@@ -72,6 +72,12 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::post('/update-model-category/{id}',[ModelController::class,'updateModelCategory'])->name('update-model-category-post');
     Route::get('/delete-model-category/{id}',[ModelController::class,'deleteModelCategory'])->name('delete-model-category-get');
 
+    //Manage Model
+    Route::get('/manage-model',[RouteController::class,'manageModel'])->name('manage-model-page');
+    Route::post('/add-model',[ModelController::class,'addModel'])->name('add-model-post');
+    Route::post('/update-model/{id}',[ModelController::class,'updateModel'])->name('update-model-post');
+    Route::get('/delete-model/{id}',[ModelController::class,'deleteModel'])->name('delete-model-get');
+
 
    
 

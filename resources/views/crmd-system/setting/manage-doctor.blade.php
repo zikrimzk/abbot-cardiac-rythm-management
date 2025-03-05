@@ -78,7 +78,7 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Name</th>
+                                            <th scope="col">Doctor Name</th>
                                             <th scope="col">Phone Number</th>
                                             <th scope="col">Hospital</th>
                                             <th scope="col">Status</th>

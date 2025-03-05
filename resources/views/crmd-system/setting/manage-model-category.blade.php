@@ -176,7 +176,7 @@
                     <!-- [ Update Model Category Modal ] start -->
                     <form action="{{ route('update-model-category-post', $mc->id) }}" method="POST">
                         @csrf
-                        <div class="modal fade" id="updateModalCategoryModal-{{ $mc->id }}" tabindex="-1"
+                        <div class="modal fade" id="updateModelCategoryModal-{{ $mc->id }}" tabindex="-1"
                             aria-labelledby="updateModalCategoryModal" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                                 <div class="modal-content">

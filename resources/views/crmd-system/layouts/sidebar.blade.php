@@ -139,7 +139,7 @@
                          <li class="pc-item"><a class="pc-link" href="{{ route('manage-model-category-page') }}">Manage Model
                                  Category</a>
                          </li>
-                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage
+                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-model-page') }}">Manage
                                  Model</a>
                          </li>
                          <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage
