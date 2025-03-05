@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Doctor;
 use App\Models\Hospital;
 use App\Models\Designation;
 use Illuminate\Http\Request;
@@ -84,21 +85,27 @@ class RouteController extends Controller
                 $isReferenced = DB::table('users')->where('designation_id', $row->id)->exists();
                 $buttonEdit =
                     '
-                        <a href="#" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
+                        <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
                             data-bs-target="#updateDesignationModal-' . $row->id . '">
                             <i class="ti ti-edit f-20"></i>
                         </a>
                     ';
                 if (!$isReferenced) {
                     $buttonRemove =
-                        '
-                        <a href="#" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
+                    '
+                        <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
                             data-bs-target="#deleteModal-' . $row->id . '">
                             <i class="ti ti-trash f-20"></i>
                         </a>
                     ';
                 } else {
-                    $buttonRemove = '';
+                    $buttonRemove =
+                    '
+                        <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger disabled-a" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal">
+                            <i class="ti ti-trash f-20"></i>
+                        </a>
+                    ';
                 }
 
                 return $buttonEdit . $buttonRemove;
@@ -158,20 +165,20 @@ class RouteController extends Controller
 
                 if ($row->staff_status == 2) {
                     $button =
-                        '
-                        <a href="#" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
+                    '
+                        <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
                             data-bs-target="#updateStaffModal-' . $row->id . '">
                             <i class="ti ti-edit f-20"></i>
                         </a>
                     ';
                 } else {
                     $button =
-                        '
-                        <a href="#" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
+                    '
+                        <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
                             data-bs-target="#updateStaffModal-' . $row->id . '">
                             <i class="ti ti-edit f-20"></i>
                         </a>
-                         <a href="#" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
+                         <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
                             data-bs-target="#deleteModal-' . $row->id . '">
                             <i class="ti ti-trash f-20"></i>
                         </a>
@@ -204,6 +211,16 @@ class RouteController extends Controller
 
             $table = DataTables::of($data)->addIndexColumn();
 
+            $table->addColumn('hospital_code', function ($row) {
+                $code = '
+                <a href="javascript: void(0)" class="link-primary" data-bs-toggle="modal"
+                    data-bs-target="#detailsModal-' . $row->id . '">
+                    ' . $row->hospital_code . '
+                </a>
+                ';
+                return $code;
+            });
+
             $table->addColumn('hospital_visibility', function ($row) {
                 $visibility = '';
                 if ($row->hospital_visibility == 1) {
@@ -218,41 +235,123 @@ class RouteController extends Controller
                 $isReferenced = DB::table('doctors')->where('hospital_id', $row->id)->exists();
                 $buttonEdit =
                     '
-                        <a href="#" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
+                        <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
                             data-bs-target="#updateHospitalModal-' . $row->id . '">
                             <i class="ti ti-edit f-20"></i>
                         </a>
                     ';
                 if (!$isReferenced) {
                     $buttonRemove =
-                        '
-                        <a href="#" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
+                    '
+                        <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
                             data-bs-target="#deleteModal-' . $row->id . '">
                             <i class="ti ti-trash f-20"></i>
                         </a>
                     ';
                 } else {
-                    $buttonRemove = '';
+                    $buttonRemove = 
+                    '
+                        <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger disabled-a" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal">
+                            <i class="ti ti-trash f-20"></i>
+                        </a>
+
+                    ';
                 }
 
                 return $buttonEdit . $buttonRemove;
             });
 
-            $table->rawColumns(['hospital_visibility', 'action']);
+            $table->rawColumns(['hospital_code', 'hospital_visibility', 'action']);
 
             return $table->make(true);
         }
         return view('crmd-system.setting.manage-hospital', [
             'title' => 'CRMD System | Manage Hospital',
-            'hosp'=>Hospital::all()
+            'hosp' => Hospital::all()
         ]);
     }
 
     //Manage Hospital Route
     public function manageDoctor(Request $req)
     {
+        if ($req->ajax()) {
+
+            $data = DB::table('doctors as a')
+                ->join('hospitals as b', 'b.id', '=', 'a.hospital_id')
+                ->select('a.id', 'a.doctor_name', 'a.doctor_phoneno', 'a.doctor_status', 'b.hospital_name', 'b.hospital_code')
+                ->get();
+
+            $table = DataTables::of($data)->addIndexColumn();
+
+            $table->addColumn('doctor_phoneno', function ($row) {
+                $phoneno = '-';
+                if ($row->doctor_phoneno != null) {
+                    $phoneno = $row->doctor_phoneno;
+                }
+                return $phoneno;
+            });
+
+            $table->addColumn('hospital_code', function ($row) {
+                $code = '
+                <a href="javascript: void(0)" class="link-primary" data-bs-toggle="modal"
+                    data-bs-target="#detailHospitalModal-' . $row->id . '">
+                    ' . $row->hospital_code . '
+                </a>
+                ';
+                return $code;
+            });
+
+            $table->addColumn('doctor_status', function ($row) {
+                $status = '';
+                if ($row->doctor_status == 1) {
+                    $status = '<span class="badge bg-light-success">' . 'Active' . '</span>';
+                } elseif ($row->doctor_status == 2) {
+                    $status = '<span class="badge bg-light-danger">' . 'Inactive' . '</span>';
+                }
+                return $status;
+            });
+
+            $table->addColumn('action', function ($row) {
+                $isReferenced = false;
+                // $isReferenced = DB::table('implants')->where('doctor_id', $row->id)->exists();
+                $buttonEdit =
+                    '
+                        <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
+                            data-bs-target="#updateDoctorModal-' . $row->id . '">
+                            <i class="ti ti-edit f-20"></i>
+                        </a>
+                    ';
+                if (!$isReferenced) {
+                    $buttonRemove =
+                    '
+                        <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal-' . $row->id . '">
+                            <i class="ti ti-trash f-20"></i>
+                        </a>
+                    ';
+                } else {
+                    $buttonRemove = 
+                    '
+                        <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger disabled-a" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal">
+                            <i class="ti ti-trash f-20"></i>
+                        </a>
+                    ';
+                }
+
+                return $buttonEdit . $buttonRemove;
+            });
+
+            $table->rawColumns(['doctor_phoneno', 'hospital_code', 'doctor_status', 'action']);
+
+            return $table->make(true);
+        }
         return view('crmd-system.setting.manage-doctor', [
-            'title' => 'CRMD System | Manage Doctor'
+            'title' => 'CRMD System | Manage Doctor',
+            'hosp' => Hospital::all(),
+            'docs'=> Doctor::all()
+
         ]);
     }
 }

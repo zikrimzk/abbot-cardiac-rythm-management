@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('hospital_name');
             $table->string('hospital_code')->unique();
-            $table->text('hospital_address')->nullable();
+            $table->string('hospital_address')->nullable();
             $table->string('hospital_phoneno')->nullable();
             $table->integer('hospital_visibility')->default(1);
             $table->timestamps();

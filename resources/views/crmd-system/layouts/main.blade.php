@@ -45,6 +45,12 @@
             white-space: normal !important;
         }
 
+        .disabled-a {
+            pointer-events: none;
+            opacity: 0.6;
+            text-decoration: none;
+        }
+
         /* Responsive fix for mobile */
         @media (max-width: 768px) {
             .table-responsive {

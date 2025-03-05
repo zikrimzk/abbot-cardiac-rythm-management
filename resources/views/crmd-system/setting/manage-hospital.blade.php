@@ -80,10 +80,8 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Name</th>
                                             <th scope="col">Code</th>
-                                            <th scope="col">Address</th>
-                                            <th scope="col">Phone Number</th>
+                                            <th scope="col">Name</th>
                                             <th scope="col">Visibility</th>
                                             <th scope="col">Action</th>
                                         </tr>
@@ -112,11 +110,12 @@
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <div class="mb-3">
-                                                <label for="hospital_name" class="form-label">Hospital Name<span
+                                                <label for="hospital_name" class="form-label">Hospital Name <span
                                                         class="text-danger">*</span></label>
                                                 <input type="text" id="hospital_name"
                                                     class="form-control @error('hospital_name') is-invalid @enderror"
-                                                    name="hospital_name" placeholder="Enter Hospital Name" required>
+                                                    name="hospital_name" placeholder="Enter Hospital Name"
+                                                    value="{{ old('hospital_name') }}" required>
                                                 @error('hospital_name')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -125,11 +124,12 @@
 
                                         <div class="col-sm-12">
                                             <div class="mb-3">
-                                                <label for="hospital_code" class="form-label">Code<span
+                                                <label for="hospital_code" class="form-label">Code <span
                                                         class="text-danger">*</span></label>
                                                 <input type="text" id="hospital_code"
                                                     class="form-control @error('hospital_code') is-invalid @enderror"
-                                                    name="hospital_code" placeholder="Enter Hospital Code" required>
+                                                    name="hospital_code" placeholder="Enter Hospital Code"
+                                                    value="{{ old('hospital_code') }}" required>
                                                 @error('hospital_code')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -139,8 +139,8 @@
                                         <div class="col-sm-12">
                                             <div class="mb-3">
                                                 <label for="hospital_address" class="form-label">Address</label>
-                                                <textarea name="hospital_address" id="" cols="10" rows="4"
-                                                    class="form-control @error('hospital_address') is-invalid @enderror" placeholder="Enter Address"></textarea>
+                                                <textarea name="hospital_address" id="hospital_address" rows="4"
+                                                    class="form-control @error('hospital_address') is-invalid @enderror" placeholder="Enter Address">{{ old('hospital_address') }}</textarea>
                                                 @error('hospital_address')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -152,7 +152,8 @@
                                                 <label for="hospital_phoneno" class="form-label">Phone Number</label>
                                                 <input type="text" id="hospital_phoneno"
                                                     class="form-control @error('hospital_phoneno') is-invalid @enderror"
-                                                    name="hospital_phoneno" placeholder="Enter Phone Number">
+                                                    name="hospital_phoneno" placeholder="Enter Phone Number"
+                                                    value="{{ old('hospital_phoneno') }}">
                                                 @error('hospital_phoneno')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -161,12 +162,21 @@
 
                                         <div class="col-sm-12">
                                             <div class="mb-3">
-                                                <label for="hospital_visibility" class="form-label">Visibility</label>
+                                                <label for="hospital_visibility" class="form-label">Visibility <span
+                                                    class="text-danger">*</span></label>
                                                 <select name="hospital_visibility" id="hospital_visibility"
                                                     class="form-select @error('hospital_visibility') is-invalid @enderror"
                                                     required>
-                                                    <option value="1" selected>Show</option>
-                                                    <option value="2">Hide</option>
+                                                    @if (old('hospital_visibility') == 1)
+                                                        <option value="1" selected>Show</option>
+                                                        <option value="2">Hide</option>
+                                                    @elseif(old('hospital_visibility') == 2)
+                                                        <option value="1">Show</option>
+                                                        <option value="2" selected>Hide</option>
+                                                    @else
+                                                        <option value="1">Show</option>
+                                                        <option value="2">Hide</option>
+                                                    @endif
                                                 </select>
                                                 @error('hospital_visibility')
                                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -205,7 +215,7 @@
                                 <div class="modal-content">
 
                                     <div class="modal-header">
-                                        <h5 class="modal-title">Update Hospital</h5>
+                                        <h5 class="modal-title">Update Hospital Details</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
@@ -214,7 +224,7 @@
                                         <div class="row">
                                             <div class="col-sm-12">
                                                 <div class="mb-3">
-                                                    <label for="hospital_name" class="form-label">Hospital Name<span
+                                                    <label for="hospital_name" class="form-label">Hospital Name <span
                                                             class="text-danger">*</span></label>
                                                     <input type="text" id="hospital_name"
                                                         class="form-control @error('hospital_name') is-invalid @enderror"
@@ -228,7 +238,7 @@
 
                                             <div class="col-sm-12">
                                                 <div class="mb-3">
-                                                    <label for="hospital_code" class="form-label">Code<span
+                                                    <label for="hospital_code" class="form-label">Code <span
                                                             class="text-danger">*</span></label>
                                                     <input type="text" id="hospital_code"
                                                         class="form-control @error('hospital_code') is-invalid @enderror"
@@ -243,10 +253,8 @@
                                             <div class="col-sm-12">
                                                 <div class="mb-3">
                                                     <label for="hospital_address" class="form-label">Address</label>
-                                                    <textarea name="hospital_address" id="" cols="10" rows="4"
-                                                        class="form-control @error('hospital_address') is-invalid @enderror" placeholder="Enter Address">
-                                                        {{ $hs->hospital_address }}
-                                                    </textarea>
+                                                    <textarea name="hospital_address" id="hospital_address" rows="4"
+                                                        class="form-control @error('hospital_address') is-invalid @enderror" placeholder="Enter Address">{{ $hs->hospital_address }}</textarea>
                                                     @error('hospital_address')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -259,7 +267,7 @@
                                                     <input type="text" id="hospital_phoneno"
                                                         class="form-control @error('hospital_phoneno') is-invalid @enderror"
                                                         name="hospital_phoneno" placeholder="Enter Phone Number"
-                                                        value="{{ $hs->hospital_phoneno }}" required>
+                                                        value="{{ $hs->hospital_phoneno }}">
                                                     @error('hospital_phoneno')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -268,7 +276,8 @@
 
                                             <div class="col-sm-12">
                                                 <div class="mb-3">
-                                                    <label for="hospital_visibility" class="form-label">Visibility</label>
+                                                    <label for="hospital_visibility" class="form-label">Visibility <span
+                                                        class="text-danger">*</span></label>
                                                     <select name="hospital_visibility" id="hospital_visibility"
                                                         class="form-select @error('hospital_visibility') is-invalid @enderror"
                                                         required>
@@ -306,6 +315,120 @@
                         </div>
                     </form>
                     <!-- [ Update Hospital Modal ] end -->
+
+                    <!-- [ Details Hospital Modal ] start -->
+                    <div class="modal fade" id="detailsModal-{{ $hs->id }}" tabindex="-1"
+                        aria-labelledby="updateHospitalModal" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Hospital Details</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="mb-3">
+                                                <label for="hospital_name" class="form-label">Hospital Name</label>
+                                                <input type="text" id="hospital_name" class="form-control"
+                                                    value="{{ $hs->hospital_name }}" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="mb-3">
+                                                <label for="hospital_code" class="form-label">Code</label>
+                                                <input type="text" id="hospital_code" class="form-control"
+                                                    value="{{ $hs->hospital_code }}" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="mb-3">
+                                                <label for="hospital_address" class="form-label">Address</label>
+                                                <textarea id="hospital_address" rows="4" class="form-control" placeholder="Empty" readonly>{{ $hs->hospital_address }}</textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="mb-3">
+                                                <label for="hospital_phoneno" class="form-label">Phone Number</label>
+                                                <input type="text" id="hospital_phoneno" class="form-control"
+                                                    placeholder="Empty" value="{{ $hs->hospital_phoneno }}" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="mb-3">
+                                                <label for="hospital_visibility" class="form-label">Visibility</label>
+                                                <select id="hospital_visibility" class="form-select" readonly>
+                                                    @if ($hs->hospital_visibility == 1)
+                                                        <option value="1" selected>Show</option>
+                                                    @elseif($hs->hospital_visibility == 2)
+                                                        <option value="2" selected>Hide</option>
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer justify-content-end">
+                                    <div class="flex-grow-1 text-end">
+                                        <div class="col-sm-12">
+                                            <div class="d-flex justify-content-between gap-3 align-items-center">
+                                                <button type="button" class="btn btn-light btn-pc-default w-100"
+                                                    data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ Details Hospital Modal ] end -->
+
+                    <!-- [ Delete Modal ] start -->
+                    <div class="modal fade" id="deleteModal-{{ $hs->id }}" data-bs-keyboard="false"
+                        tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-sm-12 mb-4">
+                                            <div class="d-flex justify-content-center align-items-center mb-3">
+                                                <i class="ti ti-trash text-danger" style="font-size: 100px"></i>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <h2>Are you sure ?</h2>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 mb-3">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <p class="fw-normal f-18 text-center">This action cannot be undone.</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="d-flex justify-content-between gap-3 align-items-center">
+                                                <button type="reset" class="btn btn-light btn-pc-default w-50"
+                                                    data-bs-dismiss="modal">Cancel</button>
+                                                <a href="{{ route('delete-hospital-get', $hs->id) }}"
+                                                    class="btn btn-danger w-100">Delete Anyways</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ Delete Modal ] end -->
                 @endforeach
 
                 <!-- [ Manage Hospital ] end -->
@@ -316,7 +439,7 @@
 
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {
-            var modalToShow = "{{ session('modal') }}"; // Ambil modal yang perlu dibuka dari session
+            var modalToShow = "{{ session('modal') }}";
             if (modalToShow) {
                 var modalElement = document.getElementById(modalToShow);
                 if (modalElement) {
@@ -345,24 +468,14 @@
                             searchable: false
                         },
                         {
-                            data: 'hospital_name',
-                            name: 'hospital_name',
-                            className: "avoid-long-column"
-
-                        },
-                        {
                             data: 'hospital_code',
                             name: 'hospital_code'
                         },
                         {
-                            data: 'hospital_address',
-                            name: 'hospital_address',
+                            data: 'hospital_name',
+                            name: 'hospital_name',
                             className: "avoid-long-column"
-                            
-                        },
-                        {
-                            data: 'hospital_phoneno',
-                            name: 'hospital_phoneno'
+
                         },
                         {
                             data: 'hospital_visibility',
