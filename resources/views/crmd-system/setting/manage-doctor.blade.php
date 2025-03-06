@@ -458,7 +458,9 @@
                     columns: [{
                             data: 'DT_RowIndex',
                             name: 'DT_RowIndex',
-                            searchable: false
+                            searchable: false,
+                            className: "text-start"
+
                         },
                         {
                             data: 'doctor_name',

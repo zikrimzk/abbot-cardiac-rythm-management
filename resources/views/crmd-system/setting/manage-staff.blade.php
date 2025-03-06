@@ -11,8 +11,7 @@
                     <div class="row align-items-center">
                         <div class="col-md-12">
                             <ul class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="javascript: void(0)">System</a></li>
-                                <li class="breadcrumb-item"><a href="javascript: void(0)">Staff</a></li>
+                                <li class="breadcrumb-item"><a href="javascript: void(0)">User</a></li>
                                 <li class="breadcrumb-item" aria-current="page">Manage Staff</li>
                             </ul>
                         </div>
@@ -112,11 +111,12 @@
 
                                         <div class="col-sm-12">
                                             <div class="mb-3">
-                                                <label for="staffName" class="form-label">Fullname<span
+                                                <label for="staffName" class="form-label">Fullname <span
                                                         class="text-danger">*</span></label>
                                                 <input type="text" id="staffName"
                                                     class="form-control @error('staff_name') is-invalid @enderror"
-                                                    name="staff_name" placeholder="Fullname">
+                                                    name="staff_name" placeholder="Fullname" value="{{ old('staff_name') }}"
+                                                    required>
                                                 @error('staff_name')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -128,7 +128,8 @@
                                                 <label for="staffIdno" class="form-label">ID Number</label>
                                                 <input type="text" id="staffIdno"
                                                     class="form-control @error('staff_idno') is-invalid @enderror"
-                                                    name="staff_idno" placeholder="ID Number">
+                                                    name="staff_idno" placeholder="ID Number"
+                                                    value="{{ old('staff_idno') }}">
                                                 @error('staff_idno')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -137,11 +138,12 @@
 
                                         <div class="col-sm-12">
                                             <div class="mb-3">
-                                                <label for="email" class="form-label">Email<span
+                                                <label for="email" class="form-label">Email <span
                                                         class="text-danger">*</span></label>
                                                 <input type="email" id="email"
                                                     class="form-control @error('email') is-invalid @enderror"
-                                                    name="email" placeholder="Email">
+                                                    name="email" placeholder="Email" value="{{ old('email') }}"
+                                                    required>
                                                 @error('email')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -150,14 +152,22 @@
 
                                         <div class="col-sm-12">
                                             <div class="mb-3">
-                                                <label for="des" class="form-label">Designation<span
+                                                <label for="des" class="form-label">Designation <span
                                                         class="text-danger">*</span></label>
                                                 <select name="designation_id" id="des"
-                                                    class="form-select @error('designation_id') is-invalid @enderror">
+                                                    class="form-select @error('designation_id') is-invalid @enderror"
+                                                    required>
                                                     <option value="">Select Designation</option>
                                                     @foreach ($des as $dep)
-                                                        <option value="{{ $dep->id }}">{{ $dep->designation_name }}
-                                                        </option>
+                                                        @if (old('designation_id') == $dep->id)
+                                                            <option value="{{ $dep->id }}" selected>
+                                                                {{ $dep->designation_name }}
+                                                            </option>
+                                                        @else
+                                                            <option value="{{ $dep->id }}">
+                                                                {{ $dep->designation_name }}
+                                                            </option>
+                                                        @endif
                                                     @endforeach
                                                 </select>
                                                 @error('designation_id')
@@ -168,13 +178,21 @@
 
                                         <div class="col-sm-6">
                                             <div class="mb-3">
-                                                <label for="role" class="form-label">Role<span
+                                                <label for="role" class="form-label">Role <span
                                                         class="text-danger">*</span></label>
                                                 <select name="staff_role" id="role"
-                                                    class="form-select @error('staff_role') is-invalid @enderror">
+                                                    class="form-select @error('staff_role') is-invalid @enderror" required>
                                                     <option value="">Select Role</option>
-                                                    <option value="1">Administrator</option>
-                                                    <option value="2">Staff</option>
+                                                    @if (old('staff_role') == 1)
+                                                        <option value="1" selected>Administrator</option>
+                                                        <option value="2">Staff</option>
+                                                    @elseif(old('staff_role') == 2)
+                                                        <option value="1">Administrator</option>
+                                                        <option value="2" selected>Staff</option>
+                                                    @else
+                                                        <option value="1">Administrator</option>
+                                                        <option value="2">Staff</option>
+                                                    @endif
                                                 </select>
                                                 @error('staff_role')
                                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -184,11 +202,21 @@
 
                                         <div class="col-sm-6">
                                             <div class="mb-3">
-                                                <label for="status" class="form-label">Status</label>
+                                                <label for="status" class="form-label">Status <span
+                                                        class="text-danger">*</span></label>
                                                 <select name="staff_status" id="status"
-                                                    class="form-select @error('staff_status') is-invalid @enderror">
-                                                    <option value="1" selected>Active</option>
-                                                    <option value="2">Inactive</option>
+                                                    class="form-select @error('staff_status') is-invalid @enderror"
+                                                    required>
+                                                    @if (old('staff_status') == 1)
+                                                        <option value="1" selected>Active</option>
+                                                        <option value="2">Inactive</option>
+                                                    @elseif(old('staff_status') == 2)
+                                                        <option value="1">Active</option>
+                                                        <option value="2" selected>Inactive</option>
+                                                    @else
+                                                        <option value="1">Active</option>
+                                                        <option value="2">Inactive</option>
+                                                    @endif
                                                 </select>
                                                 @error('staff_status')
                                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -219,7 +247,7 @@
                 <!-- [ Add Staff Modal ] end -->
 
                 @foreach ($sts as $st)
-                    <!-- [ Edit Staff Modal ] start -->
+                    <!-- [ Update Staff Modal ] start -->
                     <form action="{{ route('update-staff-post', $st->id) }}" method="POST">
                         @csrf
                         <div class="modal fade" id="updateStaffModal-{{ $st->id }}" tabindex="-1"
@@ -228,7 +256,7 @@
                                 <div class="modal-content">
 
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="updateStaffModalLabel">Update Staff Details</h5>
+                                        <h5 class="modal-title">Update Staff</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
@@ -238,12 +266,12 @@
 
                                             <div class="col-sm-12">
                                                 <div class="mb-3">
-                                                    <label for="staffName" class="form-label">Fullname<span
+                                                    <label for="staffName" class="form-label">Fullname <span
                                                             class="text-danger">*</span></label>
                                                     <input type="text" id="staffName"
                                                         class="form-control @error('staff_name') is-invalid @enderror"
                                                         name="staff_name" placeholder="Fullname"
-                                                        value="{{ $st->staff_name }}">
+                                                        value="{{ $st->staff_name }}" required>
                                                     @error('staff_name')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -265,11 +293,12 @@
 
                                             <div class="col-sm-12">
                                                 <div class="mb-3">
-                                                    <label for="email" class="form-label">Email<span
+                                                    <label for="email" class="form-label">Email <span
                                                             class="text-danger">*</span></label>
                                                     <input type="email" id="email"
                                                         class="form-control @error('email') is-invalid @enderror"
-                                                        name="email" placeholder="Email" value="{{ $st->email }}">
+                                                        name="email" placeholder="Email" value="{{ $st->email }}"
+                                                        required>
                                                     @error('email')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -278,10 +307,11 @@
 
                                             <div class="col-sm-12">
                                                 <div class="mb-3">
-                                                    <label for="des" class="form-label">Designation<span
+                                                    <label for="des" class="form-label">Designation <span
                                                             class="text-danger">*</span></label>
                                                     <select name="designation_id" id="des"
-                                                        class="form-select @error('designation_id') is-invalid @enderror">
+                                                        class="form-select @error('designation_id') is-invalid @enderror"
+                                                        required>
                                                         @foreach ($des as $dep)
                                                             @if ($st->desination_id == $dep->id)
                                                                 <option value="{{ $dep->id }}" selected>
@@ -300,10 +330,11 @@
 
                                             <div class="col-sm-6">
                                                 <div class="mb-3">
-                                                    <label for="role" class="form-label">Role<span
+                                                    <label for="role" class="form-label">Role <span
                                                             class="text-danger">*</span></label>
                                                     <select name="staff_role" id="role"
-                                                        class="form-select @error('staff_role') is-invalid @enderror">
+                                                        class="form-select @error('staff_role') is-invalid @enderror"
+                                                        required>
                                                         @if ($st->staff_role == 1)
                                                             <option value="1" selected>Administrator</option>
                                                             <option value="2">Staff</option>
@@ -320,9 +351,11 @@
 
                                             <div class="col-sm-6">
                                                 <div class="mb-3">
-                                                    <label for="status" class="form-label">Status</label>
+                                                    <label for="status" class="form-label">Status <span
+                                                            class="text-danger">*</span></label>
                                                     <select name="staff_status" id="status"
-                                                        class="form-select @error('staff_status') is-invalid @enderror">
+                                                        class="form-select @error('staff_status') is-invalid @enderror"
+                                                        required>
                                                         @if ($st->staff_status == 1)
                                                             <option value="1" selected>Active</option>
                                                             <option value="2">Inactive</option>
@@ -357,7 +390,7 @@
                             </div>
                         </div>
                     </form>
-                    <!-- [ Edit Staff Modal ] end -->
+                    <!-- [ Update Staff Modal ] end -->
 
                     <!-- [ Delete Modal ] start -->
                     <div class="modal fade" id="deleteModal-{{ $st->id }}" data-bs-keyboard="false"
@@ -411,7 +444,7 @@
 
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {
-            var modalToShow = "{{ session('modal') }}"; // Ambil modal yang perlu dibuka dari session
+            var modalToShow = "{{ session('modal') }}";
             if (modalToShow) {
                 var modalElement = document.getElementById(modalToShow);
                 if (modalElement) {
@@ -437,7 +470,8 @@
                     columns: [{
                             data: 'DT_RowIndex',
                             name: 'DT_RowIndex',
-                            searchable: false
+                            searchable: false,
+                            className: "text-start"
                         },
                         {
                             data: 'staff_name',

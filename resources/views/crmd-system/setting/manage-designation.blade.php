@@ -11,8 +11,7 @@
                     <div class="row align-items-center">
                         <div class="col-md-12">
                             <ul class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="javascript: void(0)">System</a></li>
-                                <li class="breadcrumb-item"><a href="javascript: void(0)">Staff</a></li>
+                                <li class="breadcrumb-item"><a href="javascript: void(0)">User</a></li>
                                 <li class="breadcrumb-item" aria-current="page">Manage Designation</li>
                             </ul>
                         </div>
@@ -82,7 +81,6 @@
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">Designation Name</th>
-                                            <th scope="col">Created On</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -112,7 +110,8 @@
                                                 class="text-danger">*</span></label>
                                         <input type="text"
                                             class="form-control @error('designation_name') is-invalid @enderror"
-                                            id="designationName" name="designation_name" placeholder="Designation Name">
+                                            id="designationName" name="designation_name" placeholder="Designation Name"
+                                            value="{{ old('designation_name') }}" required>
                                         @error('designation_name')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -140,7 +139,7 @@
                 <!-- [ Add Designation Modal ] end -->
 
                 @foreach ($des as $dep)
-                    <!-- [ Edit Designation Modal ] start -->
+                    <!-- [ Update Designation Modal ] start -->
                     <form action="{{ route('update-designation-post', $dep->id) }}" method="POST">
                         @csrf
                         <div class="modal fade" id="updateDesignationModal-{{ $dep->id }}" tabindex="-1"
@@ -149,7 +148,7 @@
                                 <div class="modal-content">
 
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="updateDesignationModalLabel">Update Designation</h5>
+                                        <h5 class="modal-title">Update Designation</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
@@ -161,7 +160,7 @@
                                             <input type="text"
                                                 class="form-control @error('designation_name') is-invalid @enderror"
                                                 id="designationName" name="designation_name" placeholder="Designation Name"
-                                                value="{{ $dep->designation_name }}">
+                                                value="{{ $dep->designation_name }}" required>
                                             @error('designation_name')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -185,7 +184,7 @@
                             </div>
                         </div>
                     </form>
-                    <!-- [ Edit Designation Modal ] end -->
+                    <!-- [ Update Designation Modal ] end -->
 
                     <!-- [ Delete Modal ] start -->
                     <div class="modal fade" id="deleteModal-{{ $dep->id }}" data-bs-keyboard="false" tabindex="-1"
@@ -260,17 +259,14 @@
                     columns: [{
                             data: 'DT_RowIndex',
                             name: 'DT_RowIndex',
-                            searchable: false
+                            searchable: false,
+                            className: "text-start"
+                            
+
                         },
                         {
                             data: 'designation_name',
                             name: 'designation_name'
-                        },
-                        {
-                            data: 'created_at',
-                            name: 'created_at',
-                            searchable: false
-
                         },
                         {
                             data: 'action',

@@ -95,7 +95,7 @@
                          <span class="pc-micon">
                              <i class="pc-icon fas fa-users-cog"></i>
                          </span>
-                         <span class="pc-mtext">Staff</span>
+                         <span class="pc-mtext">User</span>
                          <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                      </a>
                      <ul class="pc-submenu">
@@ -153,27 +153,34 @@
                      </ul>
                  </li>
 
-                 {{-- <li class="pc-item pc-hasmenu">
+                 <li class="pc-item pc-hasmenu">
                      <a href="#!" class="pc-link">
-                         <span class="pc-micon">
-                             <svg class="pc-icon">
-                                 <use xlink:href="#custom-layer"></use>
-                             </svg>
-                         </span>
+                        <span class="pc-micon">
+                            <i class="pc-icon fas fa-cog"></i>
+                        </span>
                          <span class="pc-mtext">Others</span>
                          <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                      </a>
                      <ul class="pc-submenu">
-                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage Product
-                                 Group</a>
+
+                         <li class="pc-item">
+                             <a class="pc-link" href="{{ route('manage-region-page') }}">
+                                 Manage Region
+                             </a>
                          </li>
-                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage
-                                 Region</a>
+                         <li class="pc-item">
+                             <a class="pc-link" href="../admins/course-dashboard.html">
+                                 Manage Product Group
+                             </a>
                          </li>
-                         <li class="pc-item"><a class="pc-link" href="../admins/course-dashboard.html">Manage Stock Loaction</a>
-                         </li>
+                         <li class="pc-item">
+                            <a class="pc-link" href="../admins/course-dashboard.html">
+                                Manage Stock Location
+                            </a>
+                        </li>
+
                      </ul>
-                 </li> --}}
+                 </li>
              </ul>
          </div>
      </div>

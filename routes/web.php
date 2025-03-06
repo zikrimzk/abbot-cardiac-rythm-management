@@ -5,6 +5,7 @@ use App\Http\Controllers\ModelController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\AuthenticateController;
+use App\Http\Controllers\OtherSettingController;
 use App\Http\Controllers\HospitalDoctorController;
 
 /*
@@ -83,4 +84,10 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::post('/add-generator', [ModelController::class, 'addGenerator'])->name('add-generator-post');
     Route::post('/update-generator/{id}', [ModelController::class, 'updateGenerator'])->name('update-generator-post');
     Route::get('/delete-generator/{id}', [ModelController::class, 'deleteGenerator'])->name('delete-generator-get');
+
+    //Manage Region
+    Route::get('/manage-region', [RouteController::class, 'manageRegion'])->name('manage-region-page');
+    Route::post('/add-region', [OtherSettingController::class, 'addRegion'])->name('add-region-post');
+    Route::post('/update-region/{id}', [OtherSettingController::class, 'updateRegion'])->name('update-region-post');
+    Route::get('/delete-region/{id}', [OtherSettingController::class, 'deleteRegion'])->name('delete-region-get');
 });

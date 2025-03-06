@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AbbottModel;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Doctor;
+use App\Models\Region;
 use App\Models\Hospital;
-use App\Models\Designation;
 use App\Models\Generator;
+use App\Models\AbbottModel;
+use App\Models\Designation;
 use Illuminate\Http\Request;
 use App\Models\ModelCategory;
 use Illuminate\Support\Facades\DB;
@@ -118,7 +119,7 @@ class RouteController extends Controller
 
             return $table->make(true);
         }
-        return view('crmd-system.staff-management.manage-designation', [
+        return view('crmd-system.setting.manage-designation', [
             'title' => 'CRMD System | Manage Designation',
             'des' => Designation::all()
         ]);
@@ -196,7 +197,7 @@ class RouteController extends Controller
 
             return $table->make(true);
         }
-        return view('crmd-system.staff-management.manage-staff', [
+        return view('crmd-system.setting.manage-staff', [
             'title' => 'CRMD System | Manage Staff',
             'sts' => User::all(),
             'des' => Designation::all()
@@ -426,7 +427,7 @@ class RouteController extends Controller
         if ($req->ajax()) {
 
             $data = DB::table('abbott_models as a')
-                ->join('model_categories as b','b.id','=','a.mcategory_id')
+                ->join('model_categories as b', 'b.id', '=', 'a.mcategory_id')
                 ->select('a.id', 'a.model_name', 'a.model_code', 'a.model_status', 'b.mcategory_name')
                 ->get();
 
@@ -484,7 +485,7 @@ class RouteController extends Controller
         ]);
     }
 
-    //Manage Model Route
+    //Manage Generator Route
     public function manageGenerator(Request $req)
     {
         if ($req->ajax()) {
@@ -543,6 +544,58 @@ class RouteController extends Controller
         return view('crmd-system.setting.manage-generator', [
             'title' => 'CRMD System | Manage Generator',
             'gs' => Generator::all(),
+        ]);
+    }
+
+    //Manage Region Route
+    public function manageRegion(Request $req)
+    {
+        if ($req->ajax()) {
+
+            $data = DB::table('regions')
+                ->select('id', 'region_name')
+                ->get();
+
+            $table = DataTables::of($data)->addIndexColumn();
+
+            $table->addColumn('action', function ($row) {
+                $isReferenced = false;
+                // $isReferenced = DB::table('implants')->where('region_id', $row->id)->exists();
+                $buttonEdit =
+                    '
+                        <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
+                            data-bs-target="#updateRegionModal-' . $row->id . '">
+                            <i class="ti ti-edit f-20"></i>
+                        </a>
+                    ';
+                if (!$isReferenced) {
+                    $buttonRemove =
+                        '
+                            <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal-' . $row->id . '">
+                                <i class="ti ti-trash f-20"></i>
+                            </a>
+                        ';
+                } else {
+                    $buttonRemove =
+                        '
+                            <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger disabled-a" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal">
+                                <i class="ti ti-trash f-20"></i>
+                            </a>
+                        ';
+                }
+
+                return $buttonEdit . $buttonRemove;
+            });
+
+            $table->rawColumns(['action']);
+
+            return $table->make(true);
+        }
+        return view('crmd-system.setting.manage-region', [
+            'title' => 'CRMD System | Manage Region',
+            'rs' => Region::all(),
         ]);
     }
 }
