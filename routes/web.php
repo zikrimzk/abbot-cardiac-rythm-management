@@ -60,12 +60,12 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::post('/update-hospital/{id}', [HospitalDoctorController::class, 'updateHospital'])->name('update-hospital-post');
     Route::get('/delete-hospital/{id}', [HospitalDoctorController::class, 'deleteHospital'])->name('delete-hospital-get');
 
-
     //Manage Doctor
     Route::get('/manage-doctor', [RouteController::class, 'manageDoctor'])->name('manage-doctor-page');
     Route::post('/add-doctor', [HospitalDoctorController::class, 'addDoctor'])->name('add-doctor-post');
     Route::post('/update-doctor/{id}', [HospitalDoctorController::class, 'updateDoctor'])->name('update-doctor-post');
     Route::get('/delete-doctor/{id}', [HospitalDoctorController::class, 'deleteDoctor'])->name('delete-doctor-get');
+    Route::get('/get-doctors', [HospitalDoctorController::class, 'getDoctorsByHospital'])->name('doctorbyhospital-get');
 
     //Manage Model Category
     Route::get('/manage-model-category', [RouteController::class, 'manageModelCategory'])->name('manage-model-category-page');

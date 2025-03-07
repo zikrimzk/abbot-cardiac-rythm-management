@@ -23,18 +23,18 @@
                      </a>
                  </li>
 
-                 {{-- <li class="pc-item pc-caption">
+                 <li class="pc-item pc-caption">
                      <label>Management</label>
-                 </li> --}}
+                 </li>
 
-                 {{-- <li class="pc-item">
+                 <li class="pc-item">
                      <a href="{{ route('manage-implant-page') }}" class="pc-link">
                          <span class="pc-micon">
                              <i class="pc-icon fas fa-file-medical-alt"></i>
                          </span>
                          <span class="pc-mtext">Implant</span>
                      </a>
-                 </li> --}}
+                 </li>
 
                  {{-- <li class="pc-item">
                      <a href="{{ route('generate-patient-id-card-page') }}" class="pc-link">
@@ -155,9 +155,9 @@
 
                  <li class="pc-item pc-hasmenu">
                      <a href="#!" class="pc-link">
-                        <span class="pc-micon">
-                            <i class="pc-icon fas fa-cog"></i>
-                        </span>
+                         <span class="pc-micon">
+                             <i class="pc-icon fas fa-cog"></i>
+                         </span>
                          <span class="pc-mtext">Others</span>
                          <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                      </a>
@@ -174,10 +174,10 @@
                              </a>
                          </li>
                          <li class="pc-item">
-                            <a class="pc-link" href="{{ route('manage-stock-location-page') }}">
-                                Manage Stock Location
-                            </a>
-                        </li>
+                             <a class="pc-link" href="{{ route('manage-stock-location-page') }}">
+                                 Manage Stock Location
+                             </a>
+                         </li>
 
                      </ul>
                  </li>

@@ -142,7 +142,7 @@ class HospitalDoctorController extends Controller
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput()
-                ->with('modal', 'updateDoctorModal-'. $id);
+                ->with('modal', 'updateDoctorModal-' . $id);
         }
 
         try {
@@ -152,18 +152,30 @@ class HospitalDoctorController extends Controller
         } catch (Exception $e) {
             return redirect()->back()
                 ->with('error', $e->getMessage())
-                ->with('modal', 'updateDoctorModal-'. $id);
+                ->with('modal', 'updateDoctorModal-' . $id);
         }
     }
 
-    public function deleteDoctor($id) 
+    public function deleteDoctor($id)
     {
-        try{
+        try {
             Doctor::find($id)->delete();
             return back()->with('success', 'Doctor deleted successfully.');
-        }
-        catch(Exception $e){
+        } catch (Exception $e) {
             return back()->with('error', 'Something went wrong. Please try again.');
+        }
+    }
+
+    //Extra Functions
+    public function getDoctorsByHospital(Request $req)
+    {
+        try {
+            $doctors = Doctor::where('hospital_id', $req->hospital_id)->get();
+            return response()->json($doctors, 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 500);
         }
     }
 }

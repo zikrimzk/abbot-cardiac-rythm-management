@@ -60,7 +60,14 @@ class RouteController extends Controller
     public function addImplant(Request $req)
     {
         return view('crmd-system.implant-management.add-implant', [
-            'title' => 'CRMD System | Add Implant'
+            'title' => 'CRMD System | Add Implant',
+            'regions' => Region::all(),
+            'hospitals' => Hospital::all(),
+            'doctors' => Doctor::all(),
+            'pgs' => ProductGroup::all(),
+            'mcs' => ModelCategory::where('mcategory_isimplant', 1)->get(),
+            'generators' => Generator::all(),
+            'abbottmodels' => AbbottModel::all()
         ]);
     }
 
