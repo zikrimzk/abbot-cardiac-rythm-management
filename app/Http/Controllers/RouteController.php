@@ -67,7 +67,8 @@ class RouteController extends Controller
             'pgs' => ProductGroup::all(),
             'mcs' => ModelCategory::where('mcategory_isimplant', 1)->get(),
             'generators' => Generator::all(),
-            'abbottmodels' => AbbottModel::all()
+            'abbottmodels' => AbbottModel::all(),
+            'stocklocations' => StockLocation::all(),
         ]);
     }
 

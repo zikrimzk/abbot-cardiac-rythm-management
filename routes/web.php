@@ -7,6 +7,7 @@ use App\Http\Controllers\StaffController;
 use App\Http\Controllers\AuthenticateController;
 use App\Http\Controllers\OtherSettingController;
 use App\Http\Controllers\HospitalDoctorController;
+use App\Http\Controllers\ImplantController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,7 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     //Manage Implant
     Route::get('/manage-implant', [RouteController::class, 'manageImplant'])->name('manage-implant-page');
     Route::get('/add-implant', [RouteController::class, 'addImplant'])->name('add-implant-page');
+    Route::post('/add-implant', [ImplantController::class, 'addImplant'])->name('add-implant-post');
 
     //Generate Patient ID Card
     Route::get('/generate-patient-id-card', [RouteController::class, 'generatePatientIdCard'])->name('generate-patient-id-card-page');

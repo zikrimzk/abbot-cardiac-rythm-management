@@ -65,7 +65,7 @@
             <div class="row">
                 <!-- [ Add Implant ] start -->
                 <div class="col-sm-12">
-                    <form action="">
+                    <form action="{{ route('add-implant-post') }}" method="POST">
                         @csrf
                         <div class="card">
                             <div class="card-header bg-light-primary text-primary">
@@ -185,11 +185,12 @@
                                     <hr class="my-4" />
 
                                     <h5>Generator</h5>
-                                    
+
                                     <!-- [ Generator Model ] Input -->
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-4">
                                         <div class="mb-3">
-                                            <label for="generator_id" class="form-label">Model</label>
+                                            <label for="generator_id" class="form-label">Model <span
+                                                class="text-danger">*</span></label>
                                             <select name="generator_id" id="generator_id"
                                                 class="form-select @error('generator_id') is-invalid @enderror" required>
                                                 <option value="" selected>Select Model</option>
@@ -204,11 +205,10 @@
                                     </div>
 
                                     <!-- [ Generator Serial Number ] Input -->
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-4">
                                         <div class="mb-3">
                                             <label for="implant_generator_sn" class="form-label">Serial
-                                                Number</label>
-
+                                                Number <span class="text-danger">*</span></label>
                                             <input type="text" name="implant_generator_sn" id="implant_generator_sn"
                                                 class="form-control @error('implant_generator_sn') is-invalid @enderror"
                                                 placeholder="Enter Serial Number" required>
@@ -218,37 +218,76 @@
                                         </div>
                                     </div>
 
+                                    <!-- [ Generator Stock Location ] Input -->
+                                    <div class="col-sm-4">
+                                        <div class="mb-3">
+                                            <label for="stocklocation_id" class="form-label">Stock Location <span
+                                                class="text-danger">*</span></label>
+                                            <select name="stocklocation_id" id="stocklocation_id"
+                                                class="form-select @error('stocklocation_id') is-invalid @enderror"
+                                                required>
+                                                <option value="" selected>Select Stock Location</option>
+                                                @foreach ($stocklocations as $sl)
+                                                    <option value="{{ $sl->id }}">({{ $sl->stock_location_code }})
+                                                        - {{ $sl->stock_location_name }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('stocklocation_id')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
                                     @foreach ($mcs as $mc)
                                         <h5 class="mt-4">{{ $mc->mcategory_name }}</h5>
 
                                         <!-- [ Model ] Input -->
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-4">
                                             <div class="mb-3">
-                                                <label for="" class="form-label">Model</label>
-                                                <select name="" id=""
-                                                    class="form-select @error('') is-invalid @enderror">
+                                                <label for="model_ids" class="form-label">Model</label>
+                                                <select name="model_ids[]" id="model_ids"
+                                                    class="form-select @error('model_ids') is-invalid @enderror">
                                                     <option value="" selected>Select Model</option>
                                                     @foreach ($abbottmodels->where('mcategory_id', $mc->id) as $am)
                                                         <option value="{{ $am->id }}">{{ $am->model_code }}
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                                @error('')
+                                                @error('model_ids')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
 
-                                        <!-- [ Generator Serial Number ] Input -->
-                                        <div class="col-sm-6">
+                                        <!-- [ Serial Number ] Input -->
+                                        <div class="col-sm-4">
                                             <div class="mb-3">
-                                                <label for="" class="form-label">Serial
+                                                <label for="model_sns" class="form-label">Serial
                                                     Number</label>
-
-                                                <input type="text" name="" id=""
-                                                    class="form-control @error('') is-invalid @enderror"
+                                                <input type="text" name="model_sns[]" id="model_sns"
+                                                    class="form-control @error('model_sns') is-invalid @enderror"
                                                     placeholder="Enter Serial Number">
-                                                @error('')
+                                                @error('model_sns')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <!-- [ Stock Location ] Input -->
+                                        <div class="col-sm-4">
+                                            <div class="mb-3">
+                                                <label for="stocklocation_ids" class="form-label">Stock Location</label>
+                                                <select name="stocklocation_ids[]" id="stocklocation_ids"
+                                                    class="form-select @error('stocklocation_ids') is-invalid @enderror"
+                                                    required>
+                                                    <option value="" selected>Select Stock Location</option>
+                                                    @foreach ($stocklocations as $sl)
+                                                        <option value="{{ $sl->id }}">
+                                                            ({{ $sl->stock_location_code }}) -
+                                                            {{ $sl->stock_location_name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('stocklocation_ids')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
