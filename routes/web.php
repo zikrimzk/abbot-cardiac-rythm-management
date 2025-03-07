@@ -90,4 +90,16 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::post('/add-region', [OtherSettingController::class, 'addRegion'])->name('add-region-post');
     Route::post('/update-region/{id}', [OtherSettingController::class, 'updateRegion'])->name('update-region-post');
     Route::get('/delete-region/{id}', [OtherSettingController::class, 'deleteRegion'])->name('delete-region-get');
+
+    //Manage Product Group
+    Route::get('/manage-product-group', [RouteController::class, 'manageProductGroup'])->name('manage-product-group-page');
+    Route::post('/add-product-group', [OtherSettingController::class, 'addProductGroup'])->name('add-product-group-post');
+    Route::post('/update-product-group/{id}', [OtherSettingController::class, 'updateProductGroup'])->name('update-product-group-post');
+    Route::get('/delete-product-group/{id}', [OtherSettingController::class, 'deleteProductGroup'])->name('delete-product-group-get');
+
+    //Manage Stock Location
+    Route::get('/manage-stock-location', [RouteController::class, 'manageStockLocation'])->name('manage-stock-location-page');
+    Route::post('/add-stock-location', [OtherSettingController::class, 'addStockLocation'])->name('add-stock-location-post');
+    Route::post('/update-stock-location/{id}', [OtherSettingController::class, 'updateStockLocation'])->name('update-stock-location-post');
+    Route::get('/delete-stock-location/{id}', [OtherSettingController::class, 'deleteStockLocation'])->name('delete-stock-location-get');
 });

@@ -12,6 +12,8 @@ use App\Models\AbbottModel;
 use App\Models\Designation;
 use Illuminate\Http\Request;
 use App\Models\ModelCategory;
+use App\Models\ProductGroup;
+use App\Models\StockLocation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
@@ -596,6 +598,130 @@ class RouteController extends Controller
         return view('crmd-system.setting.manage-region', [
             'title' => 'CRMD System | Manage Region',
             'rs' => Region::all(),
+        ]);
+    }
+
+    //Manage Product Group Route
+    public function manageProductGroup(Request $req)
+    {
+        if ($req->ajax()) {
+
+            $data = DB::table('product_groups')
+                ->select('id', 'product_group_name', 'product_group_visibility')
+                ->get();
+
+            $table = DataTables::of($data)->addIndexColumn();
+
+            $table->addColumn('product_group_visibility', function ($row) {
+                $visibility = '';
+                if ($row->product_group_visibility == 1) {
+                    $visibility = '<span class="badge bg-light-success ">' . 'Show' . '</span>';
+                } elseif ($row->product_group_visibility == 2) {
+                    $visibility = '<span class="badge bg-light-danger">' . 'Hide' . '</span>';
+                }
+                return $visibility;
+            });
+
+            $table->addColumn('action', function ($row) {
+                $isReferenced = false;
+                // $isReferenced = DB::table('product_group_lists')->where('product_group_id', $row->id)->exists();
+                $buttonEdit =
+                    '
+                         <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
+                             data-bs-target="#updateProductGroupModal-' . $row->id . '">
+                             <i class="ti ti-edit f-20"></i>
+                         </a>
+                     ';
+                if (!$isReferenced) {
+                    $buttonRemove =
+                        '
+                             <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
+                                 data-bs-target="#deleteModal-' . $row->id . '">
+                                 <i class="ti ti-trash f-20"></i>
+                             </a>
+                         ';
+                } else {
+                    $buttonRemove =
+                        '
+                             <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger disabled-a" data-bs-toggle="modal"
+                                 data-bs-target="#deleteModal">
+                                 <i class="ti ti-trash f-20"></i>
+                             </a>
+                         ';
+                }
+
+                return $buttonEdit . $buttonRemove;
+            });
+
+            $table->rawColumns(['product_group_visibility','action']);
+
+            return $table->make(true);
+        }
+        return view('crmd-system.setting.manage-product-group', [
+            'title' => 'CRMD System | Manage Product Group',
+            'pgs' => ProductGroup::all(),
+        ]);
+    }
+
+    //Manage Stock Location Route
+    public function manageStockLocation(Request $req)
+    {
+        if ($req->ajax()) {
+
+            $data = DB::table('stock_locations')
+                ->select('id', 'stock_location_code', 'stock_location_name', 'stock_location_status')
+                ->get();
+
+            $table = DataTables::of($data)->addIndexColumn();
+
+            $table->addColumn('stock_location_status', function ($row) {
+                $status = '';
+                if ($row->stock_location_status == 1) {
+                    $status = '<span class="badge bg-light-success ">' . 'Active' . '</span>';
+                } elseif ($row->stock_location_status == 2) {
+                    $status = '<span class="badge bg-light-danger">' . 'Inactive' . '</span>';
+                }
+                return $status;
+            });
+
+            $table->addColumn('action', function ($row) {
+                $isReferenced = false;
+                // $isReferenced = DB::table('implants')->where('stock_location_id', $row->id)->exists();
+                $buttonEdit =
+                    '
+                         <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
+                             data-bs-target="#updateStockLocationModal-' . $row->id . '">
+                             <i class="ti ti-edit f-20"></i>
+                         </a>
+                    ';
+                if (!$isReferenced) {
+                    $buttonRemove =
+                        '
+                             <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
+                                 data-bs-target="#deleteModal-' . $row->id . '">
+                                 <i class="ti ti-trash f-20"></i>
+                             </a>
+                        ';
+                } else {
+                    $buttonRemove =
+                        '
+                             <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger disabled-a" data-bs-toggle="modal"
+                                 data-bs-target="#deleteModal">
+                                 <i class="ti ti-trash f-20"></i>
+                             </a>
+                        ';
+                }
+
+                return $buttonEdit . $buttonRemove;
+            });
+
+            $table->rawColumns(['stock_location_status','action']);
+
+            return $table->make(true);
+        }
+        return view('crmd-system.setting.manage-stock-location', [
+            'title' => 'CRMD System | Manage Stock Location',
+            'sls' => StockLocation::all(),
         ]);
     }
 }

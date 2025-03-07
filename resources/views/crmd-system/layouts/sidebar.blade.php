@@ -169,12 +169,12 @@
                              </a>
                          </li>
                          <li class="pc-item">
-                             <a class="pc-link" href="../admins/course-dashboard.html">
+                             <a class="pc-link" href="{{ route('manage-product-group-page') }}">
                                  Manage Product Group
                              </a>
                          </li>
                          <li class="pc-item">
-                            <a class="pc-link" href="../admins/course-dashboard.html">
+                            <a class="pc-link" href="{{ route('manage-stock-location-page') }}">
                                 Manage Stock Location
                             </a>
                         </li>
