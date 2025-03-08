@@ -118,15 +118,15 @@
                 var table = $('.data-table').DataTable({
                     processing: true,
                     serverSide: true,
-                    responsive: false,
-                    autoWidth: false,
+                    responsive: true,
                     ajax: {
                         url: "{{ route('manage-implant-page') }}",
                     },
                     columns: [{
                             data: 'DT_RowIndex',
                             name: 'DT_RowIndex',
-                            searchable: false
+                            searchable: false,
+                            className: "text-start"
                         },
                         {
                             data: 'implant_date',

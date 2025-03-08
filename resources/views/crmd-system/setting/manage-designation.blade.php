@@ -251,8 +251,7 @@
                 var table = $('.data-table').DataTable({
                     processing: true,
                     serverSide: true,
-                    responsive: false,
-                    autoWidth: false,
+                    responsive: true,
                     ajax: {
                         url: "{{ route('manage-designation-page') }}",
                     },
@@ -261,8 +260,6 @@
                             name: 'DT_RowIndex',
                             searchable: false,
                             className: "text-start"
-                            
-
                         },
                         {
                             data: 'designation_name',

@@ -40,7 +40,6 @@
     <script src="../assets/js/plugins/sweetalert2.all.min.js"></script>
 
     <style>
-        /* Optional: Ensure all table cells do not force a single line */
         .data-table td {
             white-space: normal !important;
         }
@@ -51,66 +50,6 @@
             text-decoration: none;
         }
 
-        /* Responsive fix for mobile */
-        @media (max-width: 768px) {
-            .table-responsive {
-                display: block;
-                width: 100%;
-                overflow-x: auto;
-            }
-
-            .data-table thead {
-                display: none;
-                /* Hide header in small screens */
-            }
-
-            .data-table tbody,
-            .data-table tr,
-            .data-table td {
-                display: block;
-                width: 100%;
-            }
-
-            .data-table tr {
-                margin-bottom: 10px;
-                border: 1px solid #ddd;
-                /* Optional: Add border to separate rows */
-                border-radius: 8px;
-                padding: 10px;
-                background: #fff;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            }
-
-            .data-table td {
-                text-align: right;
-                padding: 8px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                border-bottom: 1px solid #eee;
-            }
-
-            .data-table td:last-child {
-                border-bottom: none;
-            }
-
-            .data-table td::before {
-                content: attr(data-label);
-                font-weight: bold;
-                flex-basis: 50%;
-                text-transform: capitalize;
-            }
-
-            .nav-tabs.profile-tabs .nav-item {
-                flex: 1 1 auto;
-                text-align: center;
-            }
-
-            .nav-tabs.profile-tabs .nav-link {
-                display: block;
-                width: 100%;
-            }
-        }
     </style>
 
 </head>

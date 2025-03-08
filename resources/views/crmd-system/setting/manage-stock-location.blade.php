@@ -348,8 +348,7 @@
                 var table = $('.data-table').DataTable({
                     processing: true,
                     serverSide: true,
-                    responsive: false,
-                    autoWidth: false,
+                    responsive: true,
                     ajax: {
                         url: "{{ route('manage-stock-location-page') }}",
                     },
