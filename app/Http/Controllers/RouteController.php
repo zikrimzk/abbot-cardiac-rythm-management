@@ -6,16 +6,18 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Doctor;
 use App\Models\Region;
+use App\Models\Implant;
 use App\Models\Hospital;
 use App\Models\Generator;
 use App\Models\AbbottModel;
 use App\Models\Designation;
+use App\Models\ProductGroup;
 use Illuminate\Http\Request;
 use App\Models\ModelCategory;
-use App\Models\ProductGroup;
 use App\Models\StockLocation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Yajra\DataTables\Facades\DataTables;
 
 class RouteController extends Controller
@@ -90,7 +92,7 @@ class RouteController extends Controller
 
                 $button =
                     '
-                        <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary">
+                        <a href="'. route('update-implant-page', Crypt::encrypt($row->id)) .'" class="avtar avtar-xs btn-light-primary">
                             <i class="ti ti-edit f-20"></i>
                         </a>
                          <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-info" data-bs-toggle="modal"
@@ -111,7 +113,7 @@ class RouteController extends Controller
     }
 
     // Add Implant Route
-    public function addImplant(Request $req)
+    public function addImplant()
     {
         return view('crmd-system.implant-management.add-implant', [
             'title' => 'CRMD System | Add Implant',
@@ -125,6 +127,23 @@ class RouteController extends Controller
             'stocklocations' => StockLocation::all(),
         ]);
     }
+
+     // Add Implant Route
+     public function updateImplant($id)
+     {
+         return view('crmd-system.implant-management.update-implant', [
+             'title' => 'CRMD System | Update Implant',
+             'im' => Implant::where('id', Crypt::decrypt($id))->first(),
+             'regions' => Region::all(),
+             'hospitals' => Hospital::all(),
+             'doctors' => Doctor::all(),
+             'pgs' => ProductGroup::all(),
+             'mcs' => ModelCategory::where('mcategory_isimplant', 1)->get(),
+             'generators' => Generator::all(),
+             'abbottmodels' => AbbottModel::all(),
+             'stocklocations' => StockLocation::all(),
+         ]);
+     }
 
     // Generate Patient ID Card Route
     public function generatePatientIdCard(Request $req)

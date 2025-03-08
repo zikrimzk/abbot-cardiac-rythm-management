@@ -14,7 +14,7 @@
                                 <li class="breadcrumb-item"><a href="javascript: void(0)">Implant</a></li>
                                 <li class="breadcrumb-item"><a href="{{ route('manage-implant-page') }}">Manage Implant</a>
                                 </li>
-                                <li class="breadcrumb-item" aria-current="page">Add Implant</li>
+                                <li class="breadcrumb-item" aria-current="page">Update Implant</li>
                             </ul>
                         </div>
                         <div class="col-md-12 mt-2 mb-2">
@@ -70,7 +70,7 @@
                         <div class="card">
                             <div class="card-header bg-light-primary text-primary">
                                 <h5 class="card-title">
-                                    Add Implant
+                                    Update Implant
                                 </h5>
                             </div>
                             <div class="card-body">
@@ -83,7 +83,7 @@
                                                 Implant <span class="text-danger fw-bold">*</span></label>
                                             <input type="date" name="implant_date"
                                                 class="form-control @error('implant_date') is-invalid @enderror"
-                                                id="implant_date" required>
+                                                id="implant_date" value="{{ $im->implant_date }}" required>
                                             @error('implant_date')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -97,13 +97,13 @@
                                                     class="text-danger fw-bold">*</span></label>
                                             <select name="region_id" id="region_id"
                                                 class="form-select @error('region_id') is-invalid @enderror" required>
-                                                <option value="">Select Region</option>
                                                 @foreach ($regions as $rgn)
-                                                    @if (old('region_id') == $rgn->id)
+                                                    @if ($im->region_id == $rgn->id)
                                                         <option value="{{ $rgn->id }}" selected>{{ $rgn->region_name }}
                                                         </option>
                                                     @else
-                                                        <option value="{{ $rgn->id }}">{{ $rgn->region_name }}</option>
+                                                        <option value="{{ $rgn->id }}">{{ $rgn->region_name }}
+                                                        </option>
                                                     @endif
                                                 @endforeach
                                             </select>
@@ -120,9 +120,8 @@
                                                     class="text-danger fw-bold">*</span></label>
                                             <select name="hospital_id" id="hospital_id"
                                                 class="form-select @error('hospital_id') is-invalid @enderror" required>
-                                                <option value="" selected>Select Hospital</option>
                                                 @foreach ($hospitals as $hs)
-                                                    @if (old('hospital_id') == $hs->id)
+                                                    @if ($im->hospital_id == $hs->id)
                                                         <option value="{{ $hs->id }}" selected>
                                                             {{ $hs->hospital_name }}
                                                         </option>
@@ -147,7 +146,7 @@
                                             <select name="doctor_id" id="implant_doctor_id" class="form-select" required>
                                                 <option value="" selected>Select Doctor</option>
                                                 @foreach ($doctors as $dr)
-                                                    @if (old('doctor_id') == $dr->id)
+                                                    @if ($im->doctor_id == $dr->id)
                                                         <option value="{{ $dr->id }}" selected>
                                                             {{ $dr->doctor_name }}
                                                         </option>
@@ -193,15 +192,13 @@
                                                     class="text-danger">*</span></label>
                                             <select name="generator_id" id="generator_id"
                                                 class="form-select @error('generator_id') is-invalid @enderror" required>
-                                                <option value="" selected>Select Model</option>
                                                 @foreach ($generators as $g)
-                                                    @if (old('generator_id') == $g->id)
+                                                    @if ($im->generator_id == $g->id)
                                                         <option value="{{ $g->id }}" selected>
                                                             {{ $g->generator_code }}
                                                         </option>
                                                     @else
-                                                        <option value="{{ $g->id }}">
-                                                            {{ $g->generator_code }}
+                                                        <option value="{{ $g->id }}">{{ $g->generator_code }}
                                                         </option>
                                                     @endif
                                                 @endforeach
@@ -219,8 +216,8 @@
                                                 Number <span class="text-danger">*</span></label>
                                             <input type="text" name="implant_generator_sn" id="implant_generator_sn"
                                                 class="form-control @error('implant_generator_sn') is-invalid @enderror"
-                                                placeholder="Enter Serial Number"
-                                                value="{{ old('implant_generator_sn') }}" required>
+                                                placeholder="Enter Serial Number" value="{{ $im->implant_generator_sn }}"
+                                                required>
                                             @error('implant_generator_sn')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -235,18 +232,15 @@
                                             <select name="stock_location_id" id="stock_location_id"
                                                 class="form-select @error('stock_location_id') is-invalid @enderror"
                                                 required>
-                                                <option value="" selected>Select Stock Location</option>
                                                 @foreach ($stocklocations as $sl)
-                                                    @if (old('stock_location_id') == $sl->id)
+                                                    @if ($im->stock_location_id == $sl->id)
                                                         <option value="{{ $sl->id }}" selected>
                                                             ({{ $sl->stock_location_code }})
-                                                            - {{ $sl->stock_location_name }}
-                                                        </option>
+                                                            - {{ $sl->stock_location_name }}</option>
                                                     @else
                                                         <option value="{{ $sl->id }}">
                                                             ({{ $sl->stock_location_code }})
-                                                            - {{ $sl->stock_location_name }}
-                                                        </option>
+                                                            - {{ $sl->stock_location_name }}</option>
                                                     @endif
                                                 @endforeach
                                             </select>
@@ -321,7 +315,7 @@
                                                     class="text-danger fw-bold">*</span></label>
                                             <input type="text" name="implant_pt_name" id="implant_pt_name"
                                                 class="form-control @error('implant_pt_name') is-invalid @enderror"
-                                                placeholder="Enter Patient Name" value="{{ old('implant_pt_name') }}"
+                                                placeholder="Enter Patient Name" value="{{ $im->implant_pt_name }}"
                                                 required>
                                             @error('implant_pt_name')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -339,7 +333,7 @@
                                             <input type="text" name="implant_pt_icno" id="implant_pt_icno"
                                                 class="form-control @error('implant_pt_icno') is-invalid @enderror"
                                                 placeholder="Enter Patient IC Number"
-                                                value="{{ old('implant_pt_icno') }}" required>
+                                                value="{{ $im->implant_pt_icno }}" required>
                                             @error('implant_pt_icno')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -353,7 +347,7 @@
                                             <input type="text" name="implant_pt_mrn" id="implant_pt_mrn"
                                                 class="form-control @error('implant_pt_mrn') is-invalid @enderror"
                                                 placeholder="Enter Patient MRN Number"
-                                                value="{{ old('implant_pt_mrn') }}">
+                                                value="{{ $im->implant_pt_mrn }}">
                                             @error('implant_pt_mrn')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -369,7 +363,7 @@
                                             <input type="text" name="implant_invoice_no" id="implant_invoice_no"
                                                 class="form-control @error('implant_invoice_no') is-invalid @enderror"
                                                 placeholder="Enter Invoice Number"
-                                                value="{{ old('implant_pt_mrn') != null ? old('implant_pt_mrn') : 'To Bill' }}">
+                                                value="{{ $im->implant_invoice_no }}">
                                             @error('implant_invoice_no')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -385,7 +379,7 @@
                                             </label>
                                             <input type="text" name="implant_sales" id="implant_sales"
                                                 class="form-control @error('implant_sales') is-invalid @enderror"
-                                                placeholder="Enter Sales Amount" value="{{ old('implant_sales') }}"
+                                                placeholder="Enter Sales Amount" value="{{ $im->implant_sales }}"
                                                 required>
                                             @error('implant_sales')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -400,7 +394,7 @@
                                                 Remarks
                                             </label>
                                             <textarea name="implant_remark" id="implant_remark"
-                                                class="form-control @error('implant_remark') is-invalid @enderror" placeholder="Enter Remarks">{{ old('implant_remark') }}</textarea>
+                                                class="form-control @error('implant_remark') is-invalid @enderror" placeholder="Enter Remarks">{{ $im->implant_remark }}</textarea>
                                             @error('implant_remark')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -414,7 +408,7 @@
                                                 Notes
                                             </label>
                                             <textarea name="implant_note" id="implant_note" class="form-control @error('implant_note') is-invalid @enderror"
-                                                placeholder="Enter Notes">{{ old('implant_note') }}</textarea>
+                                                placeholder="Enter Notes">{{ $im->implant_note }}</textarea>
                                             @error('implant_note')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -428,9 +422,9 @@
                                                 Approval Type
                                             </label>
                                             <input type="text" name="implant_approval_type" id="implant_approval_type"
-                                                class="form-control @error('implant_approve_type') is-invalid @enderror"
+                                                class="form-control @error('implant_approval_type') is-invalid @enderror"
                                                 placeholder="Enter Approval Type"
-                                                value="{{ old('implant_approval_type') }}">
+                                                value="{{ $im->implant_approval_type }}">
                                             @error('implant_approval_type')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -440,8 +434,7 @@
                                 </div>
                             </div>
                             <div class="card-footer text-end">
-                                <button type="reset" class="btn btn-light-danger">Reset</button>
-                                <button type="submit" class="btn btn-primary">Add Implant</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
                             </div>
                         </div>
                     </form>

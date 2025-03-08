@@ -40,6 +40,10 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::get('/manage-implant', [RouteController::class, 'manageImplant'])->name('manage-implant-page');
     Route::get('/add-implant', [RouteController::class, 'addImplant'])->name('add-implant-page');
     Route::post('/add-implant', [ImplantController::class, 'addImplant'])->name('add-implant-post');
+    Route::get('/update-implant-{id}', [RouteController::class, 'updateImplant'])->name('update-implant-page');
+    Route::post('/update-implant/{id}', [ImplantController::class, 'updateImplant'])->name('update-implant-post');
+
+
 
     //Generate Patient ID Card
     Route::get('/generate-patient-id-card', [RouteController::class, 'generatePatientIdCard'])->name('generate-patient-id-card-page');
