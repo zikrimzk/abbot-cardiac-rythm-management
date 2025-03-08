@@ -93,14 +93,13 @@
                                     <!-- [ Region ] Input -->
                                     <div class="col-sm-6">
                                         <div class="mb-3">
-                                            <label for="implant_region_id" class="form-label">Region <span
+                                            <label for="region_id" class="form-label">Region <span
                                                     class="text-danger fw-bold">*</span></label>
-                                            <select name="implant_region_id" id="implant_region_id"
-                                                class="form-select @error('implant_region_id') is-invalid @enderror"
-                                                required>
+                                            <select name="region_id" id="region_id"
+                                                class="form-select @error('region_id') is-invalid @enderror" required>
                                                 <option value="">Select Region</option>
                                                 @foreach ($regions as $rgn)
-                                                    @if (old('implant_region_id') == $rgn->id)
+                                                    @if (old('region_id') == $rgn->id)
                                                         <option value="{{ $rgn->id }}" selected>{{ $rgn->region_name }}
                                                         </option>
                                                     @else
@@ -108,7 +107,7 @@
                                                     @endif
                                                 @endforeach
                                             </select>
-                                            @error('implant_region_id')
+                                            @error('region_id')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -117,14 +116,13 @@
                                     <!-- [ Hospital ] Input -->
                                     <div class="col-sm-6">
                                         <div class="mb-3">
-                                            <label for="implant_hospital_id" class="form-label">Hospital <span
+                                            <label for="hospital_id" class="form-label">Hospital <span
                                                     class="text-danger fw-bold">*</span></label>
-                                            <select name="implant_hospital_id" id="implant_hospital_id"
-                                                class="form-select @error('implant_hospital_id') is-invalid @enderror"
-                                                required>
+                                            <select name="hospital_id" id="hospital_id"
+                                                class="form-select @error('hospital_id') is-invalid @enderror" required>
                                                 <option value="" selected>Select Hospital</option>
                                                 @foreach ($hospitals as $hs)
-                                                    @if (old('implant_hospital_id') == $hs->id)
+                                                    @if (old('hospital_id') == $hs->id)
                                                         <option value="{{ $hs->id }}" selected>
                                                             {{ $hs->hospital_name }}
                                                         </option>
@@ -134,7 +132,7 @@
                                                     @endif
                                                 @endforeach
                                             </select>
-                                            @error('implant_hospital_id')
+                                            @error('hospital_id')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -143,19 +141,22 @@
                                     <!-- [ Doctor ] Input -->
                                     <div class="col-sm-6">
                                         <div class="mb-3">
-                                            <label for="implant_doctor_id" class="form-label">Doctor <span
+                                            <label for="implant_doctor_id"
+                                                class="form-label @error('doctor_id') is-invalid @enderror">Doctor <span
                                                     class="text-danger fw-bold">*</span></label>
-                                            <select name="implant_doctor_id" id="implant_doctor_id" class="form-select"
-                                                required>
+                                            <select name="doctor_id" id="implant_doctor_id" class="form-select" required>
                                                 <option value="" selected>Select Doctor</option>
                                                 @foreach ($doctors as $dr)
-                                                    @if (old('implant_doctor_id') == $dr->id)
+                                                    @if (old('doctor_id') == $dr->id)
                                                         <option value="{{ $dr->id }}" selected>
                                                             {{ $dr->doctor_name }}
                                                         </option>
                                                     @endif
                                                 @endforeach
                                             </select>
+                                            @error('doctor_id')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -175,7 +176,6 @@
                                                         for="{{ $pg->id }}">{{ $pg->product_group_name }}</label>
                                                 @endforeach
                                             </div>
-
                                             @error('product_groups')
                                                 <div class="text-danger mt-2">{{ $message }}</div>
                                             @enderror
@@ -190,7 +190,7 @@
                                     <div class="col-sm-4">
                                         <div class="mb-3">
                                             <label for="generator_id" class="form-label">Model <span
-                                                class="text-danger">*</span></label>
+                                                    class="text-danger">*</span></label>
                                             <select name="generator_id" id="generator_id"
                                                 class="form-select @error('generator_id') is-invalid @enderror" required>
                                                 <option value="" selected>Select Model</option>
@@ -221,10 +221,10 @@
                                     <!-- [ Generator Stock Location ] Input -->
                                     <div class="col-sm-4">
                                         <div class="mb-3">
-                                            <label for="stocklocation_id" class="form-label">Stock Location <span
-                                                class="text-danger">*</span></label>
-                                            <select name="stocklocation_id" id="stocklocation_id"
-                                                class="form-select @error('stocklocation_id') is-invalid @enderror"
+                                            <label for="stock_location_id" class="form-label">Stock Location <span
+                                                    class="text-danger">*</span></label>
+                                            <select name="stock_location_id" id="stock_location_id"
+                                                class="form-select @error('stock_location_id') is-invalid @enderror"
                                                 required>
                                                 <option value="" selected>Select Stock Location</option>
                                                 @foreach ($stocklocations as $sl)
@@ -232,7 +232,7 @@
                                                         - {{ $sl->stock_location_name }}</option>
                                                 @endforeach
                                             </select>
-                                            @error('stocklocation_id')
+                                            @error('stock_location_id')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -276,18 +276,18 @@
                                         <!-- [ Stock Location ] Input -->
                                         <div class="col-sm-4">
                                             <div class="mb-3">
-                                                <label for="stocklocation_ids" class="form-label">Stock Location</label>
-                                                <select name="stocklocation_ids[]" id="stocklocation_ids"
-                                                    class="form-select @error('stocklocation_ids') is-invalid @enderror"
-                                                    required>
+                                                <label for="stock_location_ids" class="form-label">Stock Location</label>
+                                                <select name="stock_location_ids[]" id="stock_location_ids"
+                                                    class="form-select @error('stock_location_ids') is-invalid @enderror">
                                                     <option value="" selected>Select Stock Location</option>
                                                     @foreach ($stocklocations as $sl)
                                                         <option value="{{ $sl->id }}">
-                                                            ({{ $sl->stock_location_code }}) -
+                                                            ({{ $sl->stock_location_code }})
+                                                            -
                                                             {{ $sl->stock_location_name }}</option>
                                                     @endforeach
                                                 </select>
-                                                @error('stocklocation_ids')
+                                                @error('stock_location_ids')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
@@ -301,10 +301,10 @@
                                         <div class="mb-3">
                                             <label for="implant_pt_name" class="form-label">Patient Name<span
                                                     class="text-danger fw-bold">*</span></label>
-
                                             <input type="text" name="implant_pt_name" id="implant_pt_name"
                                                 class="form-control @error('implant_pt_name') is-invalid @enderror"
-                                                placeholder="Patient Name" required>
+                                                placeholder="Enter Patient Name" value="{{ old('implant_pt_name') }}"
+                                                required>
                                             @error('implant_pt_name')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -318,10 +318,10 @@
                                                 Patient IC Number
                                                 <span class="text-danger fw-bold">*</span>
                                             </label>
-
                                             <input type="text" name="implant_pt_icno" id="implant_pt_icno"
                                                 class="form-control @error('implant_pt_icno') is-invalid @enderror"
-                                                placeholder="Patient IC Number" required>
+                                                placeholder="Enter Patient IC Number"
+                                                value="{{ old('implant_pt_icno') }}" required>
                                             @error('implant_pt_icno')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -332,10 +332,10 @@
                                     <div class="col-sm-6">
                                         <div class="mb-3">
                                             <label for="implant_pt_mrn" class="form-label">Patient MRN</label>
-
                                             <input type="text" name="implant_pt_mrn" id="implant_pt_mrn"
                                                 class="form-control @error('implant_pt_mrn') is-invalid @enderror"
-                                                placeholder="Patient MRN Number">
+                                                placeholder="Enter Patient MRN Number"
+                                                value="{{ old('implant_pt_mrn') }}">
                                             @error('implant_pt_mrn')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -347,12 +347,12 @@
                                     <!-- [ Invoice Number ] Input -->
                                     <div class="col-sm-6">
                                         <div class="mb-3">
-                                            <label for="implant_inv_no" class="form-label">Invoice Number</label>
-
-                                            <input type="text" name="implant_inv_no" id="implant_inv_no"
-                                                class="form-control @error('implant_inv_no') is-invalid @enderror"
-                                                placeholder="Invoice Number" value="To Bill">
-                                            @error('implant_inv_no')
+                                            <label for="implant_invoice_no" class="form-label">Invoice Number</label>
+                                            <input type="text" name="implant_invoice_no" id="implant_invoice_no"
+                                                class="form-control @error('implant_invoice_no') is-invalid @enderror"
+                                                placeholder="Enter Invoice Number"
+                                                value="{{ old('implant_pt_mrn') != null ? old('implant_pt_mrn') : 'To Bill' }}">
+                                            @error('implant_invoice_no')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -367,7 +367,7 @@
                                             </label>
                                             <input type="text" name="implant_sales" id="implant_sales"
                                                 class="form-control @error('implant_sales') is-invalid @enderror"
-                                                placeholder="Sales Amount">
+                                                placeholder="Enter Sales Amount" value="{{ old('implant_sales') }}" required>
                                             @error('implant_sales')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -381,7 +381,7 @@
                                                 Remarks
                                             </label>
                                             <textarea name="implant_remark" id="implant_remark"
-                                                class="form-control @error('implant_remark') is-invalid @enderror" placeholder="Remarks"></textarea>
+                                                class="form-control @error('implant_remark') is-invalid @enderror" placeholder="Enter Remarks">{{ old('implant_remark') }}</textarea>
                                             @error('implant_remark')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -395,7 +395,7 @@
                                                 Notes
                                             </label>
                                             <textarea name="implant_note" id="implant_note" class="form-control @error('implant_note') is-invalid @enderror"
-                                                placeholder="Notes"></textarea>
+                                                placeholder="Enter Notes">{{ old('implant_note') }}</textarea>
                                             @error('implant_note')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -410,7 +410,7 @@
                                             </label>
                                             <input type="text" name="implant_approval_type" id="implant_approval_type"
                                                 class="form-control @error('implant_approve_type') is-invalid @enderror"
-                                                placeholder="Approval Type">
+                                                placeholder="Enter Approval Type" value="{{ old('implant_approval_type') }}">
                                             @error('implant_approval_type')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -437,7 +437,7 @@
         $(document).ready(function() {
 
             // AJAX : Get Doctors by Hospital
-            $('#implant_hospital_id').on('change', function() {
+            $('#hospital_id').on('change', function() {
                 let hospital_id = $(this).val();
                 $('#implant_doctor_id').empty().append('<option value="">Loading...</option>');
 

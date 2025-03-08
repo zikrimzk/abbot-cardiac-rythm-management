@@ -51,6 +51,60 @@ class RouteController extends Controller
     // Manage Implant Route
     public function manageImplant(Request $req)
     {
+        if ($req->ajax()) {
+
+            $data = DB::table('implants')
+                ->select(
+                    'id',
+                    'implant_date',
+                    'implant_pt_name',
+                    'implant_pt_icno',
+                    'implant_pt_directory',
+                    'region_id',
+                    'hospital_id',
+                    'doctor_id',
+                )
+                ->get();
+
+            $table = DataTables::of($data)->addIndexColumn();
+
+            $table->addColumn('implant_date', function ($row) {
+                $date = Carbon::parse($row->implant_date)->format('d-m-Y');
+                return $date;
+            });
+
+            $table->addColumn('implant_pt_directory', function ($row) {
+                $directory =
+                    '
+                    <a href="javascript: void(0)" class="link-primary" data-bs-toggle="modal"
+                        data-bs-target="#directoryModal-' . $row->id . '">
+                        ' . $row->implant_pt_directory . '
+                    </a>
+                
+                ';
+                return $directory;
+            });
+
+
+            $table->addColumn('action', function ($row) {
+
+                $button =
+                    '
+                        <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary">
+                            <i class="ti ti-edit f-20"></i>
+                        </a>
+                         <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-info" data-bs-toggle="modal"
+                            data-bs-target="#uploadBackupFormModal-' . $row->id . '">
+                            <i class="ti ti-file-upload f-20"></i>
+                        </a>
+                    ';
+                return $button;
+            });
+
+            $table->rawColumns(['implant_date','implant_pt_directory', 'action']);
+
+            return $table->make(true);
+        }
         return view('crmd-system.implant-management.manage-implant', [
             'title' => 'CRMD System | Manage Implant'
         ]);
@@ -661,7 +715,7 @@ class RouteController extends Controller
                 return $buttonEdit . $buttonRemove;
             });
 
-            $table->rawColumns(['product_group_visibility','action']);
+            $table->rawColumns(['product_group_visibility', 'action']);
 
             return $table->make(true);
         }
@@ -723,7 +777,7 @@ class RouteController extends Controller
                 return $buttonEdit . $buttonRemove;
             });
 
-            $table->rawColumns(['stock_location_status','action']);
+            $table->rawColumns(['stock_location_status', 'action']);
 
             return $table->make(true);
         }

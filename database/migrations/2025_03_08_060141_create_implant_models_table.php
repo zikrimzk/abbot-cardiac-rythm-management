@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('stock_locations', function (Blueprint $table) {
+        Schema::create('implant_models', function (Blueprint $table) {
             $table->id();
-            $table->string('stock_location_code')->unique();
-            $table->string('stock_location_name');
-            $table->integer('stock_location_status')->default(1);
+            $table->string('implant_model_sn')->unique();
+            $table->foreignId('implant_id')->constrained('implants');
+            $table->foreignId('model_id')->constrained('abbott_models');
+            $table->foreignId('stock_location_id')->constrained('stock_locations');
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('stock_locations');
+        Schema::dropIfExists('implant_models');
     }
 };

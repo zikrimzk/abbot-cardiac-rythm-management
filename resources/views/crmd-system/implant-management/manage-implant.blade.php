@@ -82,7 +82,7 @@
                                             <th scope="col">Implant Date</th>
                                             <th scope="col">Patient</th>
                                             <th scope="col">IC Number</th>
-                                            <th scope="col">Implant Form</th>
+                                            {{-- <th scope="col">Implant Form</th> --}}
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -114,14 +114,14 @@
 
             $(function() {
 
-                // DATATABLE : IMPLANT [TO BE IMPLEMENTED]
+                // DATATABLE : IMPLANT
                 var table = $('.data-table').DataTable({
                     processing: true,
                     serverSide: true,
                     responsive: false,
                     autoWidth: false,
                     ajax: {
-                        url: "{{ route('manage-designation-page') }}",
+                        url: "{{ route('manage-implant-page') }}",
                     },
                     columns: [{
                             data: 'DT_RowIndex',
@@ -129,14 +129,18 @@
                             searchable: false
                         },
                         {
-                            data: 'department_name',
-                            name: 'department_name'
+                            data: 'implant_date',
+                            name: 'implant_date'
                         },
                         {
-                            data: 'created_at',
-                            name: 'created_at',
-                            searchable: false
-
+                            data: 'implant_pt_name',
+                            name: 'implant_pt_name',
+                            className:'avoid-long-column'
+                        },
+                        {
+                            data: 'implant_pt_icno',
+                            name: 'implant_pt_icno',
+                            className:'avoid-long-column'
                         },
                         {
                             data: 'action',
