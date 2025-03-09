@@ -65,7 +65,7 @@
             <div class="row">
                 <!-- [ Add Implant ] start -->
                 <div class="col-sm-12">
-                    <form action="{{ route('add-implant-post') }}" method="POST">
+                    <form action="{{ route('update-implant-post', Crypt::encrypt($im->id)) }}" method="POST">
                         @csrf
                         <div class="card">
                             <div class="card-header bg-light-primary text-primary">
@@ -169,10 +169,17 @@
                                             <div class="d-flex flex-wrap gap-2 border rounded p-2 overflow-auto"
                                                 style="max-height: 150px;">
                                                 @foreach ($pgs as $pg)
+                                                    @php
+                                                        $checked = in_array(
+                                                            $pg->id,
+                                                            $pgslist->pluck('product_group_id')->toArray(),
+                                                        );
+                                                    @endphp
                                                     <input type="checkbox" class="btn-check" name="product_groups[]"
-                                                        value="{{ $pg->product_group_name }}" id="{{ $pg->id }}">
+                                                        value="{{ $pg->id }}" id="pg_{{ $pg->id }}"
+                                                        {{ $checked ? 'checked' : '' }}>
                                                     <label class="btn btn-outline-dark"
-                                                        for="{{ $pg->id }}">{{ $pg->product_group_name }}</label>
+                                                        for="pg_{{ $pg->id }}">{{ $pg->product_group_name }}</label>
                                                 @endforeach
                                             </div>
                                             @error('product_groups')
@@ -180,7 +187,6 @@
                                             @enderror
                                         </div>
                                     </div>
-
                                     <hr class="my-4" />
 
                                     <h5>Generator</h5>
@@ -253,57 +259,86 @@
                                     @foreach ($mcs as $mc)
                                         <h5 class="mt-4">{{ $mc->mcategory_name }}</h5>
 
-                                        <!-- [ Model ] Input -->
-                                        <div class="col-sm-4">
-                                            <div class="mb-3">
-                                                <label for="model_ids" class="form-label">Model</label>
-                                                <select name="model_ids[]" id="model_ids"
-                                                    class="form-select @error('model_ids') is-invalid @enderror">
-                                                    <option value="" selected>Select Model</option>
-                                                    @foreach ($abbottmodels->where('mcategory_id', $mc->id) as $am)
-                                                        <option value="{{ $am->id }}">{{ $am->model_code }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                @error('model_ids')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
+                                        @php
+                                            $categoryImplants = $ims->filter(function ($imd) use ($abbottmodels, $mc) {
+                                                $model = $abbottmodels->firstWhere('id', $imd->model_id);
+                                                return $model && $model->mcategory_id == $mc->id;
+                                            });
 
-                                        <!-- [ Serial Number ] Input -->
-                                        <div class="col-sm-4">
-                                            <div class="mb-3">
-                                                <label for="model_sns" class="form-label">Serial
-                                                    Number</label>
-                                                <input type="text" name="model_sns[]" id="model_sns"
-                                                    class="form-control @error('model_sns') is-invalid @enderror"
-                                                    placeholder="Enter Serial Number">
-                                                @error('model_sns')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
+                                            if ($categoryImplants->isEmpty()) {
+                                                $categoryImplants = collect([
+                                                    (object) [
+                                                        'model_id' => null,
+                                                        'implant_model_sn' => null,
+                                                        'stock_location_id' => null,
+                                                    ],
+                                                ]);
+                                            }
+                                        @endphp
 
-                                        <!-- [ Stock Location ] Input -->
-                                        <div class="col-sm-4">
-                                            <div class="mb-3">
-                                                <label for="stock_location_ids" class="form-label">Stock Location</label>
-                                                <select name="stock_location_ids[]" id="stock_location_ids"
-                                                    class="form-select @error('stock_location_ids') is-invalid @enderror">
-                                                    <option value="" selected>Select Stock Location</option>
-                                                    @foreach ($stocklocations as $sl)
-                                                        <option value="{{ $sl->id }}">
-                                                            ({{ $sl->stock_location_code }})
-                                                            -
-                                                            {{ $sl->stock_location_name }}</option>
-                                                    @endforeach
-                                                </select>
-                                                @error('stock_location_ids')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
+                                        @foreach ($categoryImplants as $index => $imd)
+                                            <!-- [ Model ] Input -->
+                                            <div class="col-sm-4">
+                                                <div class="mb-3">
+                                                    <label for="model_ids_{{ $mc->id }}_{{ $index }}"
+                                                        class="form-label">Model</label>
+                                                    <select name="model_ids[]"
+                                                        id="model_ids_{{ $mc->id }}_{{ $index }}"
+                                                        class="form-select @error('model_ids') is-invalid @enderror">
+                                                        <option value="" selected>Select Model</option>
+                                                        @foreach ($abbottmodels->where('mcategory_id', $mc->id) as $am)
+                                                            <option value="{{ $am->id }}"
+                                                                {{ $imd->model_id == $am->id ? 'selected' : '' }}>
+                                                                {{ $am->model_code }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('model_ids')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
                                             </div>
-                                        </div>
+
+                                            <!-- [ Serial Number ] Input -->
+                                            <div class="col-sm-4">
+                                                <div class="mb-3">
+                                                    <label for="model_sns_{{ $mc->id }}_{{ $index }}"
+                                                        class="form-label">Serial Number</label>
+                                                    <input type="text" name="model_sns[]"
+                                                        id="model_sns_{{ $mc->id }}_{{ $index }}"
+                                                        class="form-control @error('model_sns') is-invalid @enderror"
+                                                        placeholder="Enter Serial Number"
+                                                        value="{{ $imd->implant_model_sn }}">
+                                                    @error('model_sns')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <!-- [ Stock Location ] Input -->
+                                            <div class="col-sm-4">
+                                                <div class="mb-3">
+                                                    <label
+                                                        for="stock_location_ids_{{ $mc->id }}_{{ $index }}"
+                                                        class="form-label">Stock Location</label>
+                                                    <select name="stock_location_ids[]"
+                                                        id="stock_location_ids_{{ $mc->id }}_{{ $index }}"
+                                                        class="form-select @error('stock_location_ids') is-invalid @enderror">
+                                                        <option value="" selected>Select Stock Location</option>
+                                                        @foreach ($stocklocations as $sl)
+                                                            <option value="{{ $sl->id }}"
+                                                                {{ $imd->stock_location_id == $sl->id ? 'selected' : '' }}>
+                                                                ({{ $sl->stock_location_code }})
+                                                                - {{ $sl->stock_location_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('stock_location_ids')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        @endforeach
                                     @endforeach
 
                                     <hr class="my-4" />
@@ -332,8 +367,8 @@
                                             </label>
                                             <input type="text" name="implant_pt_icno" id="implant_pt_icno"
                                                 class="form-control @error('implant_pt_icno') is-invalid @enderror"
-                                                placeholder="Enter Patient IC Number"
-                                                value="{{ $im->implant_pt_icno }}" required>
+                                                placeholder="Enter Patient IC Number" value="{{ $im->implant_pt_icno }}"
+                                                required>
                                             @error('implant_pt_icno')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -346,8 +381,7 @@
                                             <label for="implant_pt_mrn" class="form-label">Patient MRN</label>
                                             <input type="text" name="implant_pt_mrn" id="implant_pt_mrn"
                                                 class="form-control @error('implant_pt_mrn') is-invalid @enderror"
-                                                placeholder="Enter Patient MRN Number"
-                                                value="{{ $im->implant_pt_mrn }}">
+                                                placeholder="Enter Patient MRN Number" value="{{ $im->implant_pt_mrn }}">
                                             @error('implant_pt_mrn')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -362,8 +396,7 @@
                                             <label for="implant_invoice_no" class="form-label">Invoice Number</label>
                                             <input type="text" name="implant_invoice_no" id="implant_invoice_no"
                                                 class="form-control @error('implant_invoice_no') is-invalid @enderror"
-                                                placeholder="Enter Invoice Number"
-                                                value="{{ $im->implant_invoice_no }}">
+                                                placeholder="Enter Invoice Number" value="{{ $im->implant_invoice_no }}">
                                             @error('implant_invoice_no')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror

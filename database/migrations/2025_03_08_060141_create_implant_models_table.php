@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('implant_models', function (Blueprint $table) {
             $table->id();
-            $table->string('implant_model_sn')->unique();
+            $table->string('implant_model_sn');
             $table->foreignId('implant_id')->constrained('implants');
             $table->foreignId('model_id')->constrained('abbott_models');
             $table->foreignId('stock_location_id')->constrained('stock_locations');

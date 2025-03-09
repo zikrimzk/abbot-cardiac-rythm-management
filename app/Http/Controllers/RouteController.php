@@ -11,9 +11,11 @@ use App\Models\Hospital;
 use App\Models\Generator;
 use App\Models\AbbottModel;
 use App\Models\Designation;
+use App\Models\ImplantModel;
 use App\Models\ProductGroup;
 use Illuminate\Http\Request;
 use App\Models\ModelCategory;
+use App\Models\ProductGroupList;
 use App\Models\StockLocation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -128,12 +130,14 @@ class RouteController extends Controller
         ]);
     }
 
-     // Add Implant Route
+     // Update Implant Route
      public function updateImplant($id)
      {
          return view('crmd-system.implant-management.update-implant', [
              'title' => 'CRMD System | Update Implant',
              'im' => Implant::where('id', Crypt::decrypt($id))->first(),
+             'pgslist'=>ProductGroupList::where('implant_id', Crypt::decrypt($id))->get(),
+             'ims'=>ImplantModel::where('implant_id', Crypt::decrypt($id))->get(),
              'regions' => Region::all(),
              'hospitals' => Hospital::all(),
              'doctors' => Doctor::all(),
