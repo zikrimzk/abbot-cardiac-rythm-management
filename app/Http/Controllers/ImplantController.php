@@ -6,13 +6,16 @@ use Exception;
 use Carbon\Carbon;
 use App\Models\Implant;
 use App\Models\Hospital;
+use App\Models\Generator;
 use App\Models\AbbottModel;
 use App\Models\ImplantModel;
 use App\Models\ProductGroup;
 use Illuminate\Http\Request;
+use App\Exports\ImplantsExport;
 use App\Models\ProductGroupList;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -25,12 +28,12 @@ class ImplantController extends Controller
             'implant_code' => 'nullable|string',
             'implant_date' => 'required|date',
             'implant_pt_name' => 'required|string',
-            'implant_pt_icno' => 'required|min:12|max:15|string',
+            'implant_pt_icno' => 'required|min:7|max:15|string',
             'implant_pt_mrn' => 'nullable|string',
             'implant_pt_directory' => 'nullable|string',
             'implant_generator_sn' => 'required|string',
             'implant_invoice_no' => 'nullable|string',
-            'implant_sales' => 'required|integer',
+            'implant_sales' => 'required|numeric',
             'implant_remark' => 'nullable|string',
             'implant_note' => 'nullable|string',
             'implant_approval_type' => 'nullable|string',
@@ -39,7 +42,7 @@ class ImplantController extends Controller
             'hospital_id' => 'required|integer',
             'doctor_id' => 'required|integer',
             'stock_location_id' => 'required|integer',
-            'product_groups' => 'nullable|array',
+            'product_groups' => 'required|array',
             'model_ids' => 'nullable|array',
             'model_sns' => 'nullable|array',
             'stock_location_ids' => 'nullable|array',
@@ -78,50 +81,49 @@ class ImplantController extends Controller
             $validated = $validator->validated();
 
             /**** 01 - Implants ****/
-            //Create Custom Implant Code
             $implantcode = Carbon::parse($validated['implant_date'])->format('dmY') . '_' . strtoupper(str_replace(' ', '_', $validated['implant_pt_name']));
 
-            //Create Directory
+            // Create Directory
             $sequenceNumber = str_pad(Implant::count() + 1, 3, '0', STR_PAD_LEFT);
-            $hospital_code = Hospital::find($validated['hospital_id'])->hospital_code ?? 'H0000';
-            $implantdirectory = $sequenceNumber . '_' . Carbon::parse($validated['implant_date'])->format('d.m.Y') . '_' . strtoupper(str_replace(' ', '_', $validated['implant_pt_name'])) . '_' . strtoupper($hospital_code);
-            Storage::makeDirectory('implants/' . $implantdirectory);
+            $hospital_code = optional(Hospital::find($validated['hospital_id']))->hospital_code ?? 'H0000';
+            $implantdirectory = "{$sequenceNumber}_" . Carbon::parse($validated['implant_date'])->format('d.m.Y') . '_' . strtoupper(str_replace(' ', '_', $validated['implant_pt_name'])) . "_{$hospital_code}";
 
-            //Assign Values
+            Storage::makeDirectory("public/implants/{$implantdirectory}");
+
+            // Assign Values
             $validated['implant_code'] = $implantcode;
             $validated['implant_pt_directory'] = $implantdirectory;
 
-            //Store Implant
-            Implant::create($validated);
-
-            //Get Implant ID
-            $implantID = Implant::where('implant_code', $validated['implant_code'])->first()->id;
+            // Store Implant
+            $implant = Implant::create($validated);
 
             /**** 02 - Product Groups ****/
-            //Store Each Product Groups
-            if (isset($validated['product_groups'])) {
+            if (!empty($validated['product_groups'])) {
                 foreach ($validated['product_groups'] as $product_group) {
-                    $pgID = ProductGroup::where('product_group_name', $product_group)->first()->id;
-                    ProductGroupList::create([
-                        'implant_id' => $implantID,
-                        'product_group_id' => $pgID
-                    ]);
+                    $pg = ProductGroup::where('product_group_name', trim($product_group))->first();
+                    if ($pg) {
+                        ProductGroupList::firstOrCreate([
+                            'implant_id' => $implant->id,
+                            'product_group_id' => $pg->id
+                        ]);
+                    }
                 }
             }
 
             /**** 03 - Implants X Model ****/
-            //Store Each Model
-            if (isset($validated['model_ids'], $validated['model_sns'], $validated['stock_location_ids'])) {
+            if (!empty($validated['model_ids']) && !empty($validated['model_sns']) && !empty($validated['stock_location_ids'])) {
                 foreach ($validated['model_ids'] as $index => $model) {
+                    if (!isset($validated['model_sns'][$index], $validated['stock_location_ids'][$index])) {
+                        continue;
+                    }
 
-                    if (isset($validated['model_sns'][$index], $validated['stock_location_ids'][$index])) {
+                    $modelID = optional(AbbottModel::find($model))->id;
+                    $stockLocationID = $validated['stock_location_ids'][$index] ?? null;
+                    $modelSN = $validated['model_sns'][$index] ?? null;
 
-                        $modelID = AbbottModel::where('id', $model)->first()->id ?? null;
-                        $stockLocationID = $validated['stock_location_ids'][$index] ?? null;
-                        $modelSN = $validated['model_sns'][$index] ?? null;
-
-                        ImplantModel::create([
-                            'implant_id' => $implantID,
+                    if ($modelID && $stockLocationID && $modelSN) {
+                        ImplantModel::firstOrCreate([
+                            'implant_id' => $implant->id,
                             'model_id' => $modelID,
                             'stock_location_id' => $stockLocationID,
                             'implant_model_sn' => $modelSN
@@ -129,7 +131,6 @@ class ImplantController extends Controller
                     }
                 }
             }
-
 
             return redirect()->route('manage-implant-page')->with('success', 'Implant added successfully.');
         } catch (Exception $e) {
@@ -144,12 +145,12 @@ class ImplantController extends Controller
             'implant_code' => 'nullable|string',
             'implant_date' => 'required|date',
             'implant_pt_name' => 'required|string',
-            'implant_pt_icno' => 'required|min:12|max:15|string',
+            'implant_pt_icno' => 'required|min:7|max:15|string',
             'implant_pt_mrn' => 'nullable|string',
             'implant_pt_directory' => 'nullable|string',
             'implant_generator_sn' => 'required|string',
             'implant_invoice_no' => 'nullable|string',
-            'implant_sales' => 'required|integer',
+            'implant_sales' => 'required||numeric',
             'implant_remark' => 'nullable|string',
             'implant_note' => 'nullable|string',
             'implant_approval_type' => 'nullable|string',
@@ -206,9 +207,9 @@ class ImplantController extends Controller
             $newDirectory = $sequenceNumber . '_' . Carbon::parse($validated['implant_date'])->format('d.m.Y') . '_' . strtoupper(str_replace(' ', '_', $validated['implant_pt_name'])) . '_' . strtoupper($hospital_code);
 
             if ($oldDirectory !== $newDirectory) {
-                Storage::move('implants/' . $oldDirectory, 'implants/' . $newDirectory);
+                Storage::move('public/implants/' . $oldDirectory, 'public/implants/' . $newDirectory);
             } else {
-                Storage::makeDirectory('implants/' . $newDirectory);
+                Storage::makeDirectory('public/implants/' . $newDirectory);
             }
 
             $implant->update([
@@ -278,10 +279,47 @@ class ImplantController extends Controller
 
             DB::commit();
             return redirect()->route('manage-implant-page')->with('success', 'Implant updated successfully.');
-            
         } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Error updating implant: ' . $e->getMessage());
         }
+    }
+
+    public function uploadBackupForm(Request $req, $id)
+    {
+        $validator = Validator::make($req->all(), [
+            'implant_backup_form' => 'required|mimes:pdf',
+        ], [], [
+            'implant_backup_form' => 'implant backup form',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('modal', 'uploadBackupModal-'. $id);
+        }
+
+        $implant = Implant::find($id);
+
+        $hospital = Hospital::find($implant->hospital_id);
+        $generator = Generator::find($implant->generator_id);
+
+        if ($req->hasFile('implant_backup_form')) {
+            $file = $req->file('implant_backup_form');
+            $filename = $hospital->hospital_code . '_' . $generator->generator_code . '_' . strtoupper(Carbon::parse($implant->implant_date)->format('dMY')) . '_' .  strtoupper(str_replace(' ', '_', $implant->implant_pt_name)) . '_IMPLANT_BACKUP_FORM' . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('implants/'. $implant->implant_pt_directory , $filename, 'public');
+            
+            Implant::find($id)->update([
+                'implant_backup_form' => $path
+            ]);
+
+            return back()->with('success', 'File uploaded successfully!');
+        }
+    }
+
+    public function exportExcelImplantData()
+    {
+        return Excel::download(new ImplantsExport, 'Implants_Data' . '_' . date('dMY') . '.xlsx');
     }
 }

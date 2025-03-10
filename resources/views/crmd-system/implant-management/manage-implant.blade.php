@@ -66,6 +66,11 @@
                                     <i class="ti ti-plus f-18"></i>
                                     Add Implant
                                 </a>
+                                <a href="{{ route('export-implant-data-excel') }}"
+                                    class="btn btn-primary d-inline-flex align-items-center gap-2">
+                                    <i class="ti ti-file-export f-18"></i>
+                                    Export Data
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -82,7 +87,7 @@
                                             <th scope="col">Implant Date</th>
                                             <th scope="col">Patient</th>
                                             <th scope="col">IC Number</th>
-                                            {{-- <th scope="col">Implant Form</th> --}}
+                                            <th scope="col">Implant Form</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -97,6 +102,52 @@
             <!-- [ Main Content ] end -->
         </div>
     </div>
+
+    @foreach ($ims as $im)
+        <!-- [ Upload Implant Form Modal ] start -->
+        <form action="{{ route('upload-imbackupform-post', $im->id) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="modal fade" id="uploadBackupFormModal-{{ $im->id }}" tabindex="-1"
+                aria-labelledby="updateDesignationModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title">Upload Implant Backup Form</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="implant_backup_form" class="form-label">Upload Implant Backup Form <span
+                                        class="text-danger">*</span></label>
+                                <input type="file" name="implant_backup_form"
+                                    class="form-control @error('implant_backup_form') is-invalid @enderror"
+                                    accept="application/pdf" required id="implant_file">
+                                @error('implant_backup_form')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="modal-footer justify-content-end">
+                            <div class="flex-grow-1 text-end">
+                                <div class="col-sm-12">
+                                    <div class="d-flex justify-content-between gap-3 align-items-center">
+                                        <button type="button" class="btn btn-light btn-pc-default w-100"
+                                            data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-primary w-100">Upload Form</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- [ Upload Implant Form Modal ] end -->
+    @endforeach
 
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {
@@ -135,12 +186,16 @@
                         {
                             data: 'implant_pt_name',
                             name: 'implant_pt_name',
-                            className:'avoid-long-column'
+                            className: 'avoid-long-column'
                         },
                         {
                             data: 'implant_pt_icno',
                             name: 'implant_pt_icno',
-                            className:'avoid-long-column'
+                            className: 'avoid-long-column'
+                        },
+                        {
+                            data: 'implant_backup_form',
+                            name: 'implant_backup_form',
                         },
                         {
                             data: 'action',
@@ -152,6 +207,18 @@
 
                 });
 
+            });
+
+            $('#implant_file').on('change', function() {
+                let file = this.files[0];
+
+                if (file) {
+                    let fileType = file.type;
+                    if (fileType !== "application/pdf") {
+                        alert("Only PDF files are allowed!");
+                        $(this).val('');
+                    }
+                }
             });
 
         });

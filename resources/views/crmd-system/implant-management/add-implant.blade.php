@@ -218,7 +218,7 @@
                                             <label for="implant_generator_sn" class="form-label">Serial
                                                 Number <span class="text-danger">*</span></label>
                                             <input type="text" name="implant_generator_sn" id="implant_generator_sn"
-                                                class="form-control @error('implant_generator_sn') is-invalid @enderror"
+                                                class="form-control sn-input @error('implant_generator_sn') is-invalid @enderror"
                                                 placeholder="Enter Serial Number"
                                                 value="{{ old('implant_generator_sn') }}" required>
                                             @error('implant_generator_sn')
@@ -259,7 +259,77 @@
                                     @foreach ($mcs as $mc)
                                         <h5 class="mt-4">{{ $mc->mcategory_name }}</h5>
 
-                                        <!-- [ Model ] Input -->
+                                        <div class="row model-loop">
+
+                                            <!-- [ Model ] Input -->
+                                            <div class="col-sm-4">
+                                                <div class="mb-3">
+                                                    <label for="model_ids_{{ $mc->id }}"
+                                                        class="form-label">Model</label>
+                                                    <select name="model_ids[]" id="model_ids_{{ $mc->id }}"
+                                                        class="form-select @error('model_ids') is-invalid @enderror model-select">
+                                                        <option value="" selected>Select Model</option>
+                                                        @foreach ($abbottmodels->where('mcategory_id', $mc->id) as $am)
+                                                            <option value="{{ $am->id }}">
+                                                                {{ $am->model_code }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('model_ids')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <!-- [ Serial Number ] Input -->
+                                            <div class="col-sm-4">
+                                                <div class="mb-3">
+                                                    <label for="model_sns_{{ $mc->id }}" class="form-label">Serial
+                                                        Number</label>
+                                                    <input type="text" name="model_sns[]"
+                                                        id="model_sns_{{ $mc->id }}"
+                                                        class="form-control sn-input @error('model_sns') is-invalid @enderror"
+                                                        placeholder="Enter Serial Number">
+                                                    @error('model_sns')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <!-- [ Stock Location ] Input -->
+                                            <div class="col-sm-3">
+                                                <div class="mb-3">
+                                                    <label for="stock_location_ids_{{ $mc->id }}"
+                                                        class="form-label">Stock Location</label>
+                                                    <select name="stock_location_ids[]"
+                                                        id="stock_location_ids_{{ $mc->id }}"
+                                                        class="form-select @error('stock_location_ids') is-invalid @enderror stock-location-select">
+                                                        <option value="" selected>Select Stock Location</option>
+                                                        @foreach ($stocklocations as $sl)
+                                                            <option value="{{ $sl->id }}">
+                                                                ({{ $sl->stock_location_code }})
+                                                                - {{ $sl->stock_location_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('stock_location_ids')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <!-- [ Dustbin Button ] -->
+                                            <div class="col-sm-1 d-flex align-items-center justify-content-center">
+                                                <button type="button"
+                                                    class="avtar avtar-xs  btn btn-danger shadow-none reset-row"
+                                                    id="reset_{{ $mc->id }}" disabled>
+                                                    <i class="ti ti-trash f-20"></i>
+                                                </button>
+                                            </div>
+
+                                        </div>
+
+                                        {{-- <!-- [ Model ] Input -->
                                         <div class="col-sm-4">
                                             <div class="mb-3">
                                                 <label for="model_ids" class="form-label">Model</label>
@@ -283,7 +353,7 @@
                                                 <label for="model_sns" class="form-label">Serial
                                                     Number</label>
                                                 <input type="text" name="model_sns[]" id="model_sns"
-                                                    class="form-control @error('model_sns') is-invalid @enderror"
+                                                    class="form-control sn-input @error('model_sns') is-invalid @enderror"
                                                     placeholder="Enter Serial Number">
                                                 @error('model_sns')
                                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -309,7 +379,7 @@
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     @endforeach
 
                                     <hr class="my-4" />
@@ -317,7 +387,7 @@
                                     <!-- [ Patient Name ] Input -->
                                     <div class="col-sm-6">
                                         <div class="mb-3">
-                                            <label for="implant_pt_name" class="form-label">Patient Name<span
+                                            <label for="implant_pt_name" class="form-label">Patient Name <span
                                                     class="text-danger fw-bold">*</span></label>
                                             <input type="text" name="implant_pt_name" id="implant_pt_name"
                                                 class="form-control @error('implant_pt_name') is-invalid @enderror"
@@ -333,12 +403,12 @@
                                     <div class="col-sm-6">
                                         <div class="mb-3">
                                             <label for="implant_pt_icno" class="form-label">
-                                                Patient IC Number
+                                                Patient IC/Passport Number
                                                 <span class="text-danger fw-bold">*</span>
                                             </label>
                                             <input type="text" name="implant_pt_icno" id="implant_pt_icno"
                                                 class="form-control @error('implant_pt_icno') is-invalid @enderror"
-                                                placeholder="Enter Patient IC Number"
+                                                placeholder="Enter Patient IC/Passport Number"
                                                 value="{{ old('implant_pt_icno') }}" required>
                                             @error('implant_pt_icno')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -456,6 +526,100 @@
     <script>
         $(document).ready(function() {
 
+            // FORMAT : IC / PASSPORT
+            $("#implant_pt_icno").on("input", function() {
+                let value = $(this).val().toUpperCase(); // Pastikan huruf besar untuk passport
+
+                if (/^\d/.test(value)) {
+                    // Jika input bermula dengan nombor (IC), format sebagai IC
+                    value = value.replace(/\D/g, ""); // Buang semua bukan nombor
+
+                    if (value.length > 12) {
+                        value = value.slice(0, 12); // Hadkan 12 digit sahaja
+                    }
+
+                    if (value.length > 6) {
+                        value = value.slice(0, 6) + "-" + value.slice(6);
+                    }
+                    if (value.length > 9) {
+                        value = value.slice(0, 9) + "-" + value.slice(9);
+                    }
+                } else {
+                    // Jika input bermula dengan huruf (Passport), benarkan tanpa format
+                    value = value.replace(/[^A-Za-z0-9]/g, ""); // Benarkan hanya huruf dan nombor
+                }
+
+                $(this).val(value);
+            });
+
+            // FORMAT : MONEY
+            $("#implant_sales").on("input", function() {
+                let value = $(this).val().replace(/[^0-9.]/g, "");
+                let parts = value.split(".");
+
+                // Pastikan hanya ada satu titik perpuluhan
+                if (parts.length > 2) {
+                    value = parts[0] + "." + parts[1];
+                }
+
+                $(this).val(value);
+            });
+
+            $("#implant_sales").on("blur", function() {
+                let value = parseFloat($(this).val()).toFixed(2);
+                if (!isNaN(value)) {
+                    $(this).val(value);
+                } else {
+                    $(this).val(""); // Kosongkan jika invalid
+                }
+            });
+
+            // FORMAT : SERIAL NUMBER
+            $(".sn-input").on("input", function() {
+                $(this).val($(this).val().toUpperCase());
+            });
+
+            // FUNCTION : RESET BUTTON
+            function checkResetButton(loopContainer) {
+                let modelSelected = loopContainer.find(".model-select").val();
+                let serialNumber = loopContainer.find(".sn-input").val();
+                let stockLocation = loopContainer.find(".stock-location-select").val();
+                let dustbinBtn = loopContainer.find(".reset-row");
+
+                // Aktifkan butang jika ada input dalam mana-mana field
+                if (modelSelected || serialNumber || stockLocation) {
+                    dustbinBtn.prop("disabled", false);
+                } else {
+                    dustbinBtn.prop("disabled", true);
+                }
+            }
+
+            $(".model-loop").each(function() {
+                checkResetButton($(this));
+            });
+
+            $(document).on("change", ".model-select", function() {
+                checkResetButton($(this).closest(".model-loop"));
+            });
+
+            $(document).on("input", ".sn-input", function() {
+                checkResetButton($(this).closest(".model-loop"));
+            });
+
+            $(document).on("change", ".stock-location-select", function() {
+                checkResetButton($(this).closest(".model-loop"));
+            });
+
+            $(document).on("click", ".reset-row", function() {
+                let loopContainer = $(this).closest(".model-loop");
+
+                loopContainer.find(".model-select").val("").trigger("change");
+                loopContainer.find(".sn-input").val("");
+                loopContainer.find(".stock-location-select").val("");
+
+                $(this).prop("disabled", true); // Disable balik bila reset
+            });
+
             // AJAX : Get Doctors by Hospital
             $('#hospital_id').on('change', function() {
                 let hospital_id = $(this).val();
@@ -482,6 +646,7 @@
                     $('#implant_doctor_id').empty().append('<option value="">Select Doctor</option>');
                 }
             });
+
         });
     </script>
 @endsection

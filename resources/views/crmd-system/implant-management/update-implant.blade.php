@@ -221,7 +221,7 @@
                                             <label for="implant_generator_sn" class="form-label">Serial
                                                 Number <span class="text-danger">*</span></label>
                                             <input type="text" name="implant_generator_sn" id="implant_generator_sn"
-                                                class="form-control @error('implant_generator_sn') is-invalid @enderror"
+                                                class="form-control sn-input @error('implant_generator_sn') is-invalid @enderror"
                                                 placeholder="Enter Serial Number" value="{{ $im->implant_generator_sn }}"
                                                 required>
                                             @error('implant_generator_sn')
@@ -277,66 +277,81 @@
                                         @endphp
 
                                         @foreach ($categoryImplants as $index => $imd)
-                                            <!-- [ Model ] Input -->
-                                            <div class="col-sm-4">
-                                                <div class="mb-3">
-                                                    <label for="model_ids_{{ $mc->id }}_{{ $index }}"
-                                                        class="form-label">Model</label>
-                                                    <select name="model_ids[]"
-                                                        id="model_ids_{{ $mc->id }}_{{ $index }}"
-                                                        class="form-select @error('model_ids') is-invalid @enderror">
-                                                        <option value="" selected>Select Model</option>
-                                                        @foreach ($abbottmodels->where('mcategory_id', $mc->id) as $am)
-                                                            <option value="{{ $am->id }}"
-                                                                {{ $imd->model_id == $am->id ? 'selected' : '' }}>
-                                                                {{ $am->model_code }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                    @error('model_ids')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            </div>
+                                            <div class="row model-loop">
 
-                                            <!-- [ Serial Number ] Input -->
-                                            <div class="col-sm-4">
-                                                <div class="mb-3">
-                                                    <label for="model_sns_{{ $mc->id }}_{{ $index }}"
-                                                        class="form-label">Serial Number</label>
-                                                    <input type="text" name="model_sns[]"
-                                                        id="model_sns_{{ $mc->id }}_{{ $index }}"
-                                                        class="form-control @error('model_sns') is-invalid @enderror"
-                                                        placeholder="Enter Serial Number"
-                                                        value="{{ $imd->implant_model_sn }}">
-                                                    @error('model_sns')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
+                                                <!-- [ Model ] Input -->
+                                                <div class="col-sm-4">
+                                                    <div class="mb-3">
+                                                        <label for="model_ids_{{ $mc->id }}_{{ $index }}"
+                                                            class="form-label">Model</label>
+                                                        <select name="model_ids[]"
+                                                            id="model_ids_{{ $mc->id }}_{{ $index }}"
+                                                            class="form-select @error('model_ids') is-invalid @enderror model-select">
+                                                            <option value="" selected>Select Model</option>
+                                                            @foreach ($abbottmodels->where('mcategory_id', $mc->id) as $am)
+                                                                <option value="{{ $am->id }}"
+                                                                    {{ $imd->model_id == $am->id ? 'selected' : '' }}>
+                                                                    {{ $am->model_code }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('model_ids')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <!-- [ Stock Location ] Input -->
-                                            <div class="col-sm-4">
-                                                <div class="mb-3">
-                                                    <label
-                                                        for="stock_location_ids_{{ $mc->id }}_{{ $index }}"
-                                                        class="form-label">Stock Location</label>
-                                                    <select name="stock_location_ids[]"
-                                                        id="stock_location_ids_{{ $mc->id }}_{{ $index }}"
-                                                        class="form-select @error('stock_location_ids') is-invalid @enderror">
-                                                        <option value="" selected>Select Stock Location</option>
-                                                        @foreach ($stocklocations as $sl)
-                                                            <option value="{{ $sl->id }}"
-                                                                {{ $imd->stock_location_id == $sl->id ? 'selected' : '' }}>
-                                                                ({{ $sl->stock_location_code }})
-                                                                - {{ $sl->stock_location_name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                    @error('stock_location_ids')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
+                                                <!-- [ Serial Number ] Input -->
+                                                <div class="col-sm-4">
+                                                    <div class="mb-3">
+                                                        <label for="model_sns_{{ $mc->id }}_{{ $index }}"
+                                                            class="form-label">Serial Number</label>
+                                                        <input type="text" name="model_sns[]"
+                                                            id="model_sns_{{ $mc->id }}_{{ $index }}"
+                                                            class="form-control sn-input @error('model_sns') is-invalid @enderror"
+                                                            placeholder="Enter Serial Number"
+                                                            value="{{ $imd->implant_model_sn }}">
+                                                        @error('model_sns')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
                                                 </div>
+
+                                                <!-- [ Stock Location ] Input -->
+                                                <div class="col-sm-3">
+                                                    <div class="mb-3">
+                                                        <label
+                                                            for="stock_location_ids_{{ $mc->id }}_{{ $index }}"
+                                                            class="form-label">Stock Location</label>
+                                                        <select name="stock_location_ids[]"
+                                                            id="stock_location_ids_{{ $mc->id }}_{{ $index }}"
+                                                            class="form-select @error('stock_location_ids') is-invalid @enderror stock-location-select">
+                                                            <option value="" selected>Select Stock Location</option>
+                                                            @foreach ($stocklocations as $sl)
+                                                                <option value="{{ $sl->id }}"
+                                                                    {{ $imd->stock_location_id == $sl->id ? 'selected' : '' }}>
+                                                                    ({{ $sl->stock_location_code }})
+                                                                    - {{ $sl->stock_location_name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('stock_location_ids')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+
+                                                <!-- [ Dustbin Button ] -->
+                                                <div class="col-sm-1 d-flex align-items-center justify-content-center">
+                                                    <button type="button"
+                                                        class="avtar avtar-xs  btn btn-danger shadow-none reset-row"
+                                                        id="reset_{{ $mc->id }}_{{ $index }}" disabled>
+
+                                                        <i class="ti ti-trash f-20"></i>
+
+                                                    </button>
+                                                </div>
+
                                             </div>
                                         @endforeach
                                     @endforeach
@@ -481,6 +496,100 @@
 
     <script>
         $(document).ready(function() {
+
+            // FORMAT : IC / PASSPORT
+            $("#implant_pt_icno").on("input", function() {
+                let value = $(this).val().toUpperCase(); // Pastikan huruf besar untuk passport
+
+                if (/^\d/.test(value)) {
+                    // Jika input bermula dengan nombor (IC), format sebagai IC
+                    value = value.replace(/\D/g, ""); // Buang semua bukan nombor
+
+                    if (value.length > 12) {
+                        value = value.slice(0, 12); // Hadkan 12 digit sahaja
+                    }
+
+                    if (value.length > 6) {
+                        value = value.slice(0, 6) + "-" + value.slice(6);
+                    }
+                    if (value.length > 9) {
+                        value = value.slice(0, 9) + "-" + value.slice(9);
+                    }
+                } else {
+                    // Jika input bermula dengan huruf (Passport), benarkan tanpa format
+                    value = value.replace(/[^A-Za-z0-9]/g, ""); // Benarkan hanya huruf dan nombor
+                }
+
+                $(this).val(value);
+            });
+
+            // FORMAT : MONEY
+            $("#implant_sales").on("input", function() {
+                let value = $(this).val().replace(/[^0-9.]/g, "");
+                let parts = value.split(".");
+
+                // Pastikan hanya ada satu titik perpuluhan
+                if (parts.length > 2) {
+                    value = parts[0] + "." + parts[1];
+                }
+
+                $(this).val(value);
+            });
+
+            $("#implant_sales").on("blur", function() {
+                let value = parseFloat($(this).val()).toFixed(2);
+                if (!isNaN(value)) {
+                    $(this).val(value);
+                } else {
+                    $(this).val(""); // Kosongkan jika invalid
+                }
+            });
+
+            // FORMAT : SERIAL NUMBER
+            $(".sn-input").on("input", function() {
+                $(this).val($(this).val().toUpperCase());
+            });
+
+            // FUNCTION : RESET BUTTON
+            function checkResetButton(loopContainer) {
+                let modelSelected = loopContainer.find(".model-select").val();
+                let serialNumber = loopContainer.find(".sn-input").val();
+                let stockLocation = loopContainer.find(".stock-location-select").val();
+                let dustbinBtn = loopContainer.find(".reset-row");
+
+                // Aktifkan butang jika ada input dalam mana-mana field
+                if (modelSelected || serialNumber || stockLocation) {
+                    dustbinBtn.prop("disabled", false);
+                } else {
+                    dustbinBtn.prop("disabled", true);
+                }
+            }
+
+            $(".model-loop").each(function() {
+                checkResetButton($(this));
+            });
+
+            $(document).on("change", ".model-select", function() {
+                checkResetButton($(this).closest(".model-loop"));
+            });
+
+            $(document).on("input", ".sn-input", function() {
+                checkResetButton($(this).closest(".model-loop"));
+            });
+
+            $(document).on("change", ".stock-location-select", function() {
+                checkResetButton($(this).closest(".model-loop"));
+            });
+
+            $(document).on("click", ".reset-row", function() {
+                let loopContainer = $(this).closest(".model-loop");
+
+                loopContainer.find(".model-select").val("").trigger("change");
+                loopContainer.find(".sn-input").val("");
+                loopContainer.find(".stock-location-select").val("");
+
+                $(this).prop("disabled", true); // Disable balik bila reset
+            });
 
             // AJAX : Get Doctors by Hospital
             $('#hospital_id').on('change', function() {
