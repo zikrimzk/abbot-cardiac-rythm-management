@@ -56,113 +56,6 @@ class RouteController extends Controller
     // Manage Implant Route
     public function manageImplant(Request $req)
     {
-        $modelCategories = DB::table('model_categories')
-            ->where('mcategory_isimplant', 1)
-            ->pluck('mcategory_name')
-            ->toArray();
-
-        $data = DB::table('implants as a')
-            ->join('generators as b', 'a.generator_id', 'b.id')
-            ->join('regions as c', 'a.region_id', 'c.id')
-            ->join('hospitals as d', 'a.hospital_id', 'd.id')
-            ->join('doctors as e', 'a.doctor_id', 'e.id')
-            ->join('stock_locations as f', 'a.stock_location_id', 'f.id')
-            ->leftJoin('product_group_lists as g', 'a.id', 'g.implant_id')
-            ->leftJoin('product_groups as h', 'g.product_group_id', 'h.id')
-            ->leftJoin('implant_models as i', 'a.id', 'i.implant_id')
-            ->leftJoin('abbott_models as j', 'i.model_id', 'j.id')
-            ->leftJoin('model_categories as k', 'j.mcategory_id', 'k.id')
-            ->where('k.mcategory_isimplant', 1)
-            ->select(
-                'a.id',
-                'a.implant_date',
-                'd.hospital_name',
-                'c.region_name',
-                DB::raw("GROUP_CONCAT(DISTINCT h.product_group_name ORDER BY h.id ASC SEPARATOR ', ') as product_groups"),
-                'e.doctor_name',
-                'b.generator_name',
-                'b.generator_code',
-                'a.implant_generator_sn',
-                'k.mcategory_name as model_category',
-                'j.model_code',
-                'i.implant_model_sn',
-                'a.implant_pt_name',
-                'a.implant_invoice_no',
-                'a.implant_sales',
-                'a.implant_quantity',
-                'a.implant_remark',
-                'a.implant_pt_mrn',
-                'a.implant_pt_icno',
-                'a.implant_note',
-            )
-            ->groupBy(
-                'a.id',
-                'a.implant_date',
-                'd.hospital_name',
-                'c.region_name',
-                'e.doctor_name',
-                'b.generator_name',
-                'b.generator_code',
-                'a.implant_generator_sn',
-                'k.mcategory_name',
-                'j.model_code',
-                'i.implant_model_sn',
-                'a.implant_pt_name',
-                'a.implant_invoice_no',
-                'a.implant_sales',
-                'a.implant_quantity',
-                'a.implant_remark',
-                'a.implant_pt_mrn',
-                'a.implant_pt_icno',
-                'a.implant_note',
-            )
-            ->orderBy('a.created_at', 'asc')
-            ->get();
-
-        $formattedData = [];
-
-        foreach ($data as $item) {
-            $implantId = $item->id;
-
-            if (!isset($formattedData[$implantId])) {
-                $formattedData[$implantId] = [
-                    'id' => $item->id,
-                    'implant_date' => $item->implant_date ?? 'N/A',
-                    'hospital_name' => $item->hospital_name ?? 'N/A',
-                    'region_name' => $item->region_name ?? 'N/A',
-                    'product_groups' => $item->product_groups ?? 'N/A',
-                    'doctor_name' => $item->doctor_name ?? 'N/A',
-                    'generator_name' => $item->generator_name ?? 'N/A',
-                    'generator_code' => $item->generator_code ?? 'N/A',
-                    'implant_generator_sn' => $item->implant_generator_sn ?? 'N/A',
-                ];
-
-                // Initialize model categories, model codes, and serial numbers dynamically
-                foreach ($modelCategories as $category) {
-                    $formattedData[$implantId][$category . "_model"] = 'N/A';
-                    $formattedData[$implantId][$category . "_serial"] = 'N/A';
-                }
-
-                $formattedData[$implantId] = array_merge($formattedData[$implantId], [
-                    'implant_pt_name' => $item->implant_pt_name ?? 'N/A',
-                    'implant_invoice_no' => $item->implant_invoice_no ?? 'N/A',
-                    'implant_sales' => $item->implant_sales ?? 'N/A',
-                    'implant_quantity' => $item->implant_quantity ?? 'N/A',
-                    'implant_remark' => $item->implant_remark ?? 'N/A',
-                    'implant_pt_mrn' => $item->implant_pt_mrn ?? 'N/A',
-                    'implant_pt_icno' => $item->implant_pt_icno ?? 'N/A',
-                    'implant_note' => $item->implant_note ?? 'N/A',
-                ]);
-            }
-
-            // Assign model code and serial number dynamically
-            if ($item->model_category) {
-                $formattedData[$implantId][$item->model_category . "_model"] = $item->model_code ?? 'N/A';
-                $formattedData[$implantId][$item->model_category . "_serial"] = $item->implant_model_sn ?? 'N/A';
-            }
-        }
-
-        // dd(array_values($formattedData));
         if ($req->ajax()) {
 
             $data = DB::table('implants')
@@ -226,6 +119,12 @@ class RouteController extends Controller
                             data-bs-target="#uploadBackupFormModal-' . $row->id . '">
                             <i class="ti ti-file-upload f-20"></i>
                         </a>
+                        <a href="' . route('generate-patient-id-card-page') . '" class="avtar avtar-xs  btn-light-warning disabled-a">
+                            <i class="ti ti-credit-card f-20"></i>
+                        </a>
+                         <a href="' . route('view-irf-document', $row->id) . '" class="avtar avtar-xs  btn-light-danger">
+                            <i class="ti ti-file-invoice f-20"></i>
+                        </a>
                     ';
                 return $button;
             });
@@ -253,6 +152,122 @@ class RouteController extends Controller
 
         return response()->file($path);
     }
+
+    // View Generated IRF
+    public function viewIRF($id)
+    {
+        $modelCategories = DB::table('model_categories')
+            ->where('mcategory_isimplant', 1)
+            ->select('id as model_category_id', 'mcategory_name as model_category')
+            ->get();
+
+        $implant = DB::table('implants as a')
+            ->join('generators as b', 'a.generator_id', '=', 'b.id')
+            ->join('regions as c', 'a.region_id', '=', 'c.id')
+            ->join('hospitals as d', 'a.hospital_id', '=', 'd.id')
+            ->join('doctors as e', 'a.doctor_id', '=', 'e.id')
+            ->leftJoin('stock_locations as f', 'a.stock_location_id', '=', 'f.id')
+            ->leftJoin('product_group_lists as g', 'a.id', '=', 'g.implant_id')
+            ->leftJoin('product_groups as h', 'g.product_group_id', '=', 'h.id')
+            ->where('a.id', $id)
+            ->select([
+                'a.id',
+                'a.implant_date',
+                'd.hospital_name',
+                'd.hospital_phoneno',
+                'c.region_name',
+                DB::raw("GROUP_CONCAT(DISTINCT h.product_group_name ORDER BY h.id ASC SEPARATOR ', ') as product_groups"),
+                'e.doctor_name',
+                'e.doctor_phoneno',
+                'b.generator_name',
+                'b.generator_code',
+                'a.implant_generator_sn',
+                'a.implant_pt_name',
+                'a.implant_invoice_no',
+                'a.implant_sales',
+                'a.implant_quantity',
+                'a.implant_remark',
+                'a.implant_pt_mrn',
+                'a.implant_pt_icno',
+                'a.implant_note'
+            ])
+            ->groupBy(
+                'a.id',
+                'a.implant_date',
+                'd.hospital_name',
+                'd.hospital_phoneno',
+                'c.region_name',
+                'e.doctor_name',
+                'e.doctor_phoneno',
+                'b.generator_name',
+                'b.generator_code',
+                'a.implant_generator_sn',
+                'a.implant_pt_name',
+                'a.implant_invoice_no',
+                'a.implant_sales',
+                'a.implant_quantity',
+                'a.implant_remark',
+                'a.implant_pt_mrn',
+                'a.implant_pt_icno',
+                'a.implant_note'
+            )
+            ->first();  
+
+        $models = DB::table('implant_models as i')
+            ->join('abbott_models as j', 'i.model_id', '=', 'j.id')
+            ->join('model_categories as k', 'j.mcategory_id', '=', 'k.id')
+            ->where('i.implant_id', $id)
+            ->where('k.mcategory_isimplant', 1)
+            ->select([
+                'k.id as model_category_id',
+                'k.mcategory_name as model_category',
+                'j.model_code',
+                'i.implant_model_sn'
+            ])
+            ->get();
+
+        $mergedModels = [];
+        foreach ($modelCategories as $category) {
+            $foundModel = $models->firstWhere('model_category_id', $category->model_category_id);
+
+            $mergedModels[] = [
+                'model_category_id' => $category->model_category_id,
+                'model_category' => $category->model_category,
+                'model_code' => $foundModel->model_code ?? 'N/A',
+                'implant_model_sn' => $foundModel->implant_model_sn ?? 'N/A'
+            ];
+        }
+
+        $formattedData = [
+            'id' => $implant->id ?? 'N/A',
+            'implant_date' => $implant->implant_date ?? 'N/A',
+            'hospital_name' => $implant->hospital_name ?? 'N/A',
+            'hospital_phoneno' => $implant->hospital_phoneno ?? 'N/A',
+            'region_name' => $implant->region_name ?? 'N/A',
+            'product_groups' => $implant->product_groups ?? 'N/A',
+            'doctor_name' => $implant->doctor_name ?? 'N/A',
+            'doctor_phoneno' => $implant->doctor_phoneno ?? 'N/A',
+            'generator_name' => $implant->generator_name ?? 'N/A',
+            'generator_code' => $implant->generator_code ?? 'N/A',
+            'implant_generator_sn' => $implant->implant_generator_sn ?? 'N/A',
+            'implant_pt_name' => $implant->implant_pt_name ?? 'N/A',
+            'implant_invoice_no' => $implant->implant_invoice_no ?? 'N/A',
+            'implant_sales' => $implant->implant_sales ?? 'N/A',
+            'implant_quantity' => $implant->implant_quantity ?? 'N/A',
+            'implant_remark' => $implant->implant_remark ?? 'N/A',
+            'implant_pt_mrn' => $implant->implant_pt_mrn ?? 'N/A',
+            'implant_pt_icno' => $implant->implant_pt_icno ?? 'N/A',
+            'implant_note' => $implant->implant_note ?? 'N/A',
+            'models' => $mergedModels,
+        ];
+
+        // dd($formattedData);
+        return view('crmd-system.implant-management.view-irf-document', [
+            'title' => 'CRMD System | Implant Registration Form',
+            'im' => $formattedData
+        ]);
+    }
+
 
     // Add Implant Route
     public function addImplant()
@@ -292,7 +307,7 @@ class RouteController extends Controller
     // Generate Patient ID Card Route
     public function generatePatientIdCard(Request $req)
     {
-        return view('crmd-system.patient-management.generate-patient-id-card', [
+        return view('crmd-system.implant-management.generate-patient-id-card', [
             'title' => 'CRMD System | Generate Patient ID Card'
         ]);
     }

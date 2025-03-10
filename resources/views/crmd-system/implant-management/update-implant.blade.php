@@ -403,6 +403,19 @@
                                         </div>
                                     </div>
 
+                                    <!-- [ Patient Email ] Input -->
+                                    {{-- <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <label for="implant_pt_mrn" class="form-label">Patient Email Address</label>
+                                            <input type="text" name="implant_pt_mrn" id="implant_pt_mrn"
+                                                class="form-control @error('implant_pt_mrn') is-invalid @enderror"
+                                                placeholder="Enter Patient Email Address">
+                                            @error('implant_pt_mrn')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div> --}}
+
                                     <hr class="my-4" />
 
                                     <!-- [ Invoice Number ] Input -->

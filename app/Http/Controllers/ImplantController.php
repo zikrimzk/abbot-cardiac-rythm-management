@@ -307,7 +307,7 @@ class ImplantController extends Controller
 
         if ($req->hasFile('implant_backup_form')) {
             $file = $req->file('implant_backup_form');
-            $filename = $hospital->hospital_code . '_' . $generator->generator_code . '_' . strtoupper(Carbon::parse($implant->implant_date)->format('dMY')) . '_' .  strtoupper(str_replace(' ', '_', $implant->implant_pt_name)) . '_IMPLANT_BACKUP_FORM' . '.' . $file->getClientOriginalExtension();
+            $filename = $hospital->hospital_code . '_' . $generator->generator_code . '_' . strtoupper(Carbon::parse($implant->implant_date)->format('dMY')) . '_' .  strtoupper(str_replace(' ', '_', $implant->implant_pt_name)) . '_BACKUP_IRF' . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('implants/'. $implant->implant_pt_directory , $filename, 'public');
             
             Implant::find($id)->update([
