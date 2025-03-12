@@ -175,6 +175,7 @@ class RouteController extends Controller
             ->select([
                 'a.id',
                 'a.implant_date',
+                'a.implant_code',
                 'd.hospital_name',
                 'd.hospital_phoneno',
                 'd.hospital_code',
@@ -201,6 +202,7 @@ class RouteController extends Controller
             ->groupBy(
                 'a.id',
                 'a.implant_date',
+                'a.implant_code',
                 'd.hospital_name',
                 'd.hospital_phoneno',
                 'd.hospital_code',
@@ -253,6 +255,8 @@ class RouteController extends Controller
         $formattedData = [
             'id' => $implant->id ?? '-',
             'implant_date' => Carbon::parse($implant->implant_date)->format('d M Y') ?? '-',
+            'today_date' => Carbon::now()->format('d M Y') ?? '-',
+            'implant_code' => $implant->implant_code ?? '-',
             'hospital_name' => $implant->hospital_name ?? '-',
             'hospital_phoneno' => $implant->hospital_phoneno ?? '-',
             'hospital_code' => $implant->hospital_code ?? '-',
@@ -285,7 +289,7 @@ class RouteController extends Controller
             'im' => $formattedData
 
         ]);
-        return $pdf->stream('document.pdf');  
+        return $pdf->stream($title .'.pdf');  
     }
 
 
