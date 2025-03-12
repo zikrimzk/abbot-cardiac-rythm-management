@@ -17,8 +17,11 @@ return new class extends Migration
             $table->date('implant_date');
             $table->string('implant_pt_name');
             $table->string('implant_pt_icno');
-            $table->string('implant_pt_address')->nullable();
             $table->string('implant_pt_mrn')->nullable();
+            $table->string('implant_pt_address')->nullable();
+            $table->string('implant_pt_email')->nullable();
+            $table->string('implant_pt_phoneno')->nullable();
+            $table->date('implant_pt_dob')->nullable();
             $table->string('implant_pt_id_card')->nullable();
             $table->text('implant_pt_id_card_design')->nullable();
             $table->text('implant_pt_directory')->nullable();

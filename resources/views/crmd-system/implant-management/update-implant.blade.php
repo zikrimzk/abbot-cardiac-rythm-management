@@ -390,6 +390,20 @@
                                         </div>
                                     </div>
 
+                                    <!-- [ Patient DOB ] Input -->
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <label for="implant_pt_dob" class="form-label">Patient Date of Birth</label>
+                                            <input type="date" name="implant_pt_dob" id="implant_pt_dob"
+                                                class="form-control @error('implant_pt_dob') is-invalid @enderror"
+                                                placeholder="Enter Patient Phone Number"
+                                                value="{{ $im->implant_pt_dob }}">
+                                            @error('implant_pt_dob')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
                                     <!-- [ Patient MRN ] Input -->
                                     <div class="col-sm-6">
                                         <div class="mb-3">
@@ -404,17 +418,45 @@
                                     </div>
 
                                     <!-- [ Patient Email ] Input -->
-                                    {{-- <div class="col-sm-6">
+                                    <div class="col-sm-6">
                                         <div class="mb-3">
-                                            <label for="implant_pt_mrn" class="form-label">Patient Email Address</label>
-                                            <input type="text" name="implant_pt_mrn" id="implant_pt_mrn"
-                                                class="form-control @error('implant_pt_mrn') is-invalid @enderror"
-                                                placeholder="Enter Patient Email Address">
-                                            @error('implant_pt_mrn')
+                                            <label for="implant_pt_email" class="form-label">Patient Email</label>
+                                            <input type="email" name="implant_pt_email" id="implant_pt_email"
+                                                class="form-control @error('implant_pt_email') is-invalid @enderror"
+                                                placeholder="Enter Patient Email"  value="{{ $im->implant_pt_email }}">
+                                            @error('implant_pt_email')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
-                                    </div> --}}
+                                    </div>
+
+                                    <!-- [ Patient Phone No ] Input -->
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <label for="implant_pt_phoneno" class="form-label">Patient Phone
+                                                Number</label>
+                                            <input type="text" name="implant_pt_phoneno" id="implant_pt_phoneno"
+                                                class="form-control @error('implant_pt_phoneno') is-invalid @enderror"
+                                                placeholder="Enter Patient Phone Number"
+                                                value="{{ $im->implant_pt_phoneno }}">
+                                            @error('implant_pt_phoneno')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <!-- [ Patient Address ] Input -->
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <label for="implant_pt_address" class="form-label">Patient Address</label>
+                                            <textarea name="implant_pt_address" id="implant_pt_address"
+                                                class="form-control @error('implant_pt_address') is-invalid @enderror" placeholder="Enter Patient Address"
+                                                row="4">{{ $im->implant_pt_address }}</textarea>
+                                            @error('implant_pt_address')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
 
                                     <hr class="my-4" />
 

@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Yajra\DataTables\Facades\DataTables;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class RouteController extends Controller
 {
@@ -119,10 +121,10 @@ class RouteController extends Controller
                             data-bs-target="#uploadBackupFormModal-' . $row->id . '">
                             <i class="ti ti-file-upload f-20"></i>
                         </a>
-                        <a href="' . route('generate-patient-id-card-page') . '" class="avtar avtar-xs  btn-light-warning disabled-a">
+                        <a href="' . route('generate-patient-id-card-page') . '" class="avtar avtar-xs  btn-light-warning ">
                             <i class="ti ti-credit-card f-20"></i>
                         </a>
-                         <a href="' . route('view-irf-document', $row->id) . '" class="avtar avtar-xs  btn-light-danger">
+                         <a href="' . route('view-irf-document', $row->id) . '"  target="_blank" class="avtar avtar-xs  btn-light-danger">
                             <i class="ti ti-file-invoice f-20"></i>
                         </a>
                     ';
@@ -175,6 +177,7 @@ class RouteController extends Controller
                 'a.implant_date',
                 'd.hospital_name',
                 'd.hospital_phoneno',
+                'd.hospital_code',
                 'c.region_name',
                 DB::raw("GROUP_CONCAT(DISTINCT h.product_group_name ORDER BY h.id ASC SEPARATOR ', ') as product_groups"),
                 'e.doctor_name',
@@ -189,6 +192,10 @@ class RouteController extends Controller
                 'a.implant_remark',
                 'a.implant_pt_mrn',
                 'a.implant_pt_icno',
+                'a.implant_pt_address',
+                'a.implant_pt_phoneno',
+                'a.implant_pt_email',
+                'a.implant_pt_dob',
                 'a.implant_note'
             ])
             ->groupBy(
@@ -196,6 +203,7 @@ class RouteController extends Controller
                 'a.implant_date',
                 'd.hospital_name',
                 'd.hospital_phoneno',
+                'd.hospital_code',
                 'c.region_name',
                 'e.doctor_name',
                 'e.doctor_phoneno',
@@ -209,6 +217,10 @@ class RouteController extends Controller
                 'a.implant_remark',
                 'a.implant_pt_mrn',
                 'a.implant_pt_icno',
+                'a.implant_pt_address',
+                'a.implant_pt_phoneno',
+                'a.implant_pt_email',
+                'a.implant_pt_dob',
                 'a.implant_note'
             )
             ->first();  
@@ -233,39 +245,47 @@ class RouteController extends Controller
             $mergedModels[] = [
                 'model_category_id' => $category->model_category_id,
                 'model_category' => $category->model_category,
-                'model_code' => $foundModel->model_code ?? 'N/A',
-                'implant_model_sn' => $foundModel->implant_model_sn ?? 'N/A'
+                'model_code' => $foundModel->model_code ?? '-',
+                'implant_model_sn' => $foundModel->implant_model_sn ?? '-'
             ];
         }
 
         $formattedData = [
-            'id' => $implant->id ?? 'N/A',
-            'implant_date' => $implant->implant_date ?? 'N/A',
-            'hospital_name' => $implant->hospital_name ?? 'N/A',
-            'hospital_phoneno' => $implant->hospital_phoneno ?? 'N/A',
-            'region_name' => $implant->region_name ?? 'N/A',
-            'product_groups' => $implant->product_groups ?? 'N/A',
-            'doctor_name' => $implant->doctor_name ?? 'N/A',
-            'doctor_phoneno' => $implant->doctor_phoneno ?? 'N/A',
-            'generator_name' => $implant->generator_name ?? 'N/A',
-            'generator_code' => $implant->generator_code ?? 'N/A',
-            'implant_generator_sn' => $implant->implant_generator_sn ?? 'N/A',
-            'implant_pt_name' => $implant->implant_pt_name ?? 'N/A',
-            'implant_invoice_no' => $implant->implant_invoice_no ?? 'N/A',
-            'implant_sales' => $implant->implant_sales ?? 'N/A',
-            'implant_quantity' => $implant->implant_quantity ?? 'N/A',
-            'implant_remark' => $implant->implant_remark ?? 'N/A',
-            'implant_pt_mrn' => $implant->implant_pt_mrn ?? 'N/A',
-            'implant_pt_icno' => $implant->implant_pt_icno ?? 'N/A',
-            'implant_note' => $implant->implant_note ?? 'N/A',
+            'id' => $implant->id ?? '-',
+            'implant_date' => Carbon::parse($implant->implant_date)->format('d M Y') ?? '-',
+            'hospital_name' => $implant->hospital_name ?? '-',
+            'hospital_phoneno' => $implant->hospital_phoneno ?? '-',
+            'hospital_code' => $implant->hospital_code ?? '-',
+            'region_name' => $implant->region_name ?? '-',
+            'product_groups' => $implant->product_groups ?? '-',
+            'doctor_name' => $implant->doctor_name ?? '-',
+            'doctor_phoneno' => $implant->doctor_phoneno ?? '-',
+            'generator_name' => $implant->generator_name ?? '-',
+            'generator_code' => $implant->generator_code ?? '-',
+            'implant_generator_sn' => $implant->implant_generator_sn ?? '-',
+            'implant_pt_name' => $implant->implant_pt_name ?? '-',
+            'implant_invoice_no' => $implant->implant_invoice_no ?? '-',
+            'implant_sales' => $implant->implant_sales ?? '-',
+            'implant_quantity' => $implant->implant_quantity ?? '-',
+            'implant_remark' => $implant->implant_remark ?? '-',
+            'implant_pt_mrn' => $implant->implant_pt_mrn ?? '-',
+            'implant_pt_icno' => $implant->implant_pt_icno ?? '-',
+            'implant_pt_address' => $implant->implant_pt_address ?? '-',
+            'implant_pt_phoneno' => $implant->implant_pt_phoneno ?? '-',
+            'implant_pt_email' => $implant->implant_pt_email ?? '-',
+            'implant_pt_dob' => Carbon::parse($implant->implant_pt_dob)->format('d M Y') ?? '-',
+            'implant_note' => $implant->implant_note ?? '-',
             'models' => $mergedModels,
         ];
 
-        // dd($formattedData);
-        return view('crmd-system.implant-management.view-irf-document', [
-            'title' => 'CRMD System | Implant Registration Form',
+        $title =  $formattedData['hospital_code'] . '_' . $formattedData['generator_code'] . '_' . strtoupper(Carbon::parse($formattedData['implant_date'])->format('dMY')) . '_' .  strtoupper(str_replace(' ', '_', $formattedData['implant_pt_name'])) . '_IRF';
+
+        $pdf = Pdf::loadView('crmd-system.implant-management.view-irf-document',[
+            'title' =>  $title ?? 'CRMD System | View Implant Registration Form',
             'im' => $formattedData
+
         ]);
+        return $pdf->stream('document.pdf');  
     }
 
 
