@@ -77,6 +77,10 @@ class RouteController extends Controller
 
             $table = DataTables::of($data)->addIndexColumn();
 
+            $table->addColumn('checkbox', function ($row) {
+                return '<input type="checkbox" class="implant-checkbox form-check-input" value="' . $row->id . '">';
+            });
+
             $table->addColumn('implant_date', function ($row) {
                 $date = Carbon::parse($row->implant_date)->format('d M Y');
                 return $date;
@@ -85,7 +89,7 @@ class RouteController extends Controller
             $table->addColumn('implant_code', function ($row) {
                 $code =
                     '
-                    <a href="'.route('view-irf-document',['id'=>Crypt::encrypt($row->id),'option' => 2]).'" class="link-primary" target="_blank">
+                    <a href="' . route('view-irf-document', ['id' => Crypt::encrypt($row->id), 'option' => 2]) . '" class="link-primary" target="_blank">
                         ' . $row->implant_code . '
                     </a>
                 
@@ -95,16 +99,33 @@ class RouteController extends Controller
 
             $table->addColumn('implant_backup_form', function ($row) {
                 if ($row->implant_backup_form == null) {
-                    $directory = '-';
+                    $directory =
+                        '
+                        <div class="d-block mb-3 mt-3">
+                            <a href="' . route('view-irf-document', ['id' => Crypt::encrypt($row->id), 'option' => 2]) . '" target="_blank" class="link-dark">
+                                <i class="fas fa-file-pdf f-20 text-danger me-2"></i>
+                                    View System Generated Form
+                            </a>
+                        </div>
+
+                    ';
                     return $directory;
                 }
                 $directory =
                     '
-                    <a href="' . URL::signedRoute('view-imbackupform', ['filename' => Crypt::encrypt($row->implant_backup_form)]) . '" target="_blank" class="link-dark">
-                     <i class="fas fa-file-pdf f-20 text-danger me-2"></i>
-                        View Form
-                    </a>
-                
+                    <div class="d-block mb-3 mt-3">
+                        <a href="' . route('view-irf-document', ['id' => Crypt::encrypt($row->id), 'option' => 2]) . '" target="_blank" class="link-dark">
+                            <i class="fas fa-file-pdf f-20 text-danger me-2"></i>
+                                View System Generated Form
+                        </a>
+                    </div>
+
+                    <div class="d-block mb-3">
+                        <a href="' . URL::signedRoute('view-imbackupform', ['filename' => Crypt::encrypt($row->implant_backup_form)]) . '" target="_blank" class="link-dark">
+                            <i class="fas fa-file-pdf f-20 text-danger me-2"></i>
+                                View Uploaded Backup Form
+                        </a>
+                    </div>
                 ';
                 return $directory;
             });
@@ -121,14 +142,17 @@ class RouteController extends Controller
                             data-bs-target="#uploadBackupFormModal-' . $row->id . '">
                             <i class="ti ti-file-upload f-20"></i>
                         </a>
-                        <a href="' . route('generate-patient-id-card-page') . '" class="avtar avtar-xs  btn-light-warning ">
+                        <a href="' . route('download-implant-directory', Crypt::encrypt($row->id)) . '" class="avtar avtar-xs  btn-light-warning">
+                            <i class="ti ti-download f-20"></i>
+                        </a>
+                        <a href="' . route('generate-patient-id-card-page') . '" class="avtar avtar-xs  btn-light-warning d-none">
                             <i class="ti ti-credit-card f-20"></i>
                         </a>
                     ';
                 return $button;
             });
 
-            $table->rawColumns(['implant_date', 'implant_backup_form', 'implant_code', 'action']);
+            $table->rawColumns(['checkbox','implant_date', 'implant_backup_form', 'implant_code', 'action']);
 
             return $table->make(true);
         }
@@ -225,7 +249,7 @@ class RouteController extends Controller
                 'a.implant_pt_dob',
                 'a.implant_note'
             )
-            ->first();  
+            ->first();
 
         $models = DB::table('implant_models as i')
             ->join('abbott_models as j', 'i.model_id', '=', 'j.id')
@@ -285,31 +309,27 @@ class RouteController extends Controller
 
         $title =  $formattedData['hospital_code'] . '_' . $formattedData['generator_code'] . '_' . strtoupper(Carbon::parse($formattedData['implant_date'])->format('dMY')) . '_' .  strtoupper(str_replace(' ', '_', $formattedData['implant_pt_name'])) . '_SYS_IRF';
 
-        $pdf = Pdf::loadView('crmd-system.implant-management.view-irf-document',[
+        $pdf = Pdf::loadView('crmd-system.implant-management.view-irf-document', [
             'title' =>  $title ?? 'CRMD System | View Implant Registration Form',
             'im' => $formattedData
 
         ]);
 
-        if($option == 1) // Generate PDF & Store to Storage
+        if ($option == 1) // Generate PDF & Store to Storage
         {
-            $filePath = 'storage/implants/'. $formattedData['implant_pt_directory'] . '/' . $title . '.pdf';
+            $filePath = 'storage/implants/' . $formattedData['implant_pt_directory'] . '/' . $title . '.pdf';
             $pdf->save(public_path($filePath));
             return back();
-        }
-        elseif($option == 2) // Show PDF
+        } elseif ($option == 2) // Show PDF
         {
-            return $pdf->stream($title .'.pdf');  
-        }
-        elseif($option == 3) // Download PDF
+            return $pdf->stream($title . '.pdf');
+        } elseif ($option == 3) // Download PDF
         {
-            return $pdf->download($title .'.pdf');  
-        }
-        else // 404
+            return $pdf->download($title . '.pdf');
+        } else // 404
         {
             return abort(404);
         }
-       
     }
 
     // Add Implant Route

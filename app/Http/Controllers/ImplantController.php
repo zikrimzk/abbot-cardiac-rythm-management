@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use ZipArchive;
 use Carbon\Carbon;
 use App\Models\Implant;
 use App\Models\Hospital;
@@ -12,13 +13,14 @@ use App\Models\ImplantModel;
 use App\Models\ProductGroup;
 use Illuminate\Http\Request;
 use App\Exports\ImplantsExport;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\ProductGroupList;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class ImplantController extends Controller
 {
@@ -489,9 +491,113 @@ class ImplantController extends Controller
         return $pdf->save(public_path($filePath));
     }
 
-
     public function exportExcelImplantData()
     {
         return Excel::download(new ImplantsExport, 'Implants_Data' . '_' . date('dMY') . '.xlsx');
+    }
+
+    public function downloadImplantDirectory($id)
+    {
+        try {
+            $implant = Implant::find(Crypt::decrypt($id));
+
+            if (!$implant || empty($implant->implant_pt_directory)) {
+                return back()->with('error', 'Invalid implant directory.');
+            }
+
+            $imdir = public_path("storage/implants/" . $implant->implant_pt_directory);
+            $zipFile = public_path("storage/implants/" . $implant->implant_pt_directory . ".zip");
+
+            // Check if directory exists
+            if (!File::exists($imdir) || !is_dir($imdir)) {
+                return back()->with('error', 'Folder not found: ' . $imdir);
+            }
+
+            // Delete existing ZIP file if it exists
+            if (File::exists($zipFile)) {
+                File::delete($zipFile);
+            }
+
+            $zip = new ZipArchive;
+            if ($zip->open($zipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+                return back()->with('error', 'Failed to create ZIP file.');
+            }
+
+            // Fetch all files in the directory
+            $files = File::allFiles($imdir);
+
+            if (empty($files)) {
+                $zip->close();
+                return back()->with('error', 'Folder is empty. No files to zip.');
+            }
+
+            foreach ($files as $file) {
+                $relativePath = substr($file->getPathname(), strlen($imdir) + 1);
+                $zip->addFile($file->getPathname(), $relativePath);
+            }
+
+            $zip->close();
+
+            // Check if ZIP was created properly
+            if (!File::exists($zipFile) || filesize($zipFile) === 0) {
+                return back()->with('error', 'ZIP file is empty or corrupt.');
+            }
+
+            return response()->download($zipFile)->deleteFileAfterSend(true);
+        } catch (Exception $e) {
+            return back()->with('error', 'Error downloading implant directory: ' . $e->getMessage());
+        }
+    }
+
+    public function downloadMultipleImplantDirectory(Request $req)
+    {
+        try {
+            $implantIds = json_decode($req->query('ids'), true);
+    
+            if (!$implantIds || count($implantIds) === 0) {
+                return back()->with('error', 'No implants selected.');
+            }
+    
+            // Create ZIP file
+            $zipFile = storage_path('app/public/implants/CRMD_SELECTED_IMPLANTS.zip');
+    
+            if (File::exists($zipFile)) {
+                File::delete($zipFile);
+            }
+    
+            $zip = new ZipArchive;
+            if ($zip->open($zipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+                return back()->with('error', 'Failed to create ZIP file.');
+            }
+    
+            // Add each implant directory to the ZIP
+            foreach ($implantIds as $id) {
+                $implant = Implant::find($id);
+    
+                if (!$implant || empty($implant->implant_pt_directory)) {
+                    continue;
+                }
+    
+                $folderPath = public_path("storage/implants/" . $implant->implant_pt_directory);
+    
+                if (!File::exists($folderPath)) {
+                    continue;
+                }
+    
+                $files = File::allFiles($folderPath);
+    
+                foreach ($files as $file) {
+                    $relativePath = $implant->implant_pt_directory . '/' . $file->getFilename();
+                    $zip->addFile($file->getPathname(), $relativePath);
+                }
+            }
+    
+            $zip->close();
+    
+            return response()->download($zipFile)->deleteFileAfterSend(true);
+    
+        } catch (Exception $e) {
+            return back()->with('error', 'Error generating ZIP: ' . $e->getMessage());
+        }
     }
 }

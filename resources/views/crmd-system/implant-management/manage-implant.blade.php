@@ -60,7 +60,7 @@
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="d-flex gap-2">
+                            <div class="d-flex gap-3">
                                 <a href="{{ route('add-implant-page') }}"
                                     class="btn btn-primary d-inline-flex align-items-center gap-2">
                                     <i class="ti ti-plus f-18"></i>
@@ -71,6 +71,11 @@
                                     <i class="ti ti-file-export f-18"></i>
                                     Export Data
                                 </a>
+                                <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-2"
+                                    id="downloadMultipleDirBtn" disabled>
+                                    <i class="ti ti-download f-18"></i>
+                                    Download Directory (.zip)
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -83,8 +88,9 @@
                                 <table class="table data-table table-hover nowrap">
                                     <thead>
                                         <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Ref</th>
+                                            {{-- <th scope="col">#</th> --}}
+                                            {{-- <th scope="col">Ref</th> --}}
+                                            <th><input type="checkbox" id="select-all" class="form-check-input"></th>
                                             <th scope="col">Implant Date</th>
                                             <th scope="col">Patient</th>
                                             <th scope="col">IC Number</th>
@@ -175,15 +181,22 @@
                         url: "{{ route('manage-implant-page') }}",
                     },
                     columns: [{
-                            data: 'DT_RowIndex',
-                            name: 'DT_RowIndex',
+                            data: 'checkbox',
+                            name: 'checkbox',
+                            orderable: false,
                             searchable: false,
-                            className: "text-start"
+
                         },
-                        {
-                            data: 'implant_code',
-                            name: 'implant_code'
-                        },
+                        // {
+                        //     data: 'DT_RowIndex',
+                        //     name: 'DT_RowIndex',
+                        //     searchable: false,
+                        //     className: "text-start"
+                        // },
+                        // {
+                        //     data: 'implant_code',
+                        //     name: 'implant_code'
+                        // },
                         {
                             data: 'implant_date',
                             name: 'implant_date'
@@ -224,6 +237,44 @@
                         $(this).val('');
                     }
                 }
+            });
+
+            const downloadBtn = $("#downloadMultipleDirBtn");
+
+            // Handle "Select All" checkbox
+            $("#select-all").on("change", function() {
+                $(".implant-checkbox").prop("checked", $(this).prop("checked"));
+                toggleDownloadButton();
+            });
+
+            // Handle individual checkboxes
+            $(document).on("change", ".implant-checkbox", function() {
+                toggleDownloadButton();
+            });
+
+            function toggleDownloadButton() {
+                let checkedCount = $(".implant-checkbox:checked").length;
+                downloadBtn.prop("disabled", checkedCount === 0);
+            }
+
+            downloadBtn.on("click", function() {
+                let selectedIds = $(".implant-checkbox:checked")
+                    .map(function() {
+                        return $(this).val();
+                    })
+                    .get();
+
+                if (selectedIds.length === 0) {
+                    alert("Please select at least one implant.");
+                    return;
+                }
+
+                // Convert selected IDs to a JSON string and encode for URL
+                let idsParam = encodeURIComponent(JSON.stringify(selectedIds));
+
+                // Redirect the browser to download ZIP directly
+                window.location.href = "{{ route('download-multiple-implant-directory') }}?ids=" +
+                idsParam;
             });
 
         });
