@@ -98,12 +98,10 @@ class HospitalDoctorController extends Controller
             'doctor_name' => 'required|string',
             'doctor_phoneno' => 'nullable|string| max:13 | min:10',
             'doctor_status' => 'required|integer',
-            'hospital_id' => 'required|integer'
         ], [], [
             'doctor_name' => 'doctor name',
             'doctor_phoneno' => 'doctor phone number',
             'doctor_status' => 'doctor status',
-            'hospital_id' => 'hospital'
         ]);
 
         if ($validator->fails()) {
@@ -130,12 +128,10 @@ class HospitalDoctorController extends Controller
             'doctor_name' => 'required|string',
             'doctor_phoneno' => 'nullable|string| max:13 | min:10',
             'doctor_status' => 'required|integer',
-            'hospital_id' => 'required|integer'
         ], [], [
             'doctor_name' => 'doctor name',
             'doctor_phoneno' => 'doctor phone number',
             'doctor_status' => 'doctor status',
-            'hospital_id' => 'hospital'
         ]);
 
         if ($validator->fails()) {
@@ -163,19 +159,6 @@ class HospitalDoctorController extends Controller
             return back()->with('success', 'Doctor deleted successfully.');
         } catch (Exception $e) {
             return back()->with('error', 'Something went wrong. Please try again.');
-        }
-    }
-
-    //Extra Functions
-    public function getDoctorsByHospital(Request $req)
-    {
-        try {
-            $doctors = Doctor::where('hospital_id', $req->hospital_id)->get();
-            return response()->json($doctors, 200);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-            ], 500);
         }
     }
 }

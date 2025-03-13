@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Exports;
+
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -16,7 +17,7 @@ class ImplantsExport implements FromCollection, WithHeadings, WithEvents
     public function collection()
     {
         $modelCategories = DB::table('model_categories')
-            ->where('mcategory_isimplant', 1)
+            ->where('mcategory_ismorethanone', 0)
             ->pluck('mcategory_name')
             ->toArray();
 
@@ -31,7 +32,7 @@ class ImplantsExport implements FromCollection, WithHeadings, WithEvents
             ->leftJoin('implant_models as i', 'a.id', 'i.implant_id')
             ->leftJoin('abbott_models as j', 'i.model_id', 'j.id')
             ->leftJoin('model_categories as k', 'j.mcategory_id', 'k.id')
-            ->where('k.mcategory_isimplant', 1)
+            ->where('k.mcategory_ismorethanone', 0)
             ->select(
                 'a.id',
                 'a.implant_date',
@@ -125,7 +126,7 @@ class ImplantsExport implements FromCollection, WithHeadings, WithEvents
     public function headings(): array
     {
         $modelCategories = DB::table('model_categories')
-            ->where('mcategory_isimplant', 1)
+            ->where('mcategory_ismorethanone', 0)
             ->pluck('mcategory_name')
             ->toArray();
 
@@ -187,7 +188,7 @@ class ImplantsExport implements FromCollection, WithHeadings, WithEvents
                 }
 
                 $modelCategories = DB::table('model_categories')
-                    ->where('mcategory_isimplant', 1)
+                    ->where('mcategory_ismorethanone', 0)
                     ->pluck('mcategory_name')
                     ->toArray();
 

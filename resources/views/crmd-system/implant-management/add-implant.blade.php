@@ -151,6 +151,9 @@
                                                         <option value="{{ $dr->id }}" selected>
                                                             {{ $dr->doctor_name }}
                                                         </option>
+                                                    @else
+                                                        <option value="{{ $dr->id }}">{{ $dr->doctor_name }}
+                                                        </option>
                                                     @endif
                                                 @endforeach
                                             </select>
@@ -259,127 +262,127 @@
                                     @foreach ($mcs as $mc)
                                         <h5 class="mt-4">{{ $mc->mcategory_name }}</h5>
 
-                                        <div class="row model-loop">
+                                        @if ($mc->mcategory_ismorethanone == 1)
+                                            <div class="row model-loop" id="model_container_{{ $mc->id }}">
 
-                                            <!-- [ Model ] Input -->
-                                            <div class="col-sm-4">
-                                                <div class="mb-3">
-                                                    <label for="model_ids_{{ $mc->id }}"
-                                                        class="form-label">Model</label>
-                                                    <select name="model_ids[]" id="model_ids_{{ $mc->id }}"
-                                                        class="form-select @error('model_ids') is-invalid @enderror model-select">
-                                                        <option value="" selected>Select Model</option>
-                                                        @foreach ($abbottmodels->where('mcategory_id', $mc->id) as $am)
-                                                            <option value="{{ $am->id }}">
-                                                                {{ $am->model_code }}
+                                                <!-- [ Model ] Input -->
+                                                <div class="col-sm-4">
+                                                    <div class="mb-3">
+                                                        <label for="model_ids_{{ $mc->id }}"
+                                                            class="form-label">Model</label>
+                                                        <select name="model_ids[]" class="form-select model-select">
+                                                            <option value="" selected>Select Model</option>
+                                                            @foreach ($abbottmodels->where('mcategory_id', $mc->id) as $am)
+                                                                <option value="{{ $am->id }}">
+                                                                    {{ $am->model_code }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <!-- [ Serial Number ] Input -->
+                                                <div class="col-sm-4">
+                                                    <div class="mb-3">
+                                                        <label for="model_sns_{{ $mc->id }}"
+                                                            class="form-label">Serial Number</label>
+                                                        <input type="text" name="model_sns[]"
+                                                            class="form-control sn-input"
+                                                            placeholder="Enter Serial Number">
+                                                    </div>
+                                                </div>
+
+                                                <!-- [ Stock Location ] Input -->
+                                                <div class="col-sm-3">
+                                                    <div class="mb-3">
+                                                        <label for="stock_location_ids_{{ $mc->id }}"
+                                                            class="form-label">Stock Location</label>
+                                                        <select name="stock_location_ids[]"
+                                                            class="form-select stock-location-select">
+                                                            <option value="" selected>Select Stock Location
                                                             </option>
-                                                        @endforeach
-                                                    </select>
-                                                    @error('model_ids')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
+                                                            @foreach ($stocklocations as $sl)
+                                                                <option value="{{ $sl->id }}">
+                                                                    ({{ $sl->stock_location_code }})
+                                                                    -
+                                                                    {{ $sl->stock_location_name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <!-- [ Remove Button ] -->
+                                                <div class="col-sm-1 d-flex align-items-center justify-content-center">
+                                                    <button type="button"
+                                                        class="btn btn-danger btn-sm shadow-none remove-row">
+                                                        <i class="ti ti-trash f-20"></i>
+                                                    </button>
+                                                </div>
+
+                                            </div>
+
+                                            <!-- [ Add Row Button ] -->
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <div class="d-grid">
+                                                        <button type="button" class="btn btn-light-primary mt-2 add-row"
+                                                            data-category="{{ $mc->id }}">
+                                                            <i class="ti ti-plus"></i> Add Model
+                                                        </button>
+                                                    </div>
+
                                                 </div>
                                             </div>
+                                        @else
+                                            <div class="row model-loop">
+                                                <div class="col-sm-4">
+                                                    <div class="mb-3">
+                                                        <label for="model_ids_{{ $mc->id }}"
+                                                            class="form-label">Model</label>
+                                                        <select name="model_ids[]" class="form-select model-select">
+                                                            <option value="" selected>Select Model</option>
+                                                            @foreach ($abbottmodels->where('mcategory_id', $mc->id) as $am)
+                                                                <option value="{{ $am->id }}">{{ $am->model_code }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
 
-                                            <!-- [ Serial Number ] Input -->
-                                            <div class="col-sm-4">
-                                                <div class="mb-3">
-                                                    <label for="model_sns_{{ $mc->id }}" class="form-label">Serial
-                                                        Number</label>
-                                                    <input type="text" name="model_sns[]"
-                                                        id="model_sns_{{ $mc->id }}"
-                                                        class="form-control sn-input @error('model_sns') is-invalid @enderror"
-                                                        placeholder="Enter Serial Number">
-                                                    @error('model_sns')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
+                                                <div class="col-sm-4">
+                                                    <div class="mb-3">
+                                                        <label for="model_sns_{{ $mc->id }}"
+                                                            class="form-label">Serial Number</label>
+                                                        <input type="text" name="model_sns[]"
+                                                            class="form-control sn-input"
+                                                            placeholder="Enter Serial Number">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-3">
+                                                    <div class="mb-3">
+                                                        <label for="stock_location_ids_{{ $mc->id }}"
+                                                            class="form-label">Stock Location</label>
+                                                        <select name="stock_location_ids[]"
+                                                            class="form-select stock-location-select">
+                                                            <option value="" selected>Select Stock Location</option>
+                                                            @foreach ($stocklocations as $sl)
+                                                                <option value="{{ $sl->id }}">
+                                                                    ({{ $sl->stock_location_code }})
+                                                                    -
+                                                                    {{ $sl->stock_location_name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-1 d-flex align-items-center justify-content-center">
+                                                    <button type="button"
+                                                        class="btn btn-danger btn-sm shadow-none reset-row" disabled>
+                                                        <i class="ti ti-trash f-20"></i>
+                                                    </button>
                                                 </div>
                                             </div>
-
-                                            <!-- [ Stock Location ] Input -->
-                                            <div class="col-sm-3">
-                                                <div class="mb-3">
-                                                    <label for="stock_location_ids_{{ $mc->id }}"
-                                                        class="form-label">Stock Location</label>
-                                                    <select name="stock_location_ids[]"
-                                                        id="stock_location_ids_{{ $mc->id }}"
-                                                        class="form-select @error('stock_location_ids') is-invalid @enderror stock-location-select">
-                                                        <option value="" selected>Select Stock Location</option>
-                                                        @foreach ($stocklocations as $sl)
-                                                            <option value="{{ $sl->id }}">
-                                                                ({{ $sl->stock_location_code }})
-                                                                - {{ $sl->stock_location_name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                    @error('stock_location_ids')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-
-                                            <!-- [ Dustbin Button ] -->
-                                            <div class="col-sm-1 d-flex align-items-center justify-content-center">
-                                                <button type="button"
-                                                    class="avtar avtar-xs  btn btn-danger shadow-none reset-row"
-                                                    id="reset_{{ $mc->id }}" disabled>
-                                                    <i class="ti ti-trash f-20"></i>
-                                                </button>
-                                            </div>
-
-                                        </div>
-
-                                        {{-- <!-- [ Model ] Input -->
-                                        <div class="col-sm-4">
-                                            <div class="mb-3">
-                                                <label for="model_ids" class="form-label">Model</label>
-                                                <select name="model_ids[]" id="model_ids"
-                                                    class="form-select @error('model_ids') is-invalid @enderror">
-                                                    <option value="" selected>Select Model</option>
-                                                    @foreach ($abbottmodels->where('mcategory_id', $mc->id) as $am)
-                                                        <option value="{{ $am->id }}">{{ $am->model_code }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                @error('model_ids')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <!-- [ Serial Number ] Input -->
-                                        <div class="col-sm-4">
-                                            <div class="mb-3">
-                                                <label for="model_sns" class="form-label">Serial
-                                                    Number</label>
-                                                <input type="text" name="model_sns[]" id="model_sns"
-                                                    class="form-control sn-input @error('model_sns') is-invalid @enderror"
-                                                    placeholder="Enter Serial Number">
-                                                @error('model_sns')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <!-- [ Stock Location ] Input -->
-                                        <div class="col-sm-4">
-                                            <div class="mb-3">
-                                                <label for="stock_location_ids" class="form-label">Stock Location</label>
-                                                <select name="stock_location_ids[]" id="stock_location_ids"
-                                                    class="form-select @error('stock_location_ids') is-invalid @enderror">
-                                                    <option value="" selected>Select Stock Location</option>
-                                                    @foreach ($stocklocations as $sl)
-                                                        <option value="{{ $sl->id }}">
-                                                            ({{ $sl->stock_location_code }})
-                                                            -
-                                                            {{ $sl->stock_location_name }}</option>
-                                                    @endforeach
-                                                </select>
-                                                @error('stock_location_ids')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div> --}}
+                                        @endif
                                     @endforeach
 
                                     <hr class="my-4" />
@@ -476,8 +479,9 @@
                                     <div class="col-sm-6">
                                         <div class="mb-3">
                                             <label for="implant_pt_address" class="form-label">Patient Address</label>
-                                            <textarea name="implant_pt_address" id="implant_pt_address" class="form-control @error('implant_pt_address') is-invalid @enderror"
-                                                placeholder="Enter Patient Address" row="4">{{ old('implant_pt_address') }}</textarea>
+                                            <textarea name="implant_pt_address" id="implant_pt_address"
+                                                class="form-control @error('implant_pt_address') is-invalid @enderror" placeholder="Enter Patient Address"
+                                                row="4">{{ old('implant_pt_address') }}</textarea>
                                             @error('implant_pt_address')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -674,33 +678,46 @@
                 $(this).prop("disabled", true); // Disable balik bila reset
             });
 
-            // AJAX : Get Doctors by Hospital
-            $('#hospital_id').on('change', function() {
-                let hospital_id = $(this).val();
-                $('#implant_doctor_id').empty().append('<option value="">Loading...</option>');
+            // Fungsi Tambah Row
+            $(document).on("click", ".add-row", function() {
+                let categoryID = $(this).data("category");
+                let container = $("#model_container_" + categoryID).parent(); // Dapatkan parent container
+                let lastRow = container.find(".model-loop").last(); // Ambil row terakhir
 
-                if (hospital_id) {
-                    $.ajax({
-                        url: '{{ route('doctorbyhospital-get') }}',
-                        type: 'GET',
-                        data: {
-                            hospital_id: hospital_id
-                        },
-                        success: function(response) {
-                            $('#implant_doctor_id').empty().append(
-                                '<option value="">Select Doctor</option>');
-                            $.each(response, function(key, doctor) {
-                                $('#implant_doctor_id').append('<option value="' +
-                                    doctor.id + '">' + doctor.doctor_name +
-                                    '</option>');
-                            });
-                        }
-                    });
-                } else {
-                    $('#implant_doctor_id').empty().append('<option value="">Select Doctor</option>');
-                }
+                // Clone baris terakhir & kosongkan input
+                let newRow = lastRow.clone();
+                newRow.find("input, select").val("");
+
+                // Pastikan butang remove dalam row baru boleh digunakan
+                newRow.find(".remove-row").prop("disabled", false);
+
+                // Tambah row baru selepas row terakhir dalam kategori tersebut
+                lastRow.after(newRow);
             });
 
+            // Butang Reset hanya kosongkan input jika ia baris pertama
+            $('.remove-row').each(function() {
+                let row = $(this).closest('.model-loop');
+
+                // Set disable secara default
+                $(this).prop('disabled', true);
+
+                // Bila ada input diisi, enable butang reset
+                row.find('input, select').on('input', function() {
+                    row.find('.remove-row').prop('disabled', false);
+                });
+
+                // Reset input sahaja bila butang ditekan
+                $(this).on('click', function() {
+                    row.find('input, select').val('');
+                    $(this).prop('disabled', true);
+                });
+            });
+
+            // Fungsi untuk membuang baris tambahan
+            $(document).on('click', '.remove-row:not(:first)', function() {
+                $(this).closest('.model-loop').remove();
+            });
         });
     </script>
 @endsection

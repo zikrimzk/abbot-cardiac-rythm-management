@@ -128,7 +128,7 @@
     <h6 class="section-title fs-6">Pulse Generator (Pacemaker/ICD/CRT)</h6>
     <table class="table">
         <tr>
-            <th colspan="6" style="text-align:center;">Generator</th>
+            <th colspan="6" style="background-color: #ddd; font-weight: bold; padding: 8px;">Generator</th>
         </tr>
         <tr>
             <th>Model Name</th>
@@ -142,19 +142,25 @@
 
     <table class="table">
         @foreach (array_chunk($im['models'], 2) as $modelRow)
-            @foreach ($modelRow as $item)
-                <tr>
-                    <th colspan="4" style="text-align:center;">
-                        {{ $item['model_category'] }}
-                    </th>
-                </tr>
-                <tr>
-                    <th>Model</th>
-                    <td>{{ $item['model_code'] }}</td>
-                    <th>S/N</th>
-                    <td>{{ $item['implant_model_sn'] }}</td>
-                </tr>
-            @endforeach
+            <tr>
+                @foreach ($modelRow as $item)
+                    <th style="background-color: #ddd; font-weight: bold; padding: 8px;">{{ $item['model_category'] }}</th>
+                @endforeach
+            </tr>
+            <tr>
+                @foreach ($modelRow as $item)
+                    <td style="padding: 8px; border: 1px solid #000;">
+                        <div>
+                            <span style="font-weight: bold;">Model:</span>
+                            <span style="margin-left: 5px;">{{ $item['model_code'] }}</span>
+                            <br>
+    
+                            <span style="font-weight: bold;">S/N:</span>
+                            <span style="margin-left: 5px;">{{ $item['implant_model_sn'] }}</span>
+                        </div>
+                    </td>
+                @endforeach
+            </tr>
         @endforeach
     </table>
 

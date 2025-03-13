@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('doctor_name');
             $table->string('doctor_phoneno')->nullable();
             $table->integer('doctor_status')->default(1);
-            $table->foreignId('hospital_id')->constrained('hospitals');
             $table->timestamps();
         });
     }

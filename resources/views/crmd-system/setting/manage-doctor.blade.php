@@ -80,7 +80,6 @@
                                             <th scope="col">#</th>
                                             <th scope="col">Doctor Name</th>
                                             <th scope="col">Phone Number</th>
-                                            <th scope="col">Hospital</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Action</th>
                                         </tr>
@@ -130,29 +129,6 @@
                                                     name="doctor_phoneno" placeholder="Enter Phone Number"
                                                     value="{{ old('doctor_phoneno') }}">
                                                 @error('doctor_phoneno')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="col-sm-12">
-                                            <div class="mb-3">
-                                                <label for="hospital_id" class="form-label">Hospital <span
-                                                        class="text-danger">*</span></label>
-                                                <select name="hospital_id" id="hospital_id"
-                                                    class="form-select @error('hospital_id') is-invalid @enderror" required>
-                                                    <option value="" selected>Select Hospital</option>
-                                                    @foreach ($hosp as $hs)
-                                                        @if (old('hospital_id') == $hs->id)
-                                                            <option value="{{ $hs->id }}" selected>
-                                                                {{ $hs->hospital_name }}</option>
-                                                        @else
-                                                            <option value="{{ $hs->id }}">{{ $hs->hospital_name }}
-                                                            </option>
-                                                        @endif
-                                                    @endforeach
-                                                </select>
-                                                @error('hospital_id')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
@@ -251,30 +227,6 @@
 
                                             <div class="col-sm-12">
                                                 <div class="mb-3">
-                                                    <label for="hospital_id" class="form-label">Hospital <span
-                                                            class="text-danger">*</span></label>
-                                                    <select name="hospital_id" id="hospital_id"
-                                                        class="form-select @error('hospital_id') is-invalid @enderror"
-                                                        required>
-                                                        @foreach ($hosp as $hs)
-                                                            @if ($doc->hospital_id == $hs->id)
-                                                                <option value="{{ $hs->id }}" selected>
-                                                                    {{ $hs->hospital_name }}</option>
-                                                            @else
-                                                                <option value="{{ $hs->id }}">
-                                                                    {{ $hs->hospital_name }}
-                                                                </option>
-                                                            @endif
-                                                        @endforeach
-                                                    </select>
-                                                    @error('hospital_id')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-
-                                            <div class="col-sm-12">
-                                                <div class="mb-3">
                                                     <label for="doctor_status" class="form-label">Status <span
                                                             class="text-danger">*</span></label>
                                                     <select name="doctor_status" id="doctor_status"
@@ -357,74 +309,8 @@
                     </div>
                     <!-- [ Delete Modal ] end -->
                 @endforeach
-
-                @foreach ($hosp as $hs)
-                    <!-- [ Details Hospital Modal ] start -->
-                    <div class="modal fade" id="detailHospitalModal-{{ $hs->id }}" tabindex="-1"
-                        aria-labelledby="updateHospitalModal" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                            <div class="modal-content">
-
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Hospital Details</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <div class="mb-3">
-                                                <label for="hospital_name" class="form-label">Hospital Name</label>
-                                                <input type="text" id="hospital_name" class="form-control"
-                                                    value="{{ $hs->hospital_name }}" readonly>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-sm-12">
-                                            <div class="mb-3">
-                                                <label for="hospital_code" class="form-label">Code</label>
-                                                <input type="text" id="hospital_code" class="form-control"
-                                                    value="{{ $hs->hospital_code }}" readonly>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-sm-12">
-                                            <div class="mb-3">
-                                                <label for="hospital_address" class="form-label">Address</label>
-                                                <textarea id="hospital_address" rows="4" class="form-control" placeholder="Empty" readonly>{{ $hs->hospital_address }}</textarea>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-sm-12">
-                                            <div class="mb-3">
-                                                <label for="hospital_phoneno" class="form-label">Phone Number</label>
-                                                <input type="text" id="hospital_phoneno" class="form-control"
-                                                    placeholder="Empty" value="{{ $hs->hospital_phoneno }}" readonly>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="modal-footer justify-content-end">
-                                    <div class="flex-grow-1 text-end">
-                                        <div class="col-sm-12">
-                                            <div class="d-flex justify-content-between gap-3 align-items-center">
-                                                <button type="button" class="btn btn-light btn-pc-default w-100"
-                                                    data-bs-dismiss="modal">Close</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <!-- [ Details Hospital Modal ] end -->
-                @endforeach
-
-
                 <!-- [ Manage Doctor ] end -->
+
             </div>
             <!-- [ Main Content ] end -->
         </div>
@@ -470,10 +356,6 @@
                             data: 'doctor_phoneno',
                             name: 'doctor_phoneno'
 
-                        },
-                        {
-                            data: 'hospital_code',
-                            name: 'hospital_code'
                         },
                         {
                             data: 'doctor_status',

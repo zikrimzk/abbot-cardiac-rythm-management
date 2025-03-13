@@ -158,6 +158,7 @@ class RouteController extends Controller
         $id = Crypt::decrypt($id);
         $modelCategories = DB::table('model_categories')
             ->select('id as model_category_id', 'mcategory_name as model_category')
+            ->where('mcategory_ismorethanone', 0)
             ->get();
 
         $implant = DB::table('implants as a')
@@ -230,6 +231,7 @@ class RouteController extends Controller
             ->join('abbott_models as j', 'i.model_id', '=', 'j.id')
             ->join('model_categories as k', 'j.mcategory_id', '=', 'k.id')
             ->where('i.implant_id', $id)
+            ->where('k.mcategory_ismorethanone', 0)
             ->select([
                 'k.id as model_category_id',
                 'k.mcategory_name as model_category',
@@ -309,7 +311,6 @@ class RouteController extends Controller
         }
        
     }
-
 
     // Add Implant Route
     public function addImplant()
@@ -520,7 +521,7 @@ class RouteController extends Controller
             });
 
             $table->addColumn('action', function ($row) {
-                $isReferenced = DB::table('doctors')->where('hospital_id', $row->id)->exists();
+                $isReferenced = DB::table('implants')->where('hospital_id', $row->id)->exists();
                 $buttonEdit =
                     '
                         <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
@@ -565,9 +566,8 @@ class RouteController extends Controller
     {
         if ($req->ajax()) {
 
-            $data = DB::table('doctors as a')
-                ->join('hospitals as b', 'b.id', '=', 'a.hospital_id')
-                ->select('a.id', 'a.doctor_name', 'a.doctor_phoneno', 'a.doctor_status', 'b.hospital_name', 'b.hospital_code')
+            $data = DB::table('doctors')
+                ->select('id', 'doctor_name', 'doctor_phoneno', 'doctor_status')
                 ->get();
 
             $table = DataTables::of($data)->addIndexColumn();
@@ -578,16 +578,6 @@ class RouteController extends Controller
                     $phoneno = $row->doctor_phoneno;
                 }
                 return $phoneno;
-            });
-
-            $table->addColumn('hospital_code', function ($row) {
-                $code = '
-                <a href="javascript: void(0)" class="link-primary" data-bs-toggle="modal"
-                    data-bs-target="#detailHospitalModal-' . $row->id . '">
-                    ' . $row->hospital_code . '
-                </a>
-                ';
-                return $code;
             });
 
             $table->addColumn('doctor_status', function ($row) {
@@ -602,7 +592,7 @@ class RouteController extends Controller
 
             $table->addColumn('action', function ($row) {
                 $isReferenced = false;
-                // $isReferenced = DB::table('implants')->where('doctor_id', $row->id)->exists();
+                $isReferenced = DB::table('implants')->where('doctor_id', $row->id)->exists();
                 $buttonEdit =
                     '
                         <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
@@ -631,15 +621,13 @@ class RouteController extends Controller
                 return $buttonEdit . $buttonRemove;
             });
 
-            $table->rawColumns(['doctor_phoneno', 'hospital_code', 'doctor_status', 'action']);
+            $table->rawColumns(['doctor_phoneno', 'doctor_status', 'action']);
 
             return $table->make(true);
         }
         return view('crmd-system.setting.manage-doctor', [
             'title' => 'CRMD System | Manage Doctor',
-            'hosp' => Hospital::all(),
             'docs' => Doctor::all()
-
         ]);
     }
 

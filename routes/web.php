@@ -46,7 +46,6 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::get('/view-form/{filename}', [RouteController::class, 'viewBackupForm'])->where('filename', '.*')->name('view-imbackupform');
     Route::get('/export-implant-data', [ImplantController::class, 'exportExcelImplantData'])->name('export-implant-data-excel');
     Route::get('/view-implant-registration-form-{id}-{option}', [RouteController::class, 'viewGenerateDownloadIRF'])->name('view-irf-document');
-    // Route::get('/generate-implant-registration-form-{id}', [RouteController::class, 'viewGenerateDownloadIRF'])->name('view-irf-document'); 
 
 
 
@@ -77,7 +76,6 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::post('/add-doctor', [HospitalDoctorController::class, 'addDoctor'])->name('add-doctor-post');
     Route::post('/update-doctor/{id}', [HospitalDoctorController::class, 'updateDoctor'])->name('update-doctor-post');
     Route::get('/delete-doctor/{id}', [HospitalDoctorController::class, 'deleteDoctor'])->name('delete-doctor-get');
-    Route::get('/get-doctors', [HospitalDoctorController::class, 'getDoctorsByHospital'])->name('doctorbyhospital-get');
 
     //Manage Model Category
     Route::get('/manage-model-category', [RouteController::class, 'manageModelCategory'])->name('manage-model-category-page');

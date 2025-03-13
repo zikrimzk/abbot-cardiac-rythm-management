@@ -351,6 +351,7 @@ class ImplantController extends Controller
         $id = Crypt::decrypt($id);
         $modelCategories = DB::table('model_categories')
             ->select('id as model_category_id', 'mcategory_name as model_category')
+            ->where('mcategory_ismorethanone', 0)
             ->get();
 
         $implant = DB::table('implants as a')
@@ -423,6 +424,7 @@ class ImplantController extends Controller
             ->join('abbott_models as j', 'i.model_id', '=', 'j.id')
             ->join('model_categories as k', 'j.mcategory_id', '=', 'k.id')
             ->where('i.implant_id', $id)
+            ->where('k.mcategory_ismorethanone', 0)
             ->select([
                 'k.id as model_category_id',
                 'k.mcategory_name as model_category',

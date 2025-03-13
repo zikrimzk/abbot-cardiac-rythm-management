@@ -127,6 +127,16 @@
                                             <div class="mb-3">
                                                 <label for="mcategory_ismorethanone" class="form-label">Multiple Input <span
                                                         class="text-danger">*</span></label>
+                                                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                                    <i class="fas fa-exclamation-circle f-18 me-2"></i>
+                                                    <div>
+                                                        If you select <strong>"Yes"</strong>, this category <strong>will
+                                                            not be displayed</strong> in the generated Implant Registration
+                                                        Form
+                                                        and <strong>will not be included</strong> when exporting to
+                                                        Excel.
+                                                    </div>
+                                                </div>
                                                 <select name="mcategory_ismorethanone" id="mcategory_ismorethanone"
                                                     class="form-select @error('mcategory_ismorethanone') is-invalid @enderror"
                                                     required>
@@ -197,8 +207,8 @@
                                                     <input type="text"
                                                         class="form-control @error('mcategory_name') is-invalid @enderror"
                                                         id="mcategory_name" name="mcategory_name"
-                                                        placeholder="Enter Category Name" value="{{ $mc->mcategory_name }}"
-                                                        required>
+                                                        placeholder="Enter Category Name"
+                                                        value="{{ $mc->mcategory_name }}" required>
                                                     @error('mcategory_name')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -209,10 +219,21 @@
                                                 <div class="mb-3">
                                                     <label for="mcategory_ismorethanone" class="form-label">Multiple Input
                                                         <span class="text-danger">*</span></label>
+                                                    <div class="alert alert-warning d-flex align-items-center"
+                                                        role="alert">
+                                                        <i class="fas fa-exclamation-circle f-18 me-2"></i>
+                                                        <div>
+                                                            If you select <strong>"Yes"</strong>, this category <strong>will
+                                                                not be displayed</strong> in the generated Implant
+                                                            Registration Form
+                                                            and <strong>will not be included</strong> when exporting to
+                                                            Excel.
+                                                        </div>
+                                                    </div>
                                                     <select name="mcategory_ismorethanone" id="mcategory_ismorethanone"
                                                         class="form-select @error('mcategory_ismorethanone') is-invalid @enderror"
                                                         required>
-                                                        @if ($mc->mcategory_ismorethanone  == 1)
+                                                        @if ($mc->mcategory_ismorethanone == 1)
                                                             <option value="1" selected>Yes</option>
                                                             <option value="0">No</option>
                                                         @elseif($mc->mcategory_ismorethanone == 0)
@@ -253,8 +274,8 @@
                     </form>
                     <!-- [ Update Model Category Modal ] end -->
 
-                     <!-- [ Delete Modal ] start -->
-                     <div class="modal fade" id="deleteModal-{{ $mc->id }}" data-bs-keyboard="false"
+                    <!-- [ Delete Modal ] start -->
+                    <div class="modal fade" id="deleteModal-{{ $mc->id }}" data-bs-keyboard="false"
                         tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">

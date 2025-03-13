@@ -13,6 +13,5 @@ class Doctor extends Model
         'doctor_name',
         'doctor_phoneno',
         'doctor_status',
-        'hospital_id'
     ];
 }
