@@ -18,6 +18,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ImplantController extends Controller
 {
@@ -89,7 +90,7 @@ class ImplantController extends Controller
             $validated = $validator->validated();
 
             /**** 01 - Implants ****/
-            $implantcode = Carbon::parse($validated['implant_date'])->format('dmY') . '_' . strtoupper(str_replace(' ', '_', $validated['implant_pt_name']));
+            $implantcode = 'IMP' . str_pad(Implant::count() + 1, 3, '0', STR_PAD_LEFT) . Carbon::parse($validated['implant_date'])->format('dmY');
 
             // Create Directory
             $sequenceNumber = str_pad(Implant::count() + 1, 3, '0', STR_PAD_LEFT);
@@ -139,6 +140,9 @@ class ImplantController extends Controller
                     }
                 }
             }
+
+            /**** 04 - Implants Registration Form Generation ****/
+            $this->generateIRF(Crypt::encrypt($implant->id));
 
             return redirect()->route('manage-implant-page')->with('success', 'Implant added successfully.');
         } catch (Exception $e) {
@@ -217,7 +221,7 @@ class ImplantController extends Controller
 
             /**** 01 - Update Implant Code & Directory ****/
             $oldDirectory = $implant->implant_pt_directory;
-            $newImplantCode = Carbon::parse($validated['implant_date'])->format('dmY') . '_' . strtoupper(str_replace(' ', '_', $validated['implant_pt_name']));
+            $newImplantCode = 'IMP' . str_pad($implant->id, 3, '0', STR_PAD_LEFT) . Carbon::parse($validated['implant_date'])->format('dmY');
             $sequenceNumber = str_pad($implant->id, 3, '0', STR_PAD_LEFT);
             $hospital_code = Hospital::find($validated['hospital_id'])->hospital_code ?? 'H0000';
             $newDirectory = $sequenceNumber . '_' . Carbon::parse($validated['implant_date'])->format('d.m.Y') . '_' . strtoupper(str_replace(' ', '_', $validated['implant_pt_name'])) . '_' . strtoupper($hospital_code);
@@ -298,6 +302,10 @@ class ImplantController extends Controller
             ImplantModel::where('implant_id', $id)->whereNotIn('model_id', $updatedModelIDs)->delete();
 
             DB::commit();
+
+            /**** 04 - Implants Registration Form Generation ****/
+            $this->generateIRF(Crypt::encrypt($implant->id));
+
             return redirect()->route('manage-implant-page')->with('success', 'Implant updated successfully.');
         } catch (Exception $e) {
             DB::rollBack();
@@ -317,7 +325,7 @@ class ImplantController extends Controller
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput()
-                ->with('modal', 'uploadBackupModal-'. $id);
+                ->with('modal', 'uploadBackupModal-' . $id);
         }
 
         $implant = Implant::find($id);
@@ -328,8 +336,8 @@ class ImplantController extends Controller
         if ($req->hasFile('implant_backup_form')) {
             $file = $req->file('implant_backup_form');
             $filename = $hospital->hospital_code . '_' . $generator->generator_code . '_' . strtoupper(Carbon::parse($implant->implant_date)->format('dMY')) . '_' .  strtoupper(str_replace(' ', '_', $implant->implant_pt_name)) . '_BACKUP_IRF' . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('implants/'. $implant->implant_pt_directory , $filename, 'public');
-            
+            $path = $file->storeAs('implants/' . $implant->implant_pt_directory, $filename, 'public');
+
             Implant::find($id)->update([
                 'implant_backup_form' => $path
             ]);
@@ -337,6 +345,148 @@ class ImplantController extends Controller
             return back()->with('success', 'File uploaded successfully!');
         }
     }
+
+    public function generateIRF($id)
+    {
+        $id = Crypt::decrypt($id);
+        $modelCategories = DB::table('model_categories')
+            ->select('id as model_category_id', 'mcategory_name as model_category')
+            ->get();
+
+        $implant = DB::table('implants as a')
+            ->join('generators as b', 'a.generator_id', '=', 'b.id')
+            ->join('regions as c', 'a.region_id', '=', 'c.id')
+            ->join('hospitals as d', 'a.hospital_id', '=', 'd.id')
+            ->join('doctors as e', 'a.doctor_id', '=', 'e.id')
+            ->leftJoin('stock_locations as f', 'a.stock_location_id', '=', 'f.id')
+            ->leftJoin('product_group_lists as g', 'a.id', '=', 'g.implant_id')
+            ->leftJoin('product_groups as h', 'g.product_group_id', '=', 'h.id')
+            ->where('a.id', $id)
+            ->select([
+                'a.id',
+                'a.implant_date',
+                'a.implant_code',
+                'd.hospital_name',
+                'd.hospital_phoneno',
+                'd.hospital_code',
+                'c.region_name',
+                DB::raw("GROUP_CONCAT(DISTINCT h.product_group_name ORDER BY h.id ASC SEPARATOR ', ') as product_groups"),
+                'e.doctor_name',
+                'e.doctor_phoneno',
+                'b.generator_name',
+                'b.generator_code',
+                'a.implant_generator_sn',
+                'a.implant_pt_name',
+                'a.implant_pt_directory',
+                'a.implant_invoice_no',
+                'a.implant_sales',
+                'a.implant_quantity',
+                'a.implant_remark',
+                'a.implant_pt_mrn',
+                'a.implant_pt_icno',
+                'a.implant_pt_address',
+                'a.implant_pt_phoneno',
+                'a.implant_pt_email',
+                'a.implant_pt_dob',
+                'a.implant_note'
+            ])
+            ->groupBy(
+                'a.id',
+                'a.implant_date',
+                'a.implant_code',
+                'd.hospital_name',
+                'd.hospital_phoneno',
+                'd.hospital_code',
+                'c.region_name',
+                'e.doctor_name',
+                'e.doctor_phoneno',
+                'b.generator_name',
+                'b.generator_code',
+                'a.implant_generator_sn',
+                'a.implant_pt_name',
+                'a.implant_pt_directory',
+                'a.implant_invoice_no',
+                'a.implant_sales',
+                'a.implant_quantity',
+                'a.implant_remark',
+                'a.implant_pt_mrn',
+                'a.implant_pt_icno',
+                'a.implant_pt_address',
+                'a.implant_pt_phoneno',
+                'a.implant_pt_email',
+                'a.implant_pt_dob',
+                'a.implant_note'
+            )
+            ->first();
+
+        $models = DB::table('implant_models as i')
+            ->join('abbott_models as j', 'i.model_id', '=', 'j.id')
+            ->join('model_categories as k', 'j.mcategory_id', '=', 'k.id')
+            ->where('i.implant_id', $id)
+            ->select([
+                'k.id as model_category_id',
+                'k.mcategory_name as model_category',
+                'j.model_code',
+                'i.implant_model_sn'
+            ])
+            ->get();
+
+        $mergedModels = [];
+        foreach ($modelCategories as $category) {
+            $foundModel = $models->firstWhere('model_category_id', $category->model_category_id);
+
+            $mergedModels[] = [
+                'model_category_id' => $category->model_category_id,
+                'model_category' => $category->model_category,
+                'model_code' => $foundModel->model_code ?? '-',
+                'implant_model_sn' => $foundModel->implant_model_sn ?? '-'
+            ];
+        }
+
+        $formattedData = [
+            'id' => $implant->id ?? '-',
+            'implant_date' => Carbon::parse($implant->implant_date)->format('d M Y') ?? '-',
+            'today_date' => Carbon::now()->format('d M Y') ?? '-',
+            'implant_code' => $implant->implant_code ?? '-',
+            'hospital_name' => $implant->hospital_name ?? '-',
+            'hospital_phoneno' => $implant->hospital_phoneno ?? '-',
+            'hospital_code' => $implant->hospital_code ?? '-',
+            'region_name' => $implant->region_name ?? '-',
+            'product_groups' => $implant->product_groups ?? '-',
+            'doctor_name' => $implant->doctor_name ?? '-',
+            'doctor_phoneno' => $implant->doctor_phoneno ?? '-',
+            'generator_name' => $implant->generator_name ?? '-',
+            'generator_code' => $implant->generator_code ?? '-',
+            'implant_generator_sn' => $implant->implant_generator_sn ?? '-',
+            'implant_pt_name' => $implant->implant_pt_name ?? '-',
+            'implant_pt_directory' => $implant->implant_pt_directory ?? '-',
+            'implant_invoice_no' => $implant->implant_invoice_no ?? '-',
+            'implant_sales' => $implant->implant_sales ?? '-',
+            'implant_quantity' => $implant->implant_quantity ?? '-',
+            'implant_remark' => $implant->implant_remark ?? '-',
+            'implant_pt_mrn' => $implant->implant_pt_mrn ?? '-',
+            'implant_pt_icno' => $implant->implant_pt_icno ?? '-',
+            'implant_pt_address' => $implant->implant_pt_address ?? '-',
+            'implant_pt_phoneno' => $implant->implant_pt_phoneno ?? '-',
+            'implant_pt_email' => $implant->implant_pt_email ?? '-',
+            'implant_pt_dob' => Carbon::parse($implant->implant_pt_dob)->format('d M Y') ?? '-',
+            'implant_note' => $implant->implant_note ?? '-',
+            'models' => $mergedModels,
+        ];
+
+        $title =  $formattedData['hospital_code'] . '_' . $formattedData['generator_code'] . '_' . strtoupper(Carbon::parse($formattedData['implant_date'])->format('dMY')) . '_' .  strtoupper(str_replace(' ', '_', $formattedData['implant_pt_name'])) . '_SYS_IRF';
+
+        $pdf = Pdf::loadView('crmd-system.implant-management.view-irf-document', [
+            'title' =>  $title ?? 'CRMD System | View Implant Registration Form',
+            'im' => $formattedData
+
+        ]);
+
+
+        $filePath = 'storage/implants/' . $formattedData['implant_pt_directory'] . '/' . $title . '.pdf';
+        return $pdf->save(public_path($filePath));
+    }
+
 
     public function exportExcelImplantData()
     {

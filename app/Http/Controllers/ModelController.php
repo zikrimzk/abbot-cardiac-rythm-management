@@ -16,10 +16,10 @@ class ModelController extends Controller
     {
         $validator = Validator::make($req->all(), [
             'mcategory_name' => 'required|string',
-            'mcategory_isimplant' => 'required|integer',
+            'mcategory_ismorethanone' => 'required|integer',
         ], [], [
             'mcategory_name' => 'model category name',
-            'mcategory_isimplant' => 'model category appearance',
+            'mcategory_ismorethanone' => 'category multiple input',
         ]);
 
         if ($validator->fails()) {
@@ -44,10 +44,10 @@ class ModelController extends Controller
     {
         $validator = Validator::make($req->all(), [
             'mcategory_name' => 'required|string',
-            'mcategory_isimplant' => 'required|integer',
+            'mcategory_ismorethanone' => 'required|integer',
         ], [], [
             'mcategory_name' => 'model category name',
-            'mcategory_isimplant' => 'model category appearance',
+            'mcategory_ismorethanone' => 'category multiple input',
         ]);
 
         if ($validator->fails()) {

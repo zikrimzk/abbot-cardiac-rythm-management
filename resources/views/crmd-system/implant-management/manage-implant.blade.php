@@ -84,6 +84,7 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
+                                            <th scope="col">Ref</th>
                                             <th scope="col">Implant Date</th>
                                             <th scope="col">Patient</th>
                                             <th scope="col">IC Number</th>
@@ -178,6 +179,10 @@
                             name: 'DT_RowIndex',
                             searchable: false,
                             className: "text-start"
+                        },
+                        {
+                            data: 'implant_code',
+                            name: 'implant_code'
                         },
                         {
                             data: 'implant_date',

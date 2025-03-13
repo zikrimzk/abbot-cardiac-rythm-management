@@ -125,15 +125,15 @@
 
                                         <div class="col-sm-12">
                                             <div class="mb-3">
-                                                <label for="mcategory_isimplant" class="form-label">Appear in Implant <span
+                                                <label for="mcategory_ismorethanone" class="form-label">Multiple Input <span
                                                         class="text-danger">*</span></label>
-                                                <select name="mcategory_isimplant" id="mcategory_isimplant"
-                                                    class="form-select @error('mcategory_isimplant') is-invalid @enderror"
+                                                <select name="mcategory_ismorethanone" id="mcategory_ismorethanone"
+                                                    class="form-select @error('mcategory_ismorethanone') is-invalid @enderror"
                                                     required>
-                                                    @if (old('mcategory_isimplant') == 1)
+                                                    @if (old('mcategory_ismorethanone') == 1)
                                                         <option value="1" selected>Yes</option>
                                                         <option value="0">No</option>
-                                                    @elseif(old('mcategory_isimplant') == 0)
+                                                    @elseif(old('mcategory_ismorethanone') == 0)
                                                         <option value="1">Yes</option>
                                                         <option value="0" selected>No</option>
                                                     @else
@@ -142,7 +142,7 @@
                                                         <option value="0">No</option>
                                                     @endif
                                                 </select>
-                                                @error('mcategory_isimplant')
+                                                @error('mcategory_ismorethanone')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
@@ -207,15 +207,15 @@
 
                                             <div class="col-sm-12">
                                                 <div class="mb-3">
-                                                    <label for="mcategory_isimplant" class="form-label">Appear in Implant
+                                                    <label for="mcategory_ismorethanone" class="form-label">Multiple Input
                                                         <span class="text-danger">*</span></label>
-                                                    <select name="mcategory_isimplant" id="mcategory_isimplant"
-                                                        class="form-select @error('mcategory_isimplant') is-invalid @enderror"
+                                                    <select name="mcategory_ismorethanone" id="mcategory_ismorethanone"
+                                                        class="form-select @error('mcategory_ismorethanone') is-invalid @enderror"
                                                         required>
-                                                        @if ($mc->mcategory_isimplant  == 1)
+                                                        @if ($mc->mcategory_ismorethanone  == 1)
                                                             <option value="1" selected>Yes</option>
                                                             <option value="0">No</option>
-                                                        @elseif($mc->mcategory_isimplant == 0)
+                                                        @elseif($mc->mcategory_ismorethanone == 0)
                                                             <option value="1">Yes</option>
                                                             <option value="0" selected>No</option>
                                                         @else
@@ -224,7 +224,7 @@
                                                             <option value="0">No</option>
                                                         @endif
                                                     </select>
-                                                    @error('mcategory_isimplant')
+                                                    @error('mcategory_ismorethanone')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
                                                 </div>
@@ -334,8 +334,8 @@
                             name: 'mcategory_name'
                         },
                         {
-                            data: 'mcategory_isimplant',
-                            name: 'mcategory_isimplant'
+                            data: 'mcategory_ismorethanone',
+                            name: 'mcategory_ismorethanone'
                         },
                         {
                             data: 'action',

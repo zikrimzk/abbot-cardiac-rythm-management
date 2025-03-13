@@ -45,7 +45,9 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::post('/upload-imbackup-form/{id}', [ImplantController::class, 'uploadBackupForm'])->name('upload-imbackupform-post');
     Route::get('/view-form/{filename}', [RouteController::class, 'viewBackupForm'])->where('filename', '.*')->name('view-imbackupform');
     Route::get('/export-implant-data', [ImplantController::class, 'exportExcelImplantData'])->name('export-implant-data-excel');
-    Route::get('/view-implant-registration-form-{id}', [RouteController::class, 'viewIRF'])->name('view-irf-document');
+    Route::get('/view-implant-registration-form-{id}-{option}', [RouteController::class, 'viewGenerateDownloadIRF'])->name('view-irf-document');
+    // Route::get('/generate-implant-registration-form-{id}', [RouteController::class, 'viewGenerateDownloadIRF'])->name('view-irf-document'); 
+
 
 
 

@@ -63,6 +63,7 @@ class RouteController extends Controller
             $data = DB::table('implants')
                 ->select(
                     'id',
+                    'implant_code',
                     'implant_date',
                     'implant_pt_name',
                     'implant_pt_icno',
@@ -77,20 +78,19 @@ class RouteController extends Controller
             $table = DataTables::of($data)->addIndexColumn();
 
             $table->addColumn('implant_date', function ($row) {
-                $date = Carbon::parse($row->implant_date)->format('d-m-Y');
+                $date = Carbon::parse($row->implant_date)->format('d M Y');
                 return $date;
             });
 
-            $table->addColumn('implant_pt_directory', function ($row) {
-                $directory =
+            $table->addColumn('implant_code', function ($row) {
+                $code =
                     '
-                    <a href="javascript: void(0)" class="link-primary" data-bs-toggle="modal"
-                        data-bs-target="#directoryModal-' . $row->id . '">
-                        ' . $row->implant_pt_directory . '
+                    <a href="'.route('view-irf-document',['id'=>Crypt::encrypt($row->id),'option' => 2]).'" class="link-primary" target="_blank">
+                        ' . $row->implant_code . '
                     </a>
                 
                 ';
-                return $directory;
+                return $code;
             });
 
             $table->addColumn('implant_backup_form', function ($row) {
@@ -100,7 +100,7 @@ class RouteController extends Controller
                 }
                 $directory =
                     '
-                    <a href="' . URL::signedRoute('view-imbackupform', ['filename' => Crypt::encrypt($row->implant_backup_form)]) . '" class="link-dark" target="_blank">
+                    <a href="' . URL::signedRoute('view-imbackupform', ['filename' => Crypt::encrypt($row->implant_backup_form)]) . '" target="_blank" class="link-dark">
                      <i class="fas fa-file-pdf f-20 text-danger me-2"></i>
                         View Form
                     </a>
@@ -124,14 +124,11 @@ class RouteController extends Controller
                         <a href="' . route('generate-patient-id-card-page') . '" class="avtar avtar-xs  btn-light-warning ">
                             <i class="ti ti-credit-card f-20"></i>
                         </a>
-                         <a href="' . route('view-irf-document', $row->id) . '"  target="_blank" class="avtar avtar-xs  btn-light-danger">
-                            <i class="ti ti-file-invoice f-20"></i>
-                        </a>
                     ';
                 return $button;
             });
 
-            $table->rawColumns(['implant_date', 'implant_backup_form', 'implant_pt_directory', 'action']);
+            $table->rawColumns(['implant_date', 'implant_backup_form', 'implant_code', 'action']);
 
             return $table->make(true);
         }
@@ -155,11 +152,11 @@ class RouteController extends Controller
         return response()->file($path);
     }
 
-    // View Generated IRF
-    public function viewIRF($id)
+    // (2) View Or (1) Generated Or (3) Download IRF
+    public function viewGenerateDownloadIRF($id, $option)
     {
+        $id = Crypt::decrypt($id);
         $modelCategories = DB::table('model_categories')
-            ->where('mcategory_isimplant', 1)
             ->select('id as model_category_id', 'mcategory_name as model_category')
             ->get();
 
@@ -187,6 +184,7 @@ class RouteController extends Controller
                 'b.generator_code',
                 'a.implant_generator_sn',
                 'a.implant_pt_name',
+                'a.implant_pt_directory',
                 'a.implant_invoice_no',
                 'a.implant_sales',
                 'a.implant_quantity',
@@ -213,6 +211,7 @@ class RouteController extends Controller
                 'b.generator_code',
                 'a.implant_generator_sn',
                 'a.implant_pt_name',
+                'a.implant_pt_directory',
                 'a.implant_invoice_no',
                 'a.implant_sales',
                 'a.implant_quantity',
@@ -231,7 +230,6 @@ class RouteController extends Controller
             ->join('abbott_models as j', 'i.model_id', '=', 'j.id')
             ->join('model_categories as k', 'j.mcategory_id', '=', 'k.id')
             ->where('i.implant_id', $id)
-            ->where('k.mcategory_isimplant', 1)
             ->select([
                 'k.id as model_category_id',
                 'k.mcategory_name as model_category',
@@ -268,6 +266,7 @@ class RouteController extends Controller
             'generator_code' => $implant->generator_code ?? '-',
             'implant_generator_sn' => $implant->implant_generator_sn ?? '-',
             'implant_pt_name' => $implant->implant_pt_name ?? '-',
+            'implant_pt_directory' => $implant->implant_pt_directory ?? '-',
             'implant_invoice_no' => $implant->implant_invoice_no ?? '-',
             'implant_sales' => $implant->implant_sales ?? '-',
             'implant_quantity' => $implant->implant_quantity ?? '-',
@@ -282,14 +281,33 @@ class RouteController extends Controller
             'models' => $mergedModels,
         ];
 
-        $title =  $formattedData['hospital_code'] . '_' . $formattedData['generator_code'] . '_' . strtoupper(Carbon::parse($formattedData['implant_date'])->format('dMY')) . '_' .  strtoupper(str_replace(' ', '_', $formattedData['implant_pt_name'])) . '_IRF';
+        $title =  $formattedData['hospital_code'] . '_' . $formattedData['generator_code'] . '_' . strtoupper(Carbon::parse($formattedData['implant_date'])->format('dMY')) . '_' .  strtoupper(str_replace(' ', '_', $formattedData['implant_pt_name'])) . '_SYS_IRF';
 
         $pdf = Pdf::loadView('crmd-system.implant-management.view-irf-document',[
             'title' =>  $title ?? 'CRMD System | View Implant Registration Form',
             'im' => $formattedData
 
         ]);
-        return $pdf->stream($title .'.pdf');  
+
+        if($option == 1) // Generate PDF & Store to Storage
+        {
+            $filePath = 'storage/implants/'. $formattedData['implant_pt_directory'] . '/' . $title . '.pdf';
+            $pdf->save(public_path($filePath));
+            return back();
+        }
+        elseif($option == 2) // Show PDF
+        {
+            return $pdf->stream($title .'.pdf');  
+        }
+        elseif($option == 3) // Download PDF
+        {
+            return $pdf->download($title .'.pdf');  
+        }
+        else // 404
+        {
+            return abort(404);
+        }
+       
     }
 
 
@@ -302,7 +320,7 @@ class RouteController extends Controller
             'hospitals' => Hospital::all(),
             'doctors' => Doctor::all(),
             'pgs' => ProductGroup::all(),
-            'mcs' => ModelCategory::where('mcategory_isimplant', 1)->get(),
+            'mcs' => ModelCategory::all(),
             'generators' => Generator::all(),
             'abbottmodels' => AbbottModel::all(),
             'stocklocations' => StockLocation::all(),
@@ -321,7 +339,7 @@ class RouteController extends Controller
             'hospitals' => Hospital::all(),
             'doctors' => Doctor::all(),
             'pgs' => ProductGroup::all(),
-            'mcs' => ModelCategory::where('mcategory_isimplant', 1)->get(),
+            'mcs' => ModelCategory::all(),
             'generators' => Generator::all(),
             'abbottmodels' => AbbottModel::all(),
             'stocklocations' => StockLocation::all(),
@@ -631,16 +649,16 @@ class RouteController extends Controller
         if ($req->ajax()) {
 
             $data = DB::table('model_categories')
-                ->select('id', 'mcategory_name', 'mcategory_isimplant')
+                ->select('id', 'mcategory_name', 'mcategory_ismorethanone')
                 ->get();
 
             $table = DataTables::of($data)->addIndexColumn();
 
-            $table->addColumn('mcategory_isimplant', function ($row) {
+            $table->addColumn('mcategory_ismorethanone', function ($row) {
                 $isImplant = '';
-                if ($row->mcategory_isimplant == 0) {
+                if ($row->mcategory_ismorethanone == 0) {
                     $isImplant = '<span class="badge bg-light-danger ">' . 'No' . '</span>';
-                } elseif ($row->mcategory_isimplant == 1) {
+                } elseif ($row->mcategory_ismorethanone == 1) {
                     $isImplant = '<span class="badge bg-light-success">' . 'Yes' . '</span>';
                 }
                 return $isImplant;
@@ -677,7 +695,7 @@ class RouteController extends Controller
                 return $buttonEdit . $buttonRemove;
             });
 
-            $table->rawColumns(['mcategory_isimplant', 'action']);
+            $table->rawColumns(['mcategory_ismorethanone', 'action']);
 
             return $table->make(true);
         }
