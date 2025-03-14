@@ -62,13 +62,13 @@
                         <div class="card-body">
                             <form action="">
                                 <div class="row d-flex justify-content-center align-items-center">
-                                    <div class="col-sm-6 d-flex justify-content-center align-items-center  border border-dark py-5">
-                                        <div class="f-36 py-5">Generated Card Front</div>
+                                    <div class="col-sm-6 d-flex justify-content-center align-items-center border border-dark py-3" style="width: 3.5in; height: 2in;">
+                                        <div class="f-36 text-center">Generated Card Front</div>
                                     </div>
                                 </div>
                                 <div class="row d-flex justify-content-center align-items-center my-3">
-                                    <div class="col-sm-6 d-flex justify-content-center align-items-center  border border-dark py-5">
-                                        <div class="f-36 py-5">Generated Card Back</div>
+                                    <div class="col-sm-6 d-flex justify-content-center align-items-center border border-dark py-3" style="width: 3.5in; height: 2in;">
+                                        <div class="f-36 text-center">Generated Card Back</div>
                                     </div>
                                 </div>
                                 <div class="row">

@@ -132,9 +132,8 @@
                                 <table class="table data-table table-hover nowrap">
                                     <thead>
                                         <tr>
-                                            {{-- <th scope="col">#</th> --}}
-                                            {{-- <th scope="col">Ref</th> --}}
                                             <th><input type="checkbox" id="select-all" class="form-check-input"></th>
+                                            <th scope="col">Code</th>
                                             <th scope="col">Implant Date</th>
                                             <th scope="col">Patient</th>
                                             <th scope="col">IC Number</th>
@@ -242,16 +241,11 @@
                             searchable: false,
 
                         },
-                        // {
-                        //     data: 'DT_RowIndex',
-                        //     name: 'DT_RowIndex',
-                        //     searchable: false,
-                        //     className: "text-start"
-                        // },
-                        // {
-                        //     data: 'implant_code',
-                        //     name: 'implant_code'
-                        // },
+                        {
+                            data: 'implant_code',
+                            name: 'implant_code',
+                            visible: false
+                        },
                         {
                             data: 'implant_date',
                             name: 'implant_date'

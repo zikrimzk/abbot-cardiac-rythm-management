@@ -49,13 +49,10 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::get('/download-implant-directory/{id}', [ImplantController::class, 'downloadImplantDirectory'])->name('download-implant-directory');
     Route::get('/download-multiple-implant-directory', [ImplantController::class, 'downloadMultipleImplantDirectory'])->name('download-multiple-implant-directory');
 
-
-
-
-
-
     //Generate Patient ID Card
-    Route::get('/generate-patient-id-card', [RouteController::class, 'generatePatientIdCard'])->name('generate-patient-id-card-page');
+    Route::get('/generate-patient-id-card-{id}', [RouteController::class, 'generatePatientIdCard'])->name('generate-patient-id-card-page');
+    Route::get('/view-patient-id-card', [RouteController::class, 'viewPatientIdCard'])->name('view-patient-id-card-page');
+
 
     //Manage Designation
     Route::get('/manage-designation', [RouteController::class, 'manageDesignation'])->name('manage-designation-page');

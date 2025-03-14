@@ -94,7 +94,7 @@ class RouteController extends Controller
             if ($req->has('region') && !empty($req->input('region'))) {
                 $data->where('region_id', $req->input('region'));
             }
-            
+
             $data = $data->get();
 
             $table = DataTables::of($data)->addIndexColumn();
@@ -167,8 +167,11 @@ class RouteController extends Controller
                         <a href="' . route('download-implant-directory', Crypt::encrypt($row->id)) . '" class="avtar avtar-xs  btn-light-warning">
                             <i class="ti ti-download f-20"></i>
                         </a>
-                        <a href="' . route('generate-patient-id-card-page') . '" class="avtar avtar-xs  btn-light-warning d-none">
-                            <i class="ti ti-credit-card f-20"></i>
+                        <a href="' . route('generate-patient-id-card-page', Crypt::encrypt($row->id)) . '" class="avtar avtar-xs  btn-light-success">
+                            <i class="ti ti-id f-20"></i>
+                        </a>
+                         <a href="' . route('view-patient-id-card-page') . '" class="avtar avtar-xs  btn-light-danger">
+                            <i class="ti ti-id f-20"></i>
                         </a>
                     ';
                 return $button;
@@ -181,9 +184,44 @@ class RouteController extends Controller
         return view('crmd-system.implant-management.manage-implant', [
             'title' => 'CRMD System | Manage Implant',
             'ims' => Implant::all(),
-            'hosp'=>Hospital::all(),
-            'gene'=>Generator::all(),
-            'region'=>Region::all(),
+            'hosp' => Hospital::all(),
+            'gene' => Generator::all(),
+            'region' => Region::all(),
+        ]);
+    }
+
+    // Add Implant Route
+    public function addImplant()
+    {
+        return view('crmd-system.implant-management.add-implant', [
+            'title' => 'CRMD System | Add Implant',
+            'regions' => Region::all(),
+            'hospitals' => Hospital::all(),
+            'doctors' => Doctor::all(),
+            'pgs' => ProductGroup::all(),
+            'mcs' => ModelCategory::all(),
+            'generators' => Generator::all(),
+            'abbottmodels' => AbbottModel::all(),
+            'stocklocations' => StockLocation::all(),
+        ]);
+    }
+
+    // Update Implant Route
+    public function updateImplant($id)
+    {
+        return view('crmd-system.implant-management.update-implant', [
+            'title' => 'CRMD System | Update Implant',
+            'im' => Implant::where('id', Crypt::decrypt($id))->first(),
+            'pgslist' => ProductGroupList::where('implant_id', Crypt::decrypt($id))->get(),
+            'ims' => ImplantModel::where('implant_id', Crypt::decrypt($id))->get(),
+            'regions' => Region::all(),
+            'hospitals' => Hospital::all(),
+            'doctors' => Doctor::all(),
+            'pgs' => ProductGroup::all(),
+            'mcs' => ModelCategory::all(),
+            'generators' => Generator::all(),
+            'abbottmodels' => AbbottModel::all(),
+            'stocklocations' => StockLocation::all(),
         ]);
     }
 
@@ -356,47 +394,28 @@ class RouteController extends Controller
         }
     }
 
-    // Add Implant Route
-    public function addImplant()
-    {
-        return view('crmd-system.implant-management.add-implant', [
-            'title' => 'CRMD System | Add Implant',
-            'regions' => Region::all(),
-            'hospitals' => Hospital::all(),
-            'doctors' => Doctor::all(),
-            'pgs' => ProductGroup::all(),
-            'mcs' => ModelCategory::all(),
-            'generators' => Generator::all(),
-            'abbottmodels' => AbbottModel::all(),
-            'stocklocations' => StockLocation::all(),
-        ]);
-    }
-
-    // Update Implant Route
-    public function updateImplant($id)
-    {
-        return view('crmd-system.implant-management.update-implant', [
-            'title' => 'CRMD System | Update Implant',
-            'im' => Implant::where('id', Crypt::decrypt($id))->first(),
-            'pgslist' => ProductGroupList::where('implant_id', Crypt::decrypt($id))->get(),
-            'ims' => ImplantModel::where('implant_id', Crypt::decrypt($id))->get(),
-            'regions' => Region::all(),
-            'hospitals' => Hospital::all(),
-            'doctors' => Doctor::all(),
-            'pgs' => ProductGroup::all(),
-            'mcs' => ModelCategory::all(),
-            'generators' => Generator::all(),
-            'abbottmodels' => AbbottModel::all(),
-            'stocklocations' => StockLocation::all(),
-        ]);
-    }
-
     // Generate Patient ID Card Route
-    public function generatePatientIdCard(Request $req)
+    public function generatePatientIdCard($id)
     {
+        $id = Crypt::decrypt($id);
+        $implant = Implant::where('id', $id)->first();
         return view('crmd-system.implant-management.generate-patient-id-card', [
-            'title' => 'CRMD System | Generate Patient ID Card'
+            'title' => 'CRMD System | Generate Patient ID Card',
+            'im' => $implant
         ]);
+    }
+
+    public function viewPatientIDCard()
+    {
+        $data = [
+            'frontText' => 'Generated Card Front',
+            'backText' => 'Generated Card Back'
+        ];
+
+        $pdf = Pdf::loadView('crmd-system.implant-management.view-pt-id-card', $data);
+        $pdf->setPaper([0, 0, 252, 144], 'portrait'); // 3.5in x 2in in points (1 inch = 72 points)
+        
+        return $pdf->stream('Patient_ID_Card.pdf');
     }
 
     // Manage Designation Route
