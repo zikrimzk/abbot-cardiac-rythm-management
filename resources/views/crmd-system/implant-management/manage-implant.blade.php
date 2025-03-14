@@ -60,13 +60,13 @@
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="d-flex gap-3">
-                                <a href="{{ route('add-implant-page') }}"
+                            <div class="d-grid gap-2 gap-md-3 d-md-flex flex-wrap">
+                                <a href="{{ route('add-implant-page') }}" id="addImplantBtn"
                                     class="btn btn-primary d-inline-flex align-items-center gap-2">
                                     <i class="ti ti-plus f-18"></i>
                                     Add Implant
                                 </a>
-                                <a href="{{ route('export-implant-data-excel') }}"
+                                <a href="{{ route('export-implant-data-excel') }}" id="exportExcelBtn"
                                     class="btn btn-primary d-inline-flex align-items-center gap-2">
                                     <i class="ti ti-file-export f-18"></i>
                                     Export Data
@@ -84,6 +84,50 @@
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body">
+                            <!-- [ Filter ] start -->
+                            <div class="row">
+
+                                <div class="col-sm-3 mb-3">
+                                    <input type="text" class="form-control mb-2" id="dateRangeFilter"
+                                        placeholder="-- Select date range --" readonly />
+                                    <a href="javascript:void(0)" id="clearDateRangeFilter" class="link-primary">Clear</a>
+                                </div>
+
+                                <div class="col-sm-3 mb-3">
+                                    <select class="form-select mb-2" id="regionFilter">
+                                        <option value="">-- Select Region --</option>
+                                        @foreach ($region as $rn)
+                                            <option value="{{ $rn->id }}">{{ $rn->region_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <a href="javascript:void(0)" id="clearRegionFilter" class="link-primary">Clear</a>
+                                </div>
+
+                                <div class="col-sm-3 mb-3">
+                                    <select class="form-select mb-2" id="hospFilter">
+                                        <option value="">-- Select Hospital --</option>
+                                        @foreach ($hosp as $h)
+                                            <option value="{{ $h->id }}">({{ $h->hospital_code }}) -
+                                                {{ $h->hospital_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <a href="javascript:void(0)" id="clearHospFilter" class="link-primary">Clear</a>
+                                </div>
+
+                                <div class="col-sm-3 mb-3">
+                                    <select class="form-select mb-2" id="generatorFilter">
+                                        <option value="">-- Select Generator --</option>
+                                        @foreach ($gene as $gn)
+                                            <option value="{{ $gn->id }}">({{ $gn->generator_code }}) -
+                                                {{ $gn->generator_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <a href="javascript:void(0)" id="clearGeneratorFilter" class="link-primary">Clear</a>
+                                </div>
+
+                            </div>
+                            <!-- [ Filter ] end -->
+
                             <div class="dt-responsive table-responsive">
                                 <table class="table data-table table-hover nowrap">
                                     <thead>
@@ -121,7 +165,8 @@
 
                         <div class="modal-header">
                             <h5 class="modal-title">Upload Implant Backup Form</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
 
                         <div class="modal-body">
@@ -171,7 +216,6 @@
         $(document).ready(function() {
 
             $(function() {
-
                 // DATATABLE : IMPLANT
                 var table = $('.data-table').DataTable({
                     processing: true,
@@ -179,6 +223,17 @@
                     responsive: true,
                     ajax: {
                         url: "{{ route('manage-implant-page') }}",
+                        data: function(d) {
+                            d.date_range = $('#dateRangeFilter')
+                                .val();
+                            d.region = $('#regionFilter')
+                                .val();
+                            d.hospital = $('#hospFilter')
+                                .val();
+                            d.generator = $('#generatorFilter')
+                                .val();
+
+                        }
                     },
                     columns: [{
                             data: 'checkbox',
@@ -227,6 +282,61 @@
 
             });
 
+            /* Date Range Picker Filter */
+            let datePicker = flatpickr("#dateRangeFilter", {
+                mode: "range",
+                dateFormat: "d M Y",
+                allowInput: true,
+                locale: {
+                    rangeSeparator: " to "
+                },
+                onClose: function(selectedDates, dateStr, instance) {
+                    if (selectedDates.length === 2) {
+                        $('.data-table').DataTable().ajax
+                            .reload();
+                    }
+                }
+            });
+
+            $("#clearDateRangeFilter").click(function() {
+                datePicker.clear();
+                $('.data-table').DataTable().ajax.reload();
+            });
+
+            /* Region Filter */
+            $('#regionFilter').on('change', function() {
+                $('.data-table').DataTable().ajax
+                    .reload();
+            });
+
+            $("#clearRegionFilter").click(function() {
+                $('#regionFilter').val("");
+                $('.data-table').DataTable().ajax.reload();
+            });
+
+            /* Hospital Filter */
+            $('#hospFilter').on('change', function() {
+                $('.data-table').DataTable().ajax
+                    .reload();
+            });
+
+            $("#clearHospFilter").click(function() {
+                $('#hospFilter').val("");
+                $('.data-table').DataTable().ajax.reload();
+            });
+
+            /* Generator Filter */
+            $('#generatorFilter').on('change', function() {
+                $('.data-table').DataTable().ajax
+                    .reload();
+            });
+
+            $("#clearGeneratorFilter").click(function() {
+                $('#generatorFilter').val("");
+                $('.data-table').DataTable().ajax.reload();
+            });
+
+
             $('#implant_file').on('change', function() {
                 let file = this.files[0];
 
@@ -239,23 +349,78 @@
                 }
             });
 
+            /* SELECT : MULTIPLE IMPLANT DOWNLOAD */
+            const addImpBtn = $("#addImplantBtn");
+            const exportExcelBtn = $("#exportExcelBtn");
             const downloadBtn = $("#downloadMultipleDirBtn");
+            let selectedIds = new Set();
 
             // Handle "Select All" checkbox
             $("#select-all").on("change", function() {
-                $(".implant-checkbox").prop("checked", $(this).prop("checked"));
+                let isChecked = $(this).prop("checked");
+
+                $(".implant-checkbox").each(function() {
+                    let id = $(this).val();
+                    this.checked = isChecked;
+
+                    if (isChecked) {
+                        selectedIds.add(id);
+                    } else {
+                        selectedIds.delete(id);
+                    }
+                });
                 toggleDownloadButton();
             });
 
-            // Handle individual checkboxes
+            // Handle individual checkbox selection
             $(document).on("change", ".implant-checkbox", function() {
+                let id = $(this).val();
+                if ($(this).prop("checked")) {
+                    selectedIds.add(id);
+                } else {
+                    selectedIds.delete(id);
+                }
                 toggleDownloadButton();
             });
 
+            // Restore checkbox states after DataTables refresh
+            $('.data-table').on("draw.dt", function() {
+                $(".implant-checkbox").each(function() {
+                    let id = $(this).val();
+                    this.checked = selectedIds.has(id);
+                });
+
+                // If all checkboxes are selected, keep "Select All" checked
+                $("#select-all").prop(
+                    "checked",
+                    $(".implant-checkbox").length === $(".implant-checkbox:checked").length
+                );
+
+                toggleDownloadButton();
+            });
+
+            // Enable/disable the download button based on selections
             function toggleDownloadButton() {
-                let checkedCount = $(".implant-checkbox:checked").length;
-                downloadBtn.prop("disabled", checkedCount === 0);
+                downloadBtn.prop("disabled", selectedIds.size === 0);
+                addImpBtn.toggleClass("disabled-a", selectedIds.size !== 0);
+
             }
+
+            exportExcelBtn.click(function(e) {
+                e.preventDefault();
+
+                let selectedIds = $(".implant-checkbox:checked").map(function() {
+                    return $(this).val();
+                }).get();
+
+                let url = "{{ route('export-implant-data-excel') }}";
+
+                if (selectedIds.length > 0) {
+                    url += "?ids=" + selectedIds.join(",");
+                }
+
+                window.location.href = url;
+            });
 
             downloadBtn.on("click", function() {
                 let selectedIds = $(".implant-checkbox:checked")
@@ -274,7 +439,7 @@
 
                 // Redirect the browser to download ZIP directly
                 window.location.href = "{{ route('download-multiple-implant-directory') }}?ids=" +
-                idsParam;
+                    idsParam;
             });
 
         });

@@ -491,9 +491,10 @@ class ImplantController extends Controller
         return $pdf->save(public_path($filePath));
     }
 
-    public function exportExcelImplantData()
+    public function exportExcelImplantData(Request $req)
     {
-        return Excel::download(new ImplantsExport, 'Implants_Data' . '_' . date('dMY') . '.xlsx');
+        $selectedIds = $req->query('ids');
+        return Excel::download(new ImplantsExport($selectedIds), 'Implants_Data' . '_' . date('dMY') . '.xlsx');
     }
 
     public function downloadImplantDirectory($id)

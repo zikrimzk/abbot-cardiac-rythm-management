@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <!-- [Head] start -->
+
 <head>
     <title>{{ $title }}</title>
     <!-- [Meta] -->
@@ -28,16 +29,20 @@
     <!-- [Template CSS Files] -->
     <link rel="stylesheet" href="../assets/css/style.css" id="main-style-link" />
     <link rel="stylesheet" href="../assets/css/style-preset.css" />
-    <!-- [DataTables Links & File] -->
+    <!-- [DataTables Style Links] -->
     <link rel="stylesheet" href="../assets/css/plugins/dataTables.bootstrap5.min.css" />
     <link rel="stylesheet" href="../assets/css/plugins/responsive.bootstrap5.min.css" />
     <link href="../assets/css/plugins/animate.min.css" rel="stylesheet" type="text/css" />
+    <!-- [DataTables Scripts] -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="../assets/js/plugins/dataTables.min.js"></script>
     <script src="../assets/js/plugins/dataTables.bootstrap5.min.js"></script>
     <script src="../assets/js/plugins/dataTables.responsive.min.js"></script>
     <script src="../assets/js/plugins/responsive.bootstrap5.min.js"></script>
-    <script src="../assets/js/plugins/sweetalert2.all.min.js"></script>
+    <!-- [Flatpickr Style Links] -->
+    <link rel="stylesheet" href="../assets/css/plugins/flatpickr.min.css" />
+    <!-- [Flatpickr Scripts] -->
+    <script src="../assets/js/plugins/flatpickr.min.js"></script>
 
     <style>
         .data-table td {
@@ -49,7 +54,6 @@
             opacity: 0.6;
             text-decoration: none;
         }
-
     </style>
 
 </head>

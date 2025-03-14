@@ -14,6 +14,14 @@ class ImplantsExport implements FromCollection, WithHeadings, WithEvents
     /**
      * @return \Illuminate\Support\Collection
      */
+
+    protected $selectedIds;
+
+    public function __construct($selectedIds = null)
+    {
+        $this->selectedIds = $selectedIds ? explode(',', $selectedIds) : null;
+    }
+
     public function collection()
     {
         $modelCategories = DB::table('model_categories')
@@ -76,8 +84,13 @@ class ImplantsExport implements FromCollection, WithHeadings, WithEvents
                 'a.implant_pt_icno',
                 'a.implant_note',
             )
-            ->orderBy('a.created_at', 'asc')
-            ->get();
+            ->orderBy('a.created_at', 'asc');
+
+        if (!empty($this->selectedIds)) {
+            $data->whereIn('a.id', $this->selectedIds);
+        }
+
+        $data = $data->get();
 
         $formattedData = [];
 
@@ -174,7 +187,7 @@ class ImplantsExport implements FromCollection, WithHeadings, WithEvents
                 $staticColumnWidths = [
                     'A' => 5,  // No
                     'B' => 12, // Implant Date
-                    'C' => 25, // Hospital
+                    'C' => 45, // Hospital
                     'D' => 10, // Region
                     'E' => 15, // Product Group
                     'F' => 40, // Doctor
@@ -202,15 +215,15 @@ class ImplantsExport implements FromCollection, WithHeadings, WithEvents
                 }
 
                 $extraColumns = [
-                    "Patient Name" => 25,
+                    "Patient Name" => 45,
                     "Invoice No" => 10,
                     "Sales (RM)" => 10,
                     "Quantity" => 10,
-                    "Remarks" => 20,
+                    "Remarks" => 35,
                     "MRN" => 15,
                     "IC/Passport Number" => 20,
                     "Note" => 60,
-                    "Add by" => 20
+                    "Add by" => 45
                 ];
 
                 foreach ($extraColumns as $name => $width) {

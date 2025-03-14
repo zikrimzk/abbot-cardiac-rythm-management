@@ -71,9 +71,31 @@ class RouteController extends Controller
                     'implant_backup_form',
                     'region_id',
                     'hospital_id',
+                    'generator_id',
+                    'region_id',
                     'doctor_id',
-                )
-                ->get();
+                );
+
+            if ($req->has('date_range') && !empty($req->input('date_range'))) {
+                $dates = explode(' to ', $req->date_range);
+                $startdate = Carbon::parse($dates[0])->format('Y-m-d');
+                $enddate = Carbon::parse($dates[1])->format('Y-m-d');
+                $data->whereBetween('implant_date', [$startdate, $enddate]);
+            }
+
+            if ($req->has('hospital') && !empty($req->input('hospital'))) {
+                $data->where('hospital_id', $req->input('hospital'));
+            }
+
+            if ($req->has('generator') && !empty($req->input('generator'))) {
+                $data->where('generator_id', $req->input('generator'));
+            }
+
+            if ($req->has('region') && !empty($req->input('region'))) {
+                $data->where('region_id', $req->input('region'));
+            }
+            
+            $data = $data->get();
 
             $table = DataTables::of($data)->addIndexColumn();
 
@@ -152,14 +174,16 @@ class RouteController extends Controller
                 return $button;
             });
 
-            $table->rawColumns(['checkbox','implant_date', 'implant_backup_form', 'implant_code', 'action']);
+            $table->rawColumns(['checkbox', 'implant_date', 'implant_backup_form', 'implant_code', 'action']);
 
             return $table->make(true);
         }
         return view('crmd-system.implant-management.manage-implant', [
             'title' => 'CRMD System | Manage Implant',
             'ims' => Implant::all(),
-
+            'hosp'=>Hospital::all(),
+            'gene'=>Generator::all(),
+            'region'=>Region::all(),
         ]);
     }
 
