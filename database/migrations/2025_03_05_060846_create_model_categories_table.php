@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('model_categories', function (Blueprint $table) {
             $table->id();
             $table->string('mcategory_name');
+            $table->string('mcategory_abbreviation');
             $table->integer('mcategory_ismorethanone')->default(0);
+            $table->integer('mcategory_isappear_incard')->default(0);
             $table->timestamps();
         });
     }

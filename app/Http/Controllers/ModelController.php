@@ -16,10 +16,14 @@ class ModelController extends Controller
     {
         $validator = Validator::make($req->all(), [
             'mcategory_name' => 'required|string',
+            'mcategory_abbreviation' => 'required|string',
             'mcategory_ismorethanone' => 'required|integer',
+            'mcategory_isappear_incard' => 'required|integer',
         ], [], [
             'mcategory_name' => 'model category name',
+            'mcategory_abbreviation' => 'model category abbreviation',
             'mcategory_ismorethanone' => 'category multiple input',
+            'mcategory_isappear_incard' => 'category appearance in Patient ID Card',
         ]);
 
         if ($validator->fails()) {
@@ -44,10 +48,14 @@ class ModelController extends Controller
     {
         $validator = Validator::make($req->all(), [
             'mcategory_name' => 'required|string',
+            'mcategory_abbreviation' => 'required|string',
             'mcategory_ismorethanone' => 'required|integer',
+            'mcategory_isappear_incard' => 'required|integer',
         ], [], [
             'mcategory_name' => 'model category name',
+            'mcategory_abbreviation' => 'model category abbreviation',
             'mcategory_ismorethanone' => 'category multiple input',
+            'mcategory_isappear_incard' => 'category appearance in Patient ID Card',
         ]);
 
         if ($validator->fails()) {
@@ -190,7 +198,7 @@ class ModelController extends Controller
     {
         $validator = Validator::make($req->all(), [
             'generator_name' => 'required|string',
-            'generator_code' => 'required|string|unique:generators,generator_code,'. $id,
+            'generator_code' => 'required|string|unique:generators,generator_code,' . $id,
             'generator_status' => 'required|integer',
         ], [], [
             'generator_name' => 'generator name',

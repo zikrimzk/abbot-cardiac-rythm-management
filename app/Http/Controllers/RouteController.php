@@ -700,23 +700,32 @@ class RouteController extends Controller
         if ($req->ajax()) {
 
             $data = DB::table('model_categories')
-                ->select('id', 'mcategory_name', 'mcategory_ismorethanone')
+                ->select('id', 'mcategory_name', 'mcategory_abbreviation','mcategory_ismorethanone','mcategory_isappear_incard')
                 ->get();
 
             $table = DataTables::of($data)->addIndexColumn();
 
             $table->addColumn('mcategory_ismorethanone', function ($row) {
-                $isImplant = '';
+                $isAddable = '';
                 if ($row->mcategory_ismorethanone == 0) {
-                    $isImplant = '<span class="badge bg-light-danger ">' . 'No' . '</span>';
+                    $isAddable = '<span class="badge bg-light-danger ">' . 'No' . '</span>';
                 } elseif ($row->mcategory_ismorethanone == 1) {
-                    $isImplant = '<span class="badge bg-light-success">' . 'Yes' . '</span>';
+                    $isAddable = '<span class="badge bg-light-success">' . 'Yes' . '</span>';
                 }
-                return $isImplant;
+                return $isAddable;
+            });
+
+            $table->addColumn('mcategory_isappear_incard', function ($row) {
+                $isAppear = '';
+                if ($row->mcategory_isappear_incard == 0) {
+                    $isAppear = '<span class="badge bg-light-danger ">' . 'No' . '</span>';
+                } elseif ($row->mcategory_isappear_incard == 1) {
+                    $isAppear = '<span class="badge bg-light-success">' . 'Yes' . '</span>';
+                }
+                return $isAppear;
             });
 
             $table->addColumn('action', function ($row) {
-                // $isReferenced = false;
                 $isReferenced = DB::table('abbott_models')->where('mcategory_id', $row->id)->exists();
                 $buttonEdit =
                     '
@@ -746,7 +755,7 @@ class RouteController extends Controller
                 return $buttonEdit . $buttonRemove;
             });
 
-            $table->rawColumns(['mcategory_ismorethanone', 'action']);
+            $table->rawColumns(['mcategory_ismorethanone','mcategory_isappear_incard', 'action']);
 
             return $table->make(true);
         }

@@ -81,7 +81,9 @@
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">Category Name</th>
-                                            <th scope="col">Implant</th>
+                                            <th scope="col">Abbreviation</th>
+                                            <th scope="col">Support Multiple Input</th>
+                                            <th scope="col">Appear in Patient ID Card</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -109,6 +111,22 @@
                                     <div class="row">
 
                                         <div class="col-sm-12">
+                                            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                                <i class="fas fa-exclamation-circle f-18 me-2"></i>
+                                                <div>
+                                                    <span class="text-danger fw-bold">**</span>
+                                                    For Multiple Input, If you select <strong>"Yes"</strong>, this
+                                                    category
+                                                    <strong>will
+                                                        not be displayed</strong> in the generated Implant Registration
+                                                    Form
+                                                    and <strong>
+                                                        will not be included</strong> when exporting to Excel.
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
                                             <div class="mb-3">
                                                 <label for="mcategory_name" class="form-label">Category Name <span
                                                         class="text-danger">*</span></label>
@@ -125,18 +143,25 @@
 
                                         <div class="col-sm-12">
                                             <div class="mb-3">
-                                                <label for="mcategory_ismorethanone" class="form-label">Multiple Input <span
-                                                        class="text-danger">*</span></label>
-                                                <div class="alert alert-warning d-flex align-items-center" role="alert">
-                                                    <i class="fas fa-exclamation-circle f-18 me-2"></i>
-                                                    <div>
-                                                        If you select <strong>"Yes"</strong>, this category <strong>will
-                                                            not be displayed</strong> in the generated Implant Registration
-                                                        Form
-                                                        and <strong>will not be included</strong> when exporting to
-                                                        Excel.
-                                                    </div>
-                                                </div>
+                                                <label for="mcategory_abbreviation" class="form-label">Category
+                                                    Abbreviation <span class="text-danger">*</span></label>
+                                                <input type="text"
+                                                    class="form-control @error('mcategory_abbreviation') is-invalid @enderror"
+                                                    id="mcategory_abbreviation" name="mcategory_abbreviation"
+                                                    placeholder="Enter Category Abbreviation"
+                                                    value="{{ old('mcategory_abbreviation') }}" required>
+                                                <small class="text-muted form-text">This will be displayed in the
+                                                    generated Patient ID Card</small>
+                                                @error('mcategory_abbreviation')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="mb-3">
+                                                <label for="mcategory_ismorethanone" class="form-label">Multiple Input
+                                                    <span class="text-danger">**</span></label>
                                                 <select name="mcategory_ismorethanone" id="mcategory_ismorethanone"
                                                     class="form-select @error('mcategory_ismorethanone') is-invalid @enderror"
                                                     required>
@@ -147,12 +172,38 @@
                                                         <option value="1">Yes</option>
                                                         <option value="0" selected>No</option>
                                                     @else
-                                                        <option value="" selected>Select Option</option>
+                                                        <option value="">Select Option</option>
                                                         <option value="1">Yes</option>
                                                         <option value="0">No</option>
                                                     @endif
                                                 </select>
                                                 @error('mcategory_ismorethanone')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="mb-3">
+                                                <label for="mcategory_isappear_incard" class="form-label">Appear in
+                                                    Patient ID Card
+                                                    <span class="text-danger">*</span></label>
+                                                <select name="mcategory_isappear_incard" id="mcategory_isappear_incard"
+                                                    class="form-select @error('mcategory_isappear_incard') is-invalid @enderror"
+                                                    required>
+                                                    @if (old('mcategory_isappear_incard') == 1)
+                                                        <option value="1" selected>Yes</option>
+                                                        <option value="0">No</option>
+                                                    @elseif(old('mcategory_isappear_incard') == 0)
+                                                        <option value="1">Yes</option>
+                                                        <option value="0" selected>No</option>
+                                                    @else
+                                                        <option value="">Select Option</option>
+                                                        <option value="1">Yes</option>
+                                                        <option value="0">No</option>
+                                                    @endif
+                                                </select>
+                                                @error('mcategory_isappear_incard')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
@@ -201,6 +252,22 @@
                                         <div class="row">
 
                                             <div class="col-sm-12">
+                                                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                                    <i class="fas fa-exclamation-circle f-18 me-2"></i>
+                                                    <div>
+                                                        <span class="text-danger fw-bold">**</span>
+                                                        For Multiple Input, If you select <strong>"Yes"</strong>, this
+                                                        category
+                                                        <strong>will
+                                                            not be displayed</strong> in the generated Implant Registration
+                                                        Form
+                                                        and <strong>
+                                                            will not be included</strong> when exporting to Excel.
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12">
                                                 <div class="mb-3">
                                                     <label for="mcategory_name" class="form-label">Category Name <span
                                                             class="text-danger">*</span></label>
@@ -217,19 +284,28 @@
 
                                             <div class="col-sm-12">
                                                 <div class="mb-3">
-                                                    <label for="mcategory_ismorethanone" class="form-label">Multiple Input
-                                                        <span class="text-danger">*</span></label>
-                                                    <div class="alert alert-warning d-flex align-items-center"
-                                                        role="alert">
-                                                        <i class="fas fa-exclamation-circle f-18 me-2"></i>
-                                                        <div>
-                                                            If you select <strong>"Yes"</strong>, this category <strong>will
-                                                                not be displayed</strong> in the generated Implant
-                                                            Registration Form
-                                                            and <strong>will not be included</strong> when exporting to
-                                                            Excel.
-                                                        </div>
-                                                    </div>
+                                                    <label for="mcategory_abbreviation" class="form-label">Category
+                                                        Abbreviation <span class="text-danger">*</span></label>
+                                                    <input type="text"
+                                                        class="form-control @error('mcategory_abbreviation') is-invalid @enderror"
+                                                        id="mcategory_abbreviation" name="mcategory_abbreviation"
+                                                        placeholder="Enter Category Abbreviation"
+                                                        value="{{ $mc->mcategory_abbreviation }}" required>
+                                                    <small class="text-muted form-text">This will be displayed in the
+                                                        generated Patient ID Card</small>
+                                                    @error('mcategory_abbreviation')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <div class="mb-3">
+                                                    <label for="mcategory_ismorethanone" class="form-label">
+                                                        Multiple Input
+                                                        <span class="text-danger">**</span>
+                                                    </label>
+
                                                     <select name="mcategory_ismorethanone" id="mcategory_ismorethanone"
                                                         class="form-select @error('mcategory_ismorethanone') is-invalid @enderror"
                                                         required>
@@ -246,6 +322,33 @@
                                                         @endif
                                                     </select>
                                                     @error('mcategory_ismorethanone')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <div class="mb-3">
+                                                    <label for="mcategory_isappear_incard" class="form-label">Appear in
+                                                        Patient ID Card
+                                                        <span class="text-danger">*</span></label>
+                                                    <select name="mcategory_isappear_incard"
+                                                        id="mcategory_isappear_incard"
+                                                        class="form-select @error('mcategory_isappear_incard') is-invalid @enderror"
+                                                        required>
+                                                        @if ($mc->mcategory_isappear_incard == 1)
+                                                            <option value="1" selected>Yes</option>
+                                                            <option value="0">No</option>
+                                                        @elseif($mc->mcategory_isappear_incard == 0)
+                                                            <option value="1">Yes</option>
+                                                            <option value="0" selected>No</option>
+                                                        @else
+                                                            <option value="" selected>Select Option</option>
+                                                            <option value="1">Yes</option>
+                                                            <option value="0">No</option>
+                                                        @endif
+                                                    </select>
+                                                    @error('mcategory_isappear_incard')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
                                                 </div>
@@ -355,8 +458,16 @@
                             name: 'mcategory_name'
                         },
                         {
+                            data: 'mcategory_abbreviation',
+                            name: 'mcategory_abbreviation'
+                        },
+                        {
                             data: 'mcategory_ismorethanone',
                             name: 'mcategory_ismorethanone'
+                        },
+                        {
+                            data: 'mcategory_isappear_incard',
+                            name: 'mcategory_isappear_incard'
                         },
                         {
                             data: 'action',

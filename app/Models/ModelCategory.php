@@ -11,6 +11,8 @@ class ModelCategory extends Model
 
     protected $fillable =[
         'mcategory_name',
-        'mcategory_ismorethanone'
+        'mcategory_abbreviation',
+        'mcategory_ismorethanone',
+        'mcategory_isappear_incard',
     ];
 }
