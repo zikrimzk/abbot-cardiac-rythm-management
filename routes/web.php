@@ -51,7 +51,7 @@ Route::prefix('staff')->middleware('auth')->group(function () {
 
     //Generate Patient ID Card
     Route::get('/generate-patient-id-card-{id}', [RouteController::class, 'generatePatientIdCard'])->name('generate-patient-id-card-page');
-    Route::get('/view-patient-id-card', [RouteController::class, 'viewPatientIdCard'])->name('view-patient-id-card-page');
+    Route::get('/view-patient-id-card-{id}', [RouteController::class, 'viewPatientIdCard'])->name('view-patient-id-card-page');
 
 
     //Manage Designation

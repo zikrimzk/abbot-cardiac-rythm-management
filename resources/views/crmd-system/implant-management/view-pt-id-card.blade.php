@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Patient ID Card</title>
+    <title>{{ $title }}</title>
     <link href="{{ public_path('assets/css/plugins/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
     <style>
         body {
@@ -40,22 +40,23 @@
 
 <body>
     <div class="card-container" style="background-color: #2e2e2e;">
-         <!-- [ Front-Card ] start -->
-         <table width="100%" style="color: white; font-size: 12pt; letter-spacing:0.5pt;">
+        <!-- [ Front-Card ] start -->
+        <table width="100%" style="color: white; font-size: 12pt; letter-spacing:0.5pt;">
             <tr>
-                <td colspan="2" style="padding-top: 20px; padding-left: 30px; font-weight:700; font-family: Times New Roman;">
+                <td colspan="2"
+                    style="padding-top: 20px; padding-left: 30px; font-weight:700; font-family: Times New Roman;">
                     THIS PATIENT HAS A
                 </td>
             </tr>
             <tr>
-                <td colspan="2" style="padding-top: 5px; padding-left: 30px; font-weight:700; font-family: Times New Roman; color: #4d9cf0;">
+                <td colspan="2"
+                    style="padding-top: 5px; padding-left: 30px; font-weight:700; font-family: Times New Roman; color: #4d9cf0;">
                     MRI CONDITIONAL DEVICES
                 </td>
             </tr>
             <tr>
                 <td style="padding-top: 5px; padding-left: 30px; width:50%;">
-                    <img src="{{ public_path('assets/images/card/MR_icon.png') }}" width="80"
-                        alt="Abbott Logo">
+                    <img src="{{ public_path('assets/images/card/MR_icon.png') }}" width="80" alt="Abbott Logo">
                 </td>
                 <td style="padding-top: 5px; padding-left: 30px; width:50%;">
                     <img src="{{ public_path('assets/images/logo/abbott-logo-white.png') }}" width="100"
@@ -88,7 +89,7 @@
                     PATIENT
                 </th>
                 <td style="padding-top: 10px; padding-bottom: 2px; font-weight:700;">
-                    SAMUGAM A/L MUNASAMY
+                    {{ $data['implant_pt_name'] }}
                 </td>
             </tr>
             <tr>
@@ -96,7 +97,7 @@
                     I/C / MRN
                 </th>
                 <td style="padding-bottom: 2px; font-weight:700;">
-                    601004-02-5525
+                    {{ $data['implant_pt_icno'] }}
                 </td>
             </tr>
         </table>
@@ -105,9 +106,7 @@
         <!-- [ Pacemake & Model details ] start -->
         <table width="100%" style="color: rgb(0, 0, 0); font-size: 5pt;">
             <tr>
-                <th style="padding-left: 15px; padding-top: 5px; padding-bottom: 2px; font-weight:700; width:30%;">
-
-                </th>
+                <th style="padding-left: 15px; padding-top: 5px; padding-bottom: 2px; font-weight:700; width:30%;"></th>
                 <th style="padding-top: 5px; padding-bottom: 2px; font-weight:700;">
                     MODEL NO
                 </th>
@@ -123,57 +122,37 @@
                     PACEMAKER
                 </th>
                 <td style="padding-bottom: 2px; font-weight:700;">
-                    PM2162
+                    {{ $data['generator_code'] }}
                 </td>
                 <td style="padding-bottom: 2px; font-weight:700;">
-                    5856112
+                    {{ $data['implant_generator_sn'] }}
                 </td>
                 <td style="padding-bottom: 2px; font-weight:700;">
-                    26 DEC 2024
+                    {{ $data['implant_date'] }}
                 </td>
             </tr>
-            <tr>
-                <th style="padding-left: 15px; padding-bottom: 2px; font-weight:700;">
-                    RA LEAD
-                </th>
-                <td style="padding-bottom: 2px; font-weight:700;">
-                    2088TC/52CM
-                </td>
-                <td style="padding-bottom: 2px; font-weight:700;">
-                    EEL255577
-                </td>
-                <td style="padding-bottom: 2px; font-weight:700;">
-                    26 DEC 2024
-                </td>
-            </tr>
-            <tr>
-                <th style="padding-left: 15px; padding-bottom: 2px; font-weight:700;">
-                    RV LEAD
-                </th>
-                <td style="padding-bottom: 2px; font-weight:700;">
-                    2088TC/58CM
-                </td>
-                <td style="padding-bottom: 2px; font-weight:700;">
-                    EEM154116
-                </td>
-                <td style="padding-bottom: 2px; font-weight:700;">
-                    26 DEC 2024
-                </td>
-            </tr>
-            <tr>
-                <th style="padding-left: 15px; padding-bottom: 2px; font-weight:700;">
-                    LV LEAD
-                </th>
-                <td style="padding-bottom: 2px; font-weight:700;">
-                    -
-                </td>
-                <td style="padding-bottom: 2px; font-weight:700;">
-                    -
-                </td>
-                <td style="padding-bottom: 2px; font-weight:700;">
-                    -
-                </td>
-            </tr>
+            @foreach (array_chunk($data['models'], 3) as $modelRow)
+                @foreach ($modelRow as $item)
+                    <tr>
+                        <th style="padding-left: 15px; padding-bottom: 2px; font-weight:700;">
+                            {{ $item['model_category'] }}
+                        </th>
+                        <td style="padding-bottom: 2px; font-weight:700;">
+                            {{ $item['model_code'] }}
+                        </td>
+                        <td style="padding-bottom: 2px; font-weight:700;">
+                            {{ $item['implant_model_sn'] }}
+                        </td>
+                        <td style="padding-bottom: 2px; font-weight:700;">
+                            @if (($item['model_code'] ?? '-') === '-')
+                                -
+                            @else
+                                {{ $data['implant_date'] }}
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            @endforeach
         </table>
         <!-- [ Pacemake & Model details ] end -->
 
@@ -184,11 +163,11 @@
                     PHYSICIAN
                 </th>
                 <td style="padding-top: 5px; padding-bottom: 2px; font-weight:700;">
-                    DR KUNA
+                    {{ $data['doctor_name'] }}
                 </td>
-                <td rowspan="3" style="padding-bottom: 2px; font-weight:700;text-align: center;width:20%;padding-right: 15px;">
-                    <img src="{{ public_path('assets/images/card/1.5T_icon.JPG') }}" width="60"
-                        alt="Abbott Logo">
+                <td rowspan="3"
+                    style="padding-bottom: 2px; font-weight:700;text-align: center;width:20%;padding-right: 15px;">
+                    <img src="{{ public_path('assets/images/card/1.5T_icon.JPG') }}" width="60" alt="Abbott Logo">
                 </td>
             </tr>
             <tr>
@@ -196,7 +175,7 @@
                     HOSPITAL
                 </th>
                 <td style="padding-bottom: 2px; font-weight:700;">
-                    HOSPITAL PULAU PINANG
+                    {{ $data['hospital_name'] }}
                 </td>
             </tr>
             <tr>
@@ -204,7 +183,7 @@
                     CONTACT NO
                 </th>
                 <td style="padding-bottom: 2px; font-weight:700;">
-                    +604 - 222 5333
+                    {{ $data['hospital_phoneno'] }}
                 </td>
             </tr>
         </table>
