@@ -171,7 +171,7 @@ class RouteController extends Controller
                         <a href="' . route('generate-patient-id-card-page', Crypt::encrypt($row->id)) . '" class="avtar avtar-xs  btn-light-success">
                             <i class="ti ti-id f-20"></i>
                         </a>
-                         <a href="' . route('view-patient-id-card-page', $row->id) . '" class="avtar avtar-xs  btn-light-danger">
+                         <a href="' . route('view-patient-id-card-page',['id' => $row->id, 'opt'=> 1]) . '" class="avtar avtar-xs  btn-light-danger d-none">
                             <i class="ti ti-id f-20"></i>
                         </a>
                     ';
@@ -497,7 +497,7 @@ class RouteController extends Controller
         ]);
     }
 
-    public function viewPatientIDCard($id)
+    public function viewPatientIDCard($id, $opt)
     {
         $modelCategories = DB::table('model_categories')
             ->select('id as model_category_id', 'mcategory_abbreviation as model_category')
@@ -595,7 +595,8 @@ class RouteController extends Controller
 
         $pdf = Pdf::loadView('crmd-system.implant-management.view-pt-id-card', [
             'title' => $title,
-            'data' => $formattedData
+            'data' => $formattedData,
+            'opt' => $opt
         ]);
         $pdf->setPaper([0, 0, 252, 144], 'portrait');
 

@@ -9,6 +9,7 @@ use App\Models\Implant;
 use App\Models\Hospital;
 use App\Models\Generator;
 use App\Models\AbbottModel;
+use Illuminate\Support\Str;
 use App\Models\ImplantModel;
 use App\Models\ProductGroup;
 use Illuminate\Http\Request;
@@ -554,51 +555,155 @@ class ImplantController extends Controller
     {
         try {
             $implantIds = json_decode($req->query('ids'), true);
-    
+
             if (!$implantIds || count($implantIds) === 0) {
                 return back()->with('error', 'No implants selected.');
             }
-    
+
             // Create ZIP file
             $zipFile = storage_path('app/public/implants/CRMD_SELECTED_IMPLANTS.zip');
-    
+
             if (File::exists($zipFile)) {
                 File::delete($zipFile);
             }
-    
+
             $zip = new ZipArchive;
             if ($zip->open($zipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
                 return back()->with('error', 'Failed to create ZIP file.');
             }
-    
+
             // Add each implant directory to the ZIP
             foreach ($implantIds as $id) {
                 $implant = Implant::find($id);
-    
+
                 if (!$implant || empty($implant->implant_pt_directory)) {
                     continue;
                 }
-    
+
                 $folderPath = public_path("storage/implants/" . $implant->implant_pt_directory);
-    
+
                 if (!File::exists($folderPath)) {
                     continue;
                 }
-    
+
                 $files = File::allFiles($folderPath);
-    
+
                 foreach ($files as $file) {
                     $relativePath = $implant->implant_pt_directory . '/' . $file->getFilename();
                     $zip->addFile($file->getPathname(), $relativePath);
                 }
             }
-    
+
             $zip->close();
-    
+
             return response()->download($zipFile)->deleteFileAfterSend(true);
-    
         } catch (Exception $e) {
             return back()->with('error', 'Error generating ZIP: ' . $e->getMessage());
+        }
+    }
+
+    public function generateCard(Request $request, $id)
+    {
+        try {
+            $modelCategories = DB::table('model_categories')
+                ->select('id as model_category_id', 'mcategory_abbreviation as model_category')
+                ->where('mcategory_isappear_incard', 1)
+                ->where('mcategory_abbreviation', '!=', null)
+                ->get();
+
+            $implant = DB::table('implants as a')
+                ->join('generators as b', 'a.generator_id', '=', 'b.id')
+                ->join('regions as c', 'a.region_id', '=', 'c.id')
+                ->join('hospitals as d', 'a.hospital_id', '=', 'd.id')
+                ->join('doctors as e', 'a.doctor_id', '=', 'e.id')
+                ->leftJoin('stock_locations as f', 'a.stock_location_id', '=', 'f.id')
+                ->leftJoin('product_group_lists as g', 'a.id', '=', 'g.implant_id')
+                ->leftJoin('product_groups as h', 'g.product_group_id', '=', 'h.id')
+                ->where('a.id', $id)
+                ->select([
+                    'a.id',
+                    'a.implant_date',
+                    'a.implant_code',
+                    'd.hospital_name',
+                    'd.hospital_phoneno',
+                    'd.hospital_code',
+                    'e.doctor_name',
+                    'e.doctor_phoneno',
+                    'b.generator_code',
+                    'a.implant_generator_sn',
+                    'a.implant_pt_name',
+                    'a.implant_pt_directory',
+                    'a.implant_pt_mrn',
+                    'a.implant_pt_icno',
+                ])
+                ->groupBy(
+                    'a.id',
+                    'a.implant_date',
+                    'a.implant_code',
+                    'd.hospital_name',
+                    'd.hospital_phoneno',
+                    'd.hospital_code',
+                    'e.doctor_name',
+                    'e.doctor_phoneno',
+                    'b.generator_code',
+                    'a.implant_generator_sn',
+                    'a.implant_pt_name',
+                    'a.implant_pt_directory',
+                    'a.implant_pt_mrn',
+                    'a.implant_pt_icno',
+                )
+                ->first();
+
+            $models = DB::table('implant_models as i')
+                ->join('abbott_models as j', 'i.model_id', '=', 'j.id')
+                ->join('model_categories as k', 'j.mcategory_id', '=', 'k.id')
+                ->where('i.implant_id', $id)
+                ->where('k.mcategory_ismorethanone', 0)
+                ->select([
+                    'k.id as model_category_id',
+                    'k.mcategory_name as model_category',
+                    'j.model_code',
+                    'i.implant_model_sn'
+                ])
+                ->get();
+
+            $mergedModels = [];
+            foreach ($modelCategories as $category) {
+                $foundModel = $models->firstWhere('model_category_id', $category->model_category_id);
+
+                $mergedModels[] = [
+                    'model_category_id' => $category->model_category_id,
+                    'model_category' => $category->model_category,
+                    'model_code' => $foundModel->model_code ?? '-',
+                    'implant_model_sn' => $foundModel->implant_model_sn ?? '-'
+                ];
+            }
+
+            $formattedData = [
+                'id' => $implant->id ?? '-',
+                'implant_date' => Carbon::parse($implant->implant_date)->format('d M Y') ?? '-',
+                'implant_code' => $implant->implant_code ?? '-',
+                'hospital_name' => Str::upper($implant->hospital_name) ?? '-',
+                'hospital_phoneno' => $implant->hospital_phoneno ?? '-',
+                'hospital_code' => $implant->hospital_code ?? '-',
+                'doctor_name' => Str::upper($implant->doctor_name) ?? '-',
+                'doctor_phoneno' => $implant->doctor_phoneno ?? '-',
+                'generator_code' => Str::upper($implant->generator_code) ?? '-',
+                'implant_generator_sn' => $implant->implant_generator_sn ?? '-',
+                'implant_pt_name' => Str::upper($implant->implant_pt_name) ?? '-',
+                'implant_pt_directory' => $implant->implant_pt_directory ?? '-',
+                'implant_pt_mrn' => $implant->implant_pt_mrn ?? '-',
+                'implant_pt_icno' => $implant->implant_pt_icno ?? '-',
+                'models' => $mergedModels,
+            ];
+            $opt = $request->opt ?? 0;
+            $html = view('crmd-system.implant-management.card-generator', [
+                'data' => $formattedData,
+                'opt' => $opt
+            ])->render();
+            return response()->json(['html' => $html]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
         }
     }
 }

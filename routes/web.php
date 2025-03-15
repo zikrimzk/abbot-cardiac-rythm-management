@@ -33,7 +33,7 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     //Account Setting
     Route::get('/my-account', [RouteController::class, 'staffAccount'])->name('staff-account-page');
     Route::post('/update-account/{id}', [AuthenticateController::class, 'staffAccountUpdate'])->name('staff-account-update-post');
-    Route::post('/ipdate-password/{id}', [AuthenticateController::class, 'staffPasswordUpdate'])->name('staff-password-update-post');
+    Route::post('/update-password/{id}', [AuthenticateController::class, 'staffPasswordUpdate'])->name('staff-password-update-post');
     Route::get('/logout', [AuthenticateController::class, 'staffLogout'])->name('staff-logout-get');
 
     //Manage Implant
@@ -48,10 +48,11 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::get('/view-implant-registration-form-{id}-{option}', [RouteController::class, 'viewGenerateDownloadIRF'])->name('view-irf-document');
     Route::get('/download-implant-directory/{id}', [ImplantController::class, 'downloadImplantDirectory'])->name('download-implant-directory');
     Route::get('/download-multiple-implant-directory', [ImplantController::class, 'downloadMultipleImplantDirectory'])->name('download-multiple-implant-directory');
+    Route::post('patient-id-card-preview-{id}', [ImplantController::class, 'generateCard'])->name('patient-id-card-preview-post');
 
     //Generate Patient ID Card
     Route::get('/generate-patient-id-card-{id}', [RouteController::class, 'generatePatientIdCard'])->name('generate-patient-id-card-page');
-    Route::get('/view-patient-id-card-{id}', [RouteController::class, 'viewPatientIdCard'])->name('view-patient-id-card-page');
+    Route::get('/view-patient-id-card-{id}-{opt}', [RouteController::class, 'viewPatientIdCard'])->name('view-patient-id-card-page');
 
 
     //Manage Designation
