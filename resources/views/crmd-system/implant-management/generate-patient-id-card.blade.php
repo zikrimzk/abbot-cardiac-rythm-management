@@ -136,44 +136,81 @@
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-header bg-light-primary text-primary">
-
-                            <h5 class="card-title mb-0">Generate Patient ID Card</h5>
-
+                            <h5 class="card-title mb-0">Generate Patient ID Card (#{{ $data['implant_code'] }})</h5>
                         </div>
+
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-sm-4">
-                                    <div class="h5 mb-3">Patient ID Card Selection</div>
-                                    <div class="mb-3">
-                                        <label for="cardTypeSelect" class="form-label">Card Type</label>
-                                        <select id="cardTypeSelect" class="form-select">
-                                            <option value="" selected>-- Select Card Type --</option>
-                                            <option value="1">Non MRI</option>
-                                            <option value="2">1.5T MRI</option>
-                                            <option value="3">3.0T MRI</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-5">
-                                        <div class="d-grid">
-                                            <button type="button" id="generateCardBtn" class="btn btn-primary">Generate
-                                                Card</button>
-                                        </div>
-                                    </div>
-
-                                    <div id="optionSection" style="display: none;">
-                                        <div class="h5 mb-3">Option</div>
+                                    <form action="{{ route('send-pt-id-card-email-post', Crypt::encrypt($data['id'])) }}"
+                                        method="POST">
+                                        @csrf
+                                        <div class="h5 mb-3">Patient ID Card Selection</div>
                                         <div class="mb-3">
-                                            <div class="d-grid mb-3">
-                                                <a id="viewCardLink" href="#" target="_blank"
-                                                    class="btn btn-light-primary">View Card
-                                                    (.pdf)</a>
-                                            </div>
-                                            <div class="d-grid mb-3">
-                                                <a id="downloadCardLink" href="#" target="_blank"
-                                                    class="btn btn-light-danger">Download Card (.pdf)</a>
+                                            <label for="cardTypeSelect" class="form-label">Card Type</label>
+                                            <select id="cardTypeSelect"
+                                                class="form-select @error('card_type') is-invalid @enderror"
+                                                name="card_type">
+
+                                                <option value="" selected>-- Select Card Type --</option>
+                                                <option value="1" @if ($data['implant_pt_id_card_design'] == 1) selected @endif>Non
+                                                    MRI</option>
+                                                <option value="2" @if ($data['implant_pt_id_card_design'] == 2) selected @endif>
+                                                    1.5T MRI</option>
+                                                <option value="3" @if ($data['implant_pt_id_card_design'] == 3) selected @endif>
+                                                    3.0T MRI</option>
+                                            </select>
+                                            @error('card_type')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                        <div class="mb-5">
+                                            <div class="d-grid">
+                                                <button type="button" id="generateCardBtn" class="btn btn-warning">Generate
+                                                    Patient ID Card</button>
                                             </div>
                                         </div>
-                                    </div>
+
+                                        <div class="h5 mb-3">Send Patient ID Card</div>
+                                        <div class="mb-3">
+                                            <label for="patientEmail" class="form-label">Patient Email <span
+                                                    class="text-danger fw-bold">*</span></label>
+                                            <input type="email"
+                                                class="form-control @error('implant_pt_email') is-invalid @enderror"
+                                                id="patientEmail" name="implant_pt_email" placeholder="Enter Patient Email"
+                                                value="{{ $data['implant_pt_email'] }}" required>
+                                            @error('implant_pt_email')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                        <div class="mb-5">
+                                            <div class="d-grid">
+                                                <button type="submit" id="sentCardBtn" class="btn btn-primary"disabled>Sent
+                                                    Patient ID Card</button>
+                                            </div>
+                                        </div>
+
+                                        <div id="optionSection" style="display: none;">
+                                            <div class="h5 mb-3">Option</div>
+                                            <div class="mb-3">
+                                                <div class="d-grid mb-3">
+                                                    <a id="viewCardLink" href="#" target="_blank"
+                                                        class="btn btn-light-primary">View Patient ID Card
+                                                        (.pdf)</a>
+                                                </div>
+                                                <div class="d-grid mb-5">
+                                                    <a id="downloadCardLink" href="#" target="_blank"
+                                                        class="btn btn-light-danger">Download Patient ID Card (.pdf)</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </form>
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="card-wrapper">
@@ -195,7 +232,7 @@
                 <!-- [ Generate Patient ID Card ] end -->
             </div>
 
-           
+
 
             <!-- [ Main Content ] end -->
         </div>
@@ -210,6 +247,38 @@
                     var modal = new bootstrap.Modal(modalElement);
                     modal.show();
                 }
+            }
+        });
+
+        // Load if the card has been already being generated
+        $(window).on("load", function() {
+            var selectedOpt = $('#cardTypeSelect').val();
+            let optionSection = $("#optionSection");
+            let sentCardBtn = $("#sentCardBtn");
+            let viewCardLink = $("#viewCardLink");
+            let downloadCardLink = $("#downloadCardLink");
+            let patientId = "{{ Crypt::encrypt($data['id']) }}";
+            let baseUrl = "{{ url('staff/view-patient-id-card') }}-" + patientId + "-";
+            if (selectedOpt) {
+                $.ajax({
+                    url: "{{ route('patient-id-card-preview-post', ['id' => $data['id']]) }}", // Pastikan route betul
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}", // Hantar CSRF token untuk keselamatan
+                        opt: selectedOpt
+                    },
+                    success: function(response) {
+                        $('#cardContainer').html(response.html); // Update div dengan kad baru
+                    },
+                    error: function() {
+                        alert("Something went wrong!");
+                    }
+                });
+
+                optionSection.show();
+                sentCardBtn.attr("disabled", false);
+                viewCardLink.attr("href", baseUrl + selectedOpt + "-1");
+                downloadCardLink.attr("href", baseUrl + selectedOpt + "-2");
             }
         });
 
@@ -237,17 +306,20 @@
             $("#generateCardBtn").click(function() {
                 let selectedOpt = $('#cardTypeSelect').val();
                 let optionSection = $("#optionSection");
+                let sentCardBtn = $("#sentCardBtn");
                 let viewCardLink = $("#viewCardLink");
                 let downloadCardLink = $("#downloadCardLink");
-                let patientId = "{{ $data['id'] }}";
+                let patientId = "{{ Crypt::encrypt($data['id']) }}";
                 let baseUrl = "{{ url('staff/view-patient-id-card') }}-" + patientId + "-";
 
                 if (selectedOpt) {
                     optionSection.show();
-                    viewCardLink.attr("href", baseUrl + selectedOpt);
-                    downloadCardLink.attr("href", baseUrl + selectedOpt);
+                    sentCardBtn.attr("disabled", false);
+                    viewCardLink.attr("href", baseUrl + selectedOpt + "-1");
+                    downloadCardLink.attr("href", baseUrl + selectedOpt + "-2");
                 } else {
                     optionSection.hide();
+                    sentCardBtn.attr("disabled", true);
                 }
             });
 

@@ -14,10 +14,12 @@ use App\Models\ImplantModel;
 use App\Models\ProductGroup;
 use Illuminate\Http\Request;
 use App\Exports\ImplantsExport;
+use App\Mail\PatientIDCardMail;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\ProductGroupList;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
@@ -316,6 +318,7 @@ class ImplantController extends Controller
         }
     }
 
+    //Upload IRF Backup Form Function
     public function uploadBackupForm(Request $req, $id)
     {
         $validator = Validator::make($req->all(), [
@@ -349,6 +352,7 @@ class ImplantController extends Controller
         }
     }
 
+    //Generate System IRF Function
     public function generateIRF($id)
     {
         $id = Crypt::decrypt($id);
@@ -492,12 +496,14 @@ class ImplantController extends Controller
         return $pdf->save(public_path($filePath));
     }
 
+    // Export Excel File + Custom Export Function
     public function exportExcelImplantData(Request $req)
     {
         $selectedIds = $req->query('ids');
         return Excel::download(new ImplantsExport($selectedIds), 'Implants_Data' . '_' . date('dMY') . '.xlsx');
     }
 
+    // Download Implant Directory Function
     public function downloadImplantDirectory($id)
     {
         try {
@@ -602,7 +608,8 @@ class ImplantController extends Controller
         }
     }
 
-    public function generateCard(Request $request, $id)
+    // Generate Patient ID Card (Preview) Function
+    public function previewPatientIDCard(Request $request, $id)
     {
         try {
             $modelCategories = DB::table('model_categories')
@@ -704,6 +711,58 @@ class ImplantController extends Controller
             return response()->json(['html' => $html]);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
+        }
+    }
+
+    private function sendPatientIDCardMail($data)
+    {
+        Mail::to($data['implant_pt_email'])->send(new PatientIDCardMail([
+            'patient_name' => $data['implant_pt_name'],
+            'implant_id' => $data['id'],
+            'opt' => $data['opt'],
+        ]));
+    }
+
+    public function sendPatientIDCard(Request $req, $id)
+    {
+        $id = Crypt::decrypt($id);
+        $validator = Validator::make($req->all(), [
+            'implant_pt_email' => 'required|email',
+            'card_type' => 'required|integer',
+
+        ], [], [
+            'implant_pt_email' => 'patient email',
+            'card_type' => 'card type',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        try {
+            $validated = $validator->validated();
+            $implant = Implant::find($id);
+
+            $data = [
+                'id' => $implant->id,
+                'implant_date' => Carbon::parse($implant->implant_date)->format('d M Y') ?? '-',
+                'implant_pt_name' => Str::headline($implant->implant_pt_name) ?? '-',
+                'implant_pt_email' => $validated['implant_pt_email'],
+                'opt' => $validated['card_type'],
+            ];
+
+            Implant::find($id)->update([
+                'implant_pt_email' => $validated['implant_pt_email'],
+                'implant_pt_id_card_design' => $validated['card_type']
+            ]);
+
+            $this->sendPatientIDCardMail($data);
+
+            return redirect()->route('manage-implant-page')->with('success', 'Patient ID Card has been sent successfully');
+        } catch (Exception $e) {
+            return back()->with('error', 'Oops! Something went wrong. Please try again.' . $e->getMessage());
         }
     }
 }

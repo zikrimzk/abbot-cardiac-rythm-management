@@ -4,9 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Account Notification</title>
+    <title>Patient ID Card Notification</title>
     <style>
-        /* General Styles */
         body {
             font-family: Arial, sans-serif;
             background-color: #f9fafc;
@@ -25,18 +24,13 @@
             border: 1px solid #ddd;
         }
 
-        h2 {
-            color: #333;
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
         .header {
             color: #ffffff;
             padding: 20px 20px 10px 20px;
         }
 
         .header h2 {
+            color: #333;
             margin: 0;
         }
 
@@ -57,22 +51,6 @@
         .details p {
             margin: 6px 0;
             color: #555;
-        }
-
-        .password-box {
-            text-align: center;
-        }
-
-        .password {
-            font-size: 16px;
-            font-weight: bold;
-            font-family: "Courier New", monospace;
-            background: #f8f9fa;
-            padding: 8px 12px;
-            display: inline-block;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            margin-top: 10px;
         }
 
         .action-btn {
@@ -118,28 +96,27 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h2>Welcome to Cardiac Rhythm Management Division System</h2>
+            <h2>Notification: Your Digital Patient ID Card is Ready</h2>
         </div>
 
         <!-- Content -->
         <div class="content">
-            <p>Dear <strong>{{ $data['name'] }}</strong>,</p>
-            <p>Your account has been successfully registered by the system administrator. Below is your temporary
-                password:</p>
-            <div class="password-box">
-                <p class="password">{{ $data['password'] }}</p>
-            </div>
-            <p>Please log in and change your password immediately for security reasons.</p>
+            <p>Dear <strong>{{ $data['patient_name'] }}</strong>,</p>
+            <p>We are pleased to inform you that your Digital Patient ID Card has been successfully generated and is now
+                available for download.</p>
+            <p>You can download your card by clicking the button below:</p>
 
             <div class="action-btn">
-                <a href="{{ route('login-page') }}">LOGIN TO YOUR ACCOUNT</a>
+                <a href="{{ route('view-patient-id-card-page', ['id' => Crypt::encrypt($data['implant_id']),'opt'=> $data['opt'],'type'=> 2]) }}">DOWNLOAD PATIENT ID CARD</a>
             </div>
 
+            <p>If you encounter any issues or require further assistance, please do not hesitate to contact our support
+                team.</p>
         </div>
 
         <!-- Footer -->
         <div class="footer">
-            <p>&copy; {{ date('Y') }} Cardiac Rythm Management Division. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} Cardiac Rhythm Management Division. All rights reserved.</p>
             <p>Need help? <a href="mailto:support@abbot.com">Contact Support</a></p>
         </div>
     </div>

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('implant_pt_phoneno')->nullable();
             $table->date('implant_pt_dob')->nullable();
             $table->string('implant_pt_id_card')->nullable();
-            $table->text('implant_pt_id_card_design')->nullable();
+            $table->integer('implant_pt_id_card_design')->nullable();
             $table->text('implant_pt_directory')->nullable();
             $table->string('implant_generator_sn');
             $table->string('implant_invoice_no')->nullable();

@@ -48,12 +48,12 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::get('/view-implant-registration-form-{id}-{option}', [RouteController::class, 'viewGenerateDownloadIRF'])->name('view-irf-document');
     Route::get('/download-implant-directory/{id}', [ImplantController::class, 'downloadImplantDirectory'])->name('download-implant-directory');
     Route::get('/download-multiple-implant-directory', [ImplantController::class, 'downloadMultipleImplantDirectory'])->name('download-multiple-implant-directory');
-    Route::post('patient-id-card-preview-{id}', [ImplantController::class, 'generateCard'])->name('patient-id-card-preview-post');
 
     //Generate Patient ID Card
     Route::get('/generate-patient-id-card-{id}', [RouteController::class, 'generatePatientIdCard'])->name('generate-patient-id-card-page');
-    Route::get('/view-patient-id-card-{id}-{opt}', [RouteController::class, 'viewPatientIdCard'])->name('view-patient-id-card-page');
-
+    Route::get('/view-patient-id-card-{id}-{opt}-{type}', [RouteController::class, 'viewDownloadPatientIdCard'])->name('view-patient-id-card-page');
+    Route::post('/patient-id-card-preview-{id}', [ImplantController::class, 'previewPatientIDCard'])->name('patient-id-card-preview-post');
+    Route::post('/send-pt-id-card-email/{id}', [ImplantController::class, 'sendPatientIDCard'])->name('send-pt-id-card-email-post');
 
     //Manage Designation
     Route::get('/manage-designation', [RouteController::class, 'manageDesignation'])->name('manage-designation-page');
