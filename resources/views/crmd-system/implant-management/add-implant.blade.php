@@ -65,7 +65,7 @@
             <div class="row">
                 <!-- [ Add Implant ] start -->
                 <div class="col-sm-12">
-                    <form action="{{ route('add-implant-post') }}" method="POST">
+                    <form action="{{ route('add-implant-post') }}" method="POST" id="add-implant-form">
                         @csrf
                         <div class="card">
                             <div class="card-header bg-light-primary text-primary">
@@ -261,63 +261,62 @@
 
                                     @foreach ($mcs as $mc)
                                         <h5 class="mt-4">{{ $mc->mcategory_name }}</h5>
-
                                         @if ($mc->mcategory_ismorethanone == 1)
-                                            <div class="row model-loop" id="model_container_{{ $mc->id }}">
+                                            <div id="model_container_{{ $mc->id }}">
+                                                <div class="row col-sm-12 model-loop ">
+                                                    <!-- [ Model ] Input -->
+                                                    <div class="col-sm-4">
+                                                        <div class="mb-3">
+                                                            <label for="model_ids_{{ $mc->id }}"
+                                                                class="form-label">Model</label>
+                                                            <select name="model_ids[]" class="form-select model-select">
+                                                                <option value="" selected>Select Model</option>
+                                                                @foreach ($abbottmodels->where('mcategory_id', $mc->id) as $am)
+                                                                    <option value="{{ $am->id }}">
+                                                                        {{ $am->model_code }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
 
-                                                <!-- [ Model ] Input -->
-                                                <div class="col-sm-4">
-                                                    <div class="mb-3">
-                                                        <label for="model_ids_{{ $mc->id }}"
-                                                            class="form-label">Model</label>
-                                                        <select name="model_ids[]" class="form-select model-select">
-                                                            <option value="" selected>Select Model</option>
-                                                            @foreach ($abbottmodels->where('mcategory_id', $mc->id) as $am)
-                                                                <option value="{{ $am->id }}">
-                                                                    {{ $am->model_code }}</option>
-                                                            @endforeach
-                                                        </select>
+                                                    <!-- [ Serial Number ] Input -->
+                                                    <div class="col-sm-4">
+                                                        <div class="mb-3">
+                                                            <label for="model_sns_{{ $mc->id }}"
+                                                                class="form-label">Serial Number</label>
+                                                            <input type="text" name="model_sns[]"
+                                                                class="form-control sn-input"
+                                                                placeholder="Enter Serial Number">
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- [ Stock Location ] Input -->
+                                                    <div class="col-sm-3">
+                                                        <div class="mb-3">
+                                                            <label for="stock_location_ids_{{ $mc->id }}"
+                                                                class="form-label">Stock Location</label>
+                                                            <select name="stock_location_ids[]"
+                                                                class="form-select stock-location-select">
+                                                                <option value="" selected>Select Stock Location
+                                                                </option>
+                                                                @foreach ($stocklocations as $sl)
+                                                                    <option value="{{ $sl->id }}">
+                                                                        ({{ $sl->stock_location_code }})
+                                                                        -
+                                                                        {{ $sl->stock_location_name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- [ Remove Button ] -->
+                                                    <div class="col-sm-1 d-flex align-items-center justify-content-center">
+                                                        <button type="button"
+                                                            class="btn btn-danger btn-sm shadow-none remove-row">
+                                                            <i class="ti ti-trash f-20"></i>
+                                                        </button>
                                                     </div>
                                                 </div>
-
-                                                <!-- [ Serial Number ] Input -->
-                                                <div class="col-sm-4">
-                                                    <div class="mb-3">
-                                                        <label for="model_sns_{{ $mc->id }}"
-                                                            class="form-label">Serial Number</label>
-                                                        <input type="text" name="model_sns[]"
-                                                            class="form-control sn-input"
-                                                            placeholder="Enter Serial Number">
-                                                    </div>
-                                                </div>
-
-                                                <!-- [ Stock Location ] Input -->
-                                                <div class="col-sm-3">
-                                                    <div class="mb-3">
-                                                        <label for="stock_location_ids_{{ $mc->id }}"
-                                                            class="form-label">Stock Location</label>
-                                                        <select name="stock_location_ids[]"
-                                                            class="form-select stock-location-select">
-                                                            <option value="" selected>Select Stock Location
-                                                            </option>
-                                                            @foreach ($stocklocations as $sl)
-                                                                <option value="{{ $sl->id }}">
-                                                                    ({{ $sl->stock_location_code }})
-                                                                    -
-                                                                    {{ $sl->stock_location_name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <!-- [ Remove Button ] -->
-                                                <div class="col-sm-1 d-flex align-items-center justify-content-center">
-                                                    <button type="button"
-                                                        class="btn btn-danger btn-sm shadow-none remove-row">
-                                                        <i class="ti ti-trash f-20"></i>
-                                                    </button>
-                                                </div>
-
                                             </div>
 
                                             <!-- [ Add Row Button ] -->
@@ -481,7 +480,7 @@
                                             <label for="implant_pt_address" class="form-label">Patient Address</label>
                                             <textarea name="implant_pt_address" id="implant_pt_address"
                                                 class="form-control @error('implant_pt_address') is-invalid @enderror" placeholder="Enter Patient Address"
-                                                row="4">{{ old('implant_pt_address') }}</textarea>
+                                                row="6">{{ old('implant_pt_address') }}</textarea>
                                             @error('implant_pt_address')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -569,7 +568,7 @@
                             </div>
                             <div class="card-footer text-end">
                                 <button type="reset" class="btn btn-light-danger">Reset</button>
-                                <button type="submit" class="btn btn-primary">Add Implant</button>
+                                <button type="submit" class="btn btn-primary" id="add-implant-btn">Add Implant</button>
                             </div>
                         </div>
                     </form>
@@ -678,24 +677,26 @@
                 $(this).prop("disabled", true); // Disable balik bila reset
             });
 
-            // Fungsi Tambah Row
             $(document).on("click", ".add-row", function() {
-                let categoryID = $(this).data("category");
-                let container = $("#model_container_" + categoryID).parent(); // Dapatkan parent container
-                let lastRow = container.find(".model-loop").last(); // Ambil row terakhir
+                let categoryID = $(this).data("category"); // Ambil ID kategori
+                let container = $("#model_container_" + categoryID); // Ambil container yang betul
 
-                // Clone baris terakhir & kosongkan input
+                if (container.length === 0) {
+                    alert("Container tidak ditemui untuk kategori ID: " + categoryID);
+                    return;
+                }
+
+                let lastRow = container.find(".model-loop").last(); // Cari row terakhir dalam kategori ini
+                console.log("Last Row:", lastRow);
+
                 let newRow = lastRow.clone();
-                newRow.find("input, select").val("");
+                newRow.find("input, select").val(""); // Kosongkan input dalam row baru
+                newRow.find(".remove-row").prop("disabled", false); // Pastikan butang boleh digunakan
 
-                // Pastikan butang remove dalam row baru boleh digunakan
-                newRow.find(".remove-row").prop("disabled", false);
-
-                // Tambah row baru selepas row terakhir dalam kategori tersebut
-                lastRow.after(newRow);
+                lastRow.after(newRow); // Tambah selepas row terakhir
+                console.log("Row baru ditambah!", newRow);
             });
 
-            // Butang Reset hanya kosongkan input jika ia baris pertama
             $('.remove-row').each(function() {
                 let row = $(this).closest('.model-loop');
 
@@ -714,9 +715,14 @@
                 });
             });
 
-            // Fungsi untuk membuang baris tambahan
             $(document).on('click', '.remove-row:not(:first)', function() {
                 $(this).closest('.model-loop').remove();
+            });
+
+            $('#add-implant-form').on('submit', function() {
+                $('#add-implant-btn').addClass('disabled-a', true).html(
+                    '<span class="spinner-border spinner-border-sm me-2"></span> Adding...'
+                );
             });
         });
     </script>

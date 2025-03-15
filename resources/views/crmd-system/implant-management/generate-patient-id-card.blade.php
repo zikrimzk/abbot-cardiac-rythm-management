@@ -143,7 +143,7 @@
                             <div class="row">
                                 <div class="col-sm-4">
                                     <form action="{{ route('send-pt-id-card-email-post', Crypt::encrypt($data['id'])) }}"
-                                        method="POST">
+                                        method="POST" id="send-card-form">
                                         @csrf
                                         <div class="h5 mb-3">Patient ID Card Selection</div>
                                         <div class="mb-3">
@@ -323,7 +323,11 @@
                 }
             });
 
-
+            $('#send-card-form').on('submit', function() {
+                $('#sentCardBtn').addClass('disabled-a', true).html(
+                    '<span class="spinner-border spinner-border-sm me-2"></span> Sending...'
+                );
+            });
 
         });
     </script>
