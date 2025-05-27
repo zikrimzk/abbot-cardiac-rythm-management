@@ -6,7 +6,7 @@
     <title>{{ $title }}</title>
     <!-- [Meta] -->
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
+    <meta name="viewport" content="width=device-width, initial-scale=0.9, user-scalable=0, minimal-ui" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="description" content="Abbott - Cardiac Rythm Management Division System" />
     <meta name="keywords" content="abbott, crmd, cardiac, rythm, management, division, system" />

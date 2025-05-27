@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('implant_models', function (Blueprint $table) {
             $table->id();
             $table->string('implant_model_sn');
+            $table->integer('implant_model_qty')->default(1);
+            $table->double('implant_model_itemPrice')->default(0.00);
             $table->foreignId('implant_id')->constrained('implants');
             $table->foreignId('model_id')->constrained('abbott_models');
             $table->foreignId('stock_location_id')->constrained('stock_locations');

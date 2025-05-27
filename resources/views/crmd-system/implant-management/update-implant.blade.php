@@ -196,7 +196,7 @@
                                     <h5>Generator</h5>
 
                                     <!-- [ Generator Model ] Input -->
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="generator_id" class="form-label">Model <span
                                                     class="text-danger">*</span></label>
@@ -220,7 +220,7 @@
                                     </div>
 
                                     <!-- [ Generator Serial Number ] Input -->
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="implant_generator_sn" class="form-label">Serial
                                                 Number <span class="text-danger">*</span></label>
@@ -234,8 +234,36 @@
                                         </div>
                                     </div>
 
+                                    <!-- [ Generator Price ] Input -->
+                                    <div class="col-sm-2">
+                                        <div class="mb-3">
+                                            <label for="implant_generator_itemPrice" class="form-label">Price
+                                                (RM)</label>
+                                            <input type="text" name="implant_generator_itemPrice"
+                                                class="form-control price-input @error('implant_generator_sn') is-invalid @enderror"
+                                                placeholder="Enter Generator Price (RM)"
+                                                value="{{ $im->implant_generator_itemPrice }}">
+                                            @error('implant_generator_sn')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <!-- [ Generator Quantity ] Input -->
+                                    <div class="col-sm-1">
+                                        <div class="mb-3">
+                                            <label for="implant_generator_qty" class="form-label">Quantity</label>
+                                            <input type="text" name="implant_generator_qty"
+                                                class="form-control qty-input @error('implant_generator_qty') is-invalid @enderror"
+                                                placeholder="Enter Quantity" value="{{ $im->implant_generator_qty }}">
+                                            @error('implant_generator_qty')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
                                     <!-- [ Generator Stock Location ] Input -->
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="stock_location_id" class="form-label">Stock Location <span
                                                     class="text-danger">*</span></label>
@@ -273,6 +301,8 @@
                                                     (object) [
                                                         'model_id' => null,
                                                         'implant_model_sn' => null,
+                                                        'implant_model_itemPrice' => null,
+                                                        'implant_model_qty' => null,
                                                         'stock_location_id' => null,
                                                     ],
                                                 ]);
@@ -285,7 +315,7 @@
                                                     <div class="row col-sm-12 model-loop ">
 
                                                         <!-- [ Model ] Input -->
-                                                        <div class="col-sm-4">
+                                                        <div class="col-sm-3">
                                                             <div class="mb-3">
                                                                 <label
                                                                     for="model_ids_{{ $mc->id }}_{{ $index }}"
@@ -308,7 +338,7 @@
                                                         </div>
 
                                                         <!-- [ Serial Number ] Input -->
-                                                        <div class="col-sm-4">
+                                                        <div class="col-sm-3">
                                                             <div class="mb-3">
                                                                 <label
                                                                     for="model_sns_{{ $mc->id }}_{{ $index }}"
@@ -324,8 +354,42 @@
                                                             </div>
                                                         </div>
 
+                                                        <!-- [ Model Price ] Input -->
+                                                        <div class="col-sm-2">
+                                                            <div class="mb-3">
+                                                                <label
+                                                                    for="model_price_{{ $mc->id }}_{{ $index }}"
+                                                                    class="form-label">Price (RM)</label>
+                                                                <input type="text" name="model_price[]"
+                                                                    id="model_price_{{ $mc->id }}_{{ $index }}"
+                                                                    class="form-control price-input @error('model_price') is-invalid @enderror"
+                                                                    placeholder="Enter Model Price (RM)"
+                                                                    value="{{ $imd->implant_model_itemPrice }}">
+                                                                @error('model_price')
+                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- [ Model Quantity ] Input -->
+                                                        <div class="col-sm-1">
+                                                            <div class="mb-3">
+                                                                <label
+                                                                    for="model_qty_{{ $mc->id }}_{{ $index }}"
+                                                                    class="form-label">Quantity</label>
+                                                                <input type="text" name="model_qty[]"
+                                                                    id="model_qty_{{ $mc->id }}_{{ $index }}"
+                                                                    class="form-control qty-input @error('model_qty') is-invalid @enderror"
+                                                                    placeholder="Enter Quantity"
+                                                                    value="{{ $imd->implant_model_qty }}">
+                                                                @error('model_qty')
+                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+
                                                         <!-- [ Stock Location ] Input -->
-                                                        <div class="col-sm-3">
+                                                        <div class="col-sm-2">
                                                             <div class="mb-3">
                                                                 <label
                                                                     for="stock_location_ids_{{ $mc->id }}_{{ $index }}"
@@ -379,7 +443,7 @@
                                                 <div class="row model-loop">
 
                                                     <!-- [ Model ] Input -->
-                                                    <div class="col-sm-4">
+                                                    <div class="col-sm-3">
                                                         <div class="mb-3">
                                                             <label
                                                                 for="model_ids_{{ $mc->id }}_{{ $index }}"
@@ -402,7 +466,7 @@
                                                     </div>
 
                                                     <!-- [ Serial Number ] Input -->
-                                                    <div class="col-sm-4">
+                                                    <div class="col-sm-3">
                                                         <div class="mb-3">
                                                             <label
                                                                 for="model_sns_{{ $mc->id }}_{{ $index }}"
@@ -418,8 +482,42 @@
                                                         </div>
                                                     </div>
 
+                                                    <!-- [ Model Price ] Input -->
+                                                    <div class="col-sm-2">
+                                                        <div class="mb-3">
+                                                            <label
+                                                                for="model_price_{{ $mc->id }}_{{ $index }}"
+                                                                class="form-label">Price (RM)</label>
+                                                            <input type="text" name="model_price[]"
+                                                                id="model_price_{{ $mc->id }}_{{ $index }}"
+                                                                class="form-control price-input @error('model_price') is-invalid @enderror"
+                                                                placeholder="Enter Model Price (RM)"
+                                                                value="{{ $imd->implant_model_itemPrice }}">
+                                                            @error('model_price')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- [ Model Quantity ] Input -->
+                                                    <div class="col-sm-1">
+                                                        <div class="mb-3">
+                                                            <label
+                                                                for="model_qty_{{ $mc->id }}_{{ $index }}"
+                                                                class="form-label">Quantity</label>
+                                                            <input type="text" name="model_qty[]"
+                                                                id="model_qty_{{ $mc->id }}_{{ $index }}"
+                                                                class="form-control qty-input @error('model_qty') is-invalid @enderror"
+                                                                placeholder="Enter Quantity"
+                                                                value="{{ $imd->implant_model_qty }}">
+                                                            @error('model_qty')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+
                                                     <!-- [ Stock Location ] Input -->
-                                                    <div class="col-sm-3">
+                                                    <div class="col-sm-2">
                                                         <div class="mb-3">
                                                             <label
                                                                 for="stock_location_ids_{{ $mc->id }}_{{ $index }}"
@@ -447,7 +545,8 @@
                                                     <div class="col-sm-1 d-flex align-items-center justify-content-center">
                                                         <button type="button"
                                                             class="avtar avtar-xs  btn btn-danger shadow-none reset-row"
-                                                            id="reset_{{ $mc->id }}_{{ $index }}" disabled>
+                                                            id="reset_{{ $mc->id }}_{{ $index }}"
+                                                            disabled>
 
                                                             <i class="ti ti-trash f-20"></i>
 
@@ -515,7 +614,8 @@
                                             <label for="implant_pt_mrn" class="form-label">Patient MRN</label>
                                             <input type="text" name="implant_pt_mrn" id="implant_pt_mrn"
                                                 class="form-control @error('implant_pt_mrn') is-invalid @enderror"
-                                                placeholder="Enter Patient MRN Number" value="{{ $im->implant_pt_mrn }}">
+                                                placeholder="Enter Patient MRN Number"
+                                                value="{{ $im->implant_pt_mrn }}">
                                             @error('implant_pt_mrn')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -659,7 +759,7 @@
     <script>
         $(document).ready(function() {
 
-            // FORMAT : IC / PASSPORT
+            // === FORMAT : IC/PASSPORT === //
             $("#implant_pt_icno").on("input", function() {
                 let value = $(this).val().toUpperCase(); // Pastikan huruf besar untuk passport
 
@@ -685,42 +785,109 @@
                 $(this).val(value);
             });
 
-            // FORMAT : MONEY
-            $("#implant_sales").on("input", function() {
-                let value = $(this).val().replace(/[^0-9.]/g, "");
-                let parts = value.split(".");
+            // === FORMAT : MONEY === //
+            function applyPriceInputFormat($elements) {
+                $elements.each(function() {
+                    if ($(this).val().trim() === "") {
+                        $(this).val("0.00");
+                    }
+                });
 
-                // Pastikan hanya ada satu titik perpuluhan
-                if (parts.length > 2) {
-                    value = parts[0] + "." + parts[1];
-                }
+                $elements.off("keydown").on("keydown", function(e) {
+                    if ($.inArray(e.keyCode, [8, 9, 46, 37, 39]) !== -1) return;
 
-                $(this).val(value);
-            });
+                    if ((e.keyCode < 48 || e.keyCode > 57) &&
+                        (e.keyCode < 96 || e.keyCode > 105)) {
+                        e.preventDefault();
+                    }
+                });
 
-            $("#implant_sales").on("blur", function() {
-                let value = parseFloat($(this).val()).toFixed(2);
-                if (!isNaN(value)) {
-                    $(this).val(value);
-                } else {
-                    $(this).val(""); // Kosongkan jika invalid
-                }
-            });
+                $elements.off("input").on("input", function() {
+                    let raw = $(this).val().replace(/\D/g, "");
+                    if (raw === "") raw = "0";
+                    let num = parseFloat(raw) / 100;
+                    $(this).val(num.toFixed(2));
+                });
 
-            // FORMAT : SERIAL NUMBER
-            $(".sn-input").on("input", function() {
-                $(this).val($(this).val().toUpperCase());
-            });
+                $elements.off("blur").on("blur", function() {
+                    let val = parseFloat($(this).val());
+                    if (isNaN(val)) {
+                        $(this).val("0.00");
+                    } else {
+                        $(this).val(val.toFixed(2));
+                    }
+                });
+            }
+
+            // === FORMAT : SERIAL NUMBER === //
+            function applySnInputFormat($elements) {
+                $elements.off("input").on("input", function() {
+                    $(this).val($(this).val().toUpperCase());
+                });
+            }
+
+            // === FORMAT : QUANTITY === //
+            function applyQtyInputFormat($elements) {
+                $elements.each(function() {
+                    if ($(this).val().trim() === "") {
+                        $(this).val("1");
+                    }
+                });
+
+                $elements.off("keydown").on("keydown", function(e) {
+                    // Allow: backspace, tab, delete, arrows
+                    if ($.inArray(e.keyCode, [8, 9, 46, 37, 39]) !== -1) return;
+
+                    // Allow only number keys
+                    if ((e.keyCode < 48 || e.keyCode > 57) && // top row
+                        (e.keyCode < 96 || e.keyCode > 105)) { // numpad
+                        e.preventDefault();
+                    }
+                });
+
+                $elements.off("input").on("input", function() {
+                    let val = $(this).val().replace(/\D/g, ""); // Remove non-digits only
+                    val = val.substring(0, 2); // Only two digits
+
+                    // Do not set value if user clears the input (allow empty while typing)
+                    if (val === "") return;
+
+                    let num = parseInt(val, 10);
+                    if (isNaN(num) || num < 1) num = 1;
+                    if (num > 99) num = 99;
+
+                    $(this).val(num);
+                });
+
+                $elements.off("blur").on("blur", function() {
+                    let val = $(this).val().replace(/\D/g, "");
+                    let num = parseInt(val, 10);
+
+                    // If empty or invalid on blur, default to 1
+                    if (isNaN(num) || num < 1) {
+                        $(this).val("1");
+                    } else {
+                        $(this).val(num);
+                    }
+                });
+            }
+
+            // === FORMAT : INITIALIZATION === //
+            applyPriceInputFormat($(".price-input"));
+            applySnInputFormat($(".sn-input"));
+            applyQtyInputFormat($(".qty-input"));
 
             // FUNCTION : RESET BUTTON
             function checkResetButton(loopContainer) {
                 let modelSelected = loopContainer.find(".model-select").val();
                 let serialNumber = loopContainer.find(".sn-input").val();
+                let modelprice = loopContainer.find(".price-input").val();
+                let modelqty = loopContainer.find(".qty-input").val();
                 let stockLocation = loopContainer.find(".stock-location-select").val();
                 let dustbinBtn = loopContainer.find(".reset-row");
 
                 // Aktifkan butang jika ada input dalam mana-mana field
-                if (modelSelected || serialNumber || stockLocation) {
+                if (modelSelected || serialNumber || modelprice != "0.00" || modelqty != "1" || stockLocation) {
                     dustbinBtn.prop("disabled", false);
                 } else {
                     dustbinBtn.prop("disabled", true);
@@ -739,37 +906,75 @@
                 checkResetButton($(this).closest(".model-loop"));
             });
 
+            $(document).on("input", ".price-input", function() {
+                checkResetButton($(this).closest(".model-loop"));
+            });
+
+            $(document).on("input", ".qty-input", function() {
+                checkResetButton($(this).closest(".model-loop"));
+            });
+
             $(document).on("change", ".stock-location-select", function() {
                 checkResetButton($(this).closest(".model-loop"));
             });
 
             $(document).on("click", ".reset-row", function() {
                 let loopContainer = $(this).closest(".model-loop");
-
                 loopContainer.find(".model-select").val("").trigger("change");
                 loopContainer.find(".sn-input").val("");
+                loopContainer.find(".price-input").val("0.00");
+                loopContainer.find(".qty-input").val("1");
                 loopContainer.find(".stock-location-select").val("");
-
-                $(this).prop("disabled", true); // Disable balik bila reset
+                $(this).prop("disabled", true);
             });
 
+            // $(document).on("click", ".add-row", function() {
+            //     let categoryID = $(this).data("category"); // Ambil ID kategori
+            //     let container = $("#model_container_" + categoryID); // Ambil container yang betul
+
+            //     if (container.length === 0) {
+            //         alert("Container tidak ditemui untuk kategori ID: " + categoryID);
+            //         return;
+            //     }
+
+            //     let lastRow = container.children(".model-loop")
+            //         .last(); // Cari row terakhir dalam kategori ini
+            //     console.log("Last Row:", lastRow);
+
+            //     let newRow = lastRow.clone();
+            //     newRow.find("input, select").val(""); // Kosongkan input dalam row baru
+            //     newRow.find(".remove-row").prop("disabled", false); // Pastikan butang boleh digunakan
+
+            //     lastRow.after(newRow); // Tambah selepas row terakhir
+            //     console.log("Row baru ditambah!", newRow);
+            // });
+
             $(document).on("click", ".add-row", function() {
-                let categoryID = $(this).data("category"); // Ambil ID kategori
-                let container = $("#model_container_" + categoryID); // Ambil container yang betul
+                let categoryID = $(this).data("category");
+                let container = $("#model_container_" + categoryID);
 
                 if (container.length === 0) {
                     alert("Container tidak ditemui untuk kategori ID: " + categoryID);
                     return;
                 }
 
-                let lastRow = container.children(".model-loop").last(); // Cari row terakhir dalam kategori ini
-                console.log("Last Row:", lastRow);
-
+                let lastRow = container.find(".model-loop").last();
                 let newRow = lastRow.clone();
-                newRow.find("input, select").val(""); // Kosongkan input dalam row baru
-                newRow.find(".remove-row").prop("disabled", false); // Pastikan butang boleh digunakan
 
-                lastRow.after(newRow); // Tambah selepas row terakhir
+                // Clear input/select values
+                newRow.find(
+                    "input.sn-input, input.price-input, input.qty-input, select.stock-location-select, select.model-select"
+                ).val("");
+                newRow.find(".remove-row").prop("disabled", false);
+
+                // Append the row
+                lastRow.after(newRow);
+
+                // Apply formatting to the new inputs
+                applyPriceInputFormat(newRow.find(".price-input"));
+                applySnInputFormat(newRow.find(".sn-input"));
+                applyQtyInputFormat(newRow.find(".qty-input"));
+
                 console.log("Row baru ditambah!", newRow);
             });
 
@@ -781,7 +986,11 @@
                 });
 
                 $(this).on('click', function() {
-                    row.find('input, select').val('');
+                    row.find('input.sn-input, select.model-select, select.stock-location-select')
+                        .val('');
+                    row.find('input.price-input').val('0.00');
+                    row.find('input.qty-input').val('1');
+
                     $(this).prop('disabled', true);
                 });
             });

@@ -45,7 +45,7 @@
                      </a>
                  </li> --}}
 
-                 {{-- <li class="pc-item pc-hasmenu">
+                 <li class="pc-item pc-hasmenu">
                      <a href="javascript: void(0)" class="pc-link">
                          <span class="pc-micon">
                              <span class="pc-micon">
@@ -56,17 +56,14 @@
                          <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                      </a>
                      <ul class="pc-submenu">
-                         <li class="pc-item"><a class="pc-link" href="javascript: void(0)">Update Model</a>
+                         <li class="pc-item"><a class="pc-link" href="javascript: void(0)">Generate Inventory Consumption Form (ICF)</a>
                          </li>
-                         <li class="pc-item"><a class="pc-link" href="javascript: void(0)">Generate Bill</a>
-                         </li>
-                         <li class="pc-item"><a class="pc-link" href="javascript: void(0)">Upload
-                                 Document</a>
+                         <li class="pc-item"><a class="pc-link" href="javascript: void(0)">Upload Sales Billing Document</a>
                          </li>
                      </ul>
-                 </li> --}}
+                 </li>
 
-                 {{-- <li class="pc-item pc-hasmenu">
+                 <li class="pc-item pc-hasmenu">
                      <a href="javascript: void(0)" class="pc-link">
                          <span class="pc-micon">
                              <span class="pc-micon">
@@ -84,7 +81,7 @@
                                  & Model</a>
                          </li>
                      </ul>
-                 </li> --}}
+                 </li>
 
                  <li class="pc-item pc-caption">
                      <label>Setting</label>

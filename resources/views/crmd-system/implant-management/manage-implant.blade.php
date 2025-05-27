@@ -214,65 +214,62 @@
 
         $(document).ready(function() {
 
-            $(function() {
-                // DATATABLE : IMPLANT
-                var table = $('.data-table').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    responsive: true,
-                    ajax: {
-                        url: "{{ route('manage-implant-page') }}",
-                        data: function(d) {
-                            d.date_range = $('#dateRangeFilter')
-                                .val();
-                            d.region = $('#regionFilter')
-                                .val();
-                            d.hospital = $('#hospFilter')
-                                .val();
-                            d.generator = $('#generatorFilter')
-                                .val();
 
-                        }
+            // DATATABLE : IMPLANT
+            var table = $('.data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                ajax: {
+                    url: "{{ route('manage-implant-page') }}",
+                    data: function(d) {
+                        d.date_range = $('#dateRangeFilter')
+                            .val();
+                        d.region = $('#regionFilter')
+                            .val();
+                        d.hospital = $('#hospFilter')
+                            .val();
+                        d.generator = $('#generatorFilter')
+                            .val();
+                    }
+                },
+                columns: [{
+                        data: 'checkbox',
+                        name: 'checkbox',
+                        orderable: false,
+                        searchable: false,
+
                     },
-                    columns: [{
-                            data: 'checkbox',
-                            name: 'checkbox',
-                            orderable: false,
-                            searchable: false,
-
-                        },
-                        {
-                            data: 'implant_code',
-                            name: 'implant_code',
-                            visible: false
-                        },
-                        {
-                            data: 'implant_date',
-                            name: 'implant_date'
-                        },
-                        {
-                            data: 'implant_pt_name',
-                            name: 'implant_pt_name',
-                            className: 'avoid-long-column'
-                        },
-                        {
-                            data: 'implant_pt_icno',
-                            name: 'implant_pt_icno',
-                            className: 'avoid-long-column'
-                        },
-                        {
-                            data: 'implant_backup_form',
-                            name: 'implant_backup_form',
-                        },
-                        {
-                            data: 'action',
-                            name: 'action',
-                            orderable: false,
-                            searchable: false
-                        }
-                    ]
-
-                });
+                    {
+                        data: 'implant_refno',
+                        name: 'implant_refno',
+                        visible: false
+                    },
+                    {
+                        data: 'implant_date',
+                        name: 'implant_date'
+                    },
+                    {
+                        data: 'implant_pt_name',
+                        name: 'implant_pt_name',
+                        className: 'avoid-long-column'
+                    },
+                    {
+                        data: 'implant_pt_icno',
+                        name: 'implant_pt_icno',
+                        className: 'avoid-long-column'
+                    },
+                    {
+                        data: 'implant_backup_form',
+                        name: 'implant_backup_form',
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
 
             });
 
@@ -329,7 +326,6 @@
                 $('#generatorFilter').val("");
                 $('.data-table').DataTable().ajax.reload();
             });
-
 
             $('#implant_file').on('change', function() {
                 let file = this.files[0];

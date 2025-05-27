@@ -136,7 +136,7 @@
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-header bg-light-primary text-primary">
-                            <h5 class="card-title mb-0">Generate Patient ID Card (#{{ $data['implant_code'] }})</h5>
+                            <h5 class="card-title mb-0">Generate Patient ID Card (#{{ $data['implant_refno'] }})</h5>
                         </div>
 
                         <div class="card-body">

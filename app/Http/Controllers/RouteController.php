@@ -65,7 +65,7 @@ class RouteController extends Controller
             $data = DB::table('implants')
                 ->select(
                     'id',
-                    'implant_code',
+                    'implant_refno',
                     'implant_date',
                     'implant_pt_name',
                     'implant_pt_icno',
@@ -110,11 +110,11 @@ class RouteController extends Controller
                 return $date;
             });
 
-            $table->addColumn('implant_code', function ($row) {
+            $table->addColumn('implant_refno', function ($row) {
                 $code =
                     '
                     <a href="' . route('view-irf-document', ['id' => Crypt::encrypt($row->id), 'option' => 2]) . '" class="link-primary" target="_blank">
-                        ' . $row->implant_code . '
+                        ' . $row->implant_refno . '
                     </a>
                 
                 ';
@@ -179,7 +179,7 @@ class RouteController extends Controller
                 return $button;
             });
 
-            $table->rawColumns(['checkbox', 'implant_date', 'implant_backup_form', 'implant_code', 'action']);
+            $table->rawColumns(['checkbox', 'implant_date', 'implant_backup_form', 'implant_refno', 'action']);
 
             return $table->make(true);
         }
@@ -262,7 +262,7 @@ class RouteController extends Controller
                 ->select([
                     'a.id',
                     'a.implant_date',
-                    'a.implant_code',
+                    'a.implant_refno',
                     'd.hospital_name',
                     'd.hospital_phoneno',
                     'd.hospital_code',
@@ -277,7 +277,6 @@ class RouteController extends Controller
                     'a.implant_pt_directory',
                     'a.implant_invoice_no',
                     'a.implant_sales',
-                    'a.implant_quantity',
                     'a.implant_remark',
                     'a.implant_pt_mrn',
                     'a.implant_pt_icno',
@@ -290,7 +289,7 @@ class RouteController extends Controller
                 ->groupBy(
                     'a.id',
                     'a.implant_date',
-                    'a.implant_code',
+                    'a.implant_refno',
                     'd.hospital_name',
                     'd.hospital_phoneno',
                     'd.hospital_code',
@@ -304,7 +303,6 @@ class RouteController extends Controller
                     'a.implant_pt_directory',
                     'a.implant_invoice_no',
                     'a.implant_sales',
-                    'a.implant_quantity',
                     'a.implant_remark',
                     'a.implant_pt_mrn',
                     'a.implant_pt_icno',
@@ -345,7 +343,7 @@ class RouteController extends Controller
                 'id' => $implant->id ?? '-',
                 'implant_date' => Carbon::parse($implant->implant_date)->format('d M Y') ?? '-',
                 'today_date' => Carbon::now()->format('d M Y') ?? '-',
-                'implant_code' => $implant->implant_code ?? '-',
+                'implant_refno' => $implant->implant_refno ?? '-',
                 'hospital_name' => $implant->hospital_name ?? '-',
                 'hospital_phoneno' => $implant->hospital_phoneno ?? '-',
                 'hospital_code' => $implant->hospital_code ?? '-',
@@ -360,7 +358,6 @@ class RouteController extends Controller
                 'implant_pt_directory' => $implant->implant_pt_directory ?? '-',
                 'implant_invoice_no' => $implant->implant_invoice_no ?? '-',
                 'implant_sales' => $implant->implant_sales ?? '-',
-                'implant_quantity' => $implant->implant_quantity ?? '-',
                 'implant_remark' => $implant->implant_remark ?? '-',
                 'implant_pt_mrn' => $implant->implant_pt_mrn ?? '-',
                 'implant_pt_icno' => $implant->implant_pt_icno ?? '-',
@@ -391,9 +388,9 @@ class RouteController extends Controller
             } elseif ($option == 3) // Download PDF
             {
                 return $pdf->download($title . '.pdf');
-            } else // 404
+            } else 
             {
-                return abort(404);
+                return back()->with('error', 'Invalid option selected.');
             }
         } catch (Exception $e) {
             return abort(404);
@@ -423,7 +420,7 @@ class RouteController extends Controller
                 ->select([
                     'a.id',
                     'a.implant_date',
-                    'a.implant_code',
+                    'a.implant_refno',
                     'a.implant_pt_id_card_design',
                     'd.hospital_name',
                     'd.hospital_phoneno',
@@ -441,7 +438,7 @@ class RouteController extends Controller
                 ->groupBy(
                     'a.id',
                     'a.implant_date',
-                    'a.implant_code',
+                    'a.implant_refno',
                     'a.implant_pt_id_card_design',
                     'd.hospital_name',
                     'd.hospital_phoneno',
@@ -486,7 +483,7 @@ class RouteController extends Controller
             $formattedData = [
                 'id' => $implant->id ?? '-',
                 'implant_date' => Carbon::parse($implant->implant_date)->format('d M Y') ?? '-',
-                'implant_code' => $implant->implant_code ?? '-',
+                'implant_refno' => $implant->implant_refno ?? '-',
                 'implant_pt_id_card_design' => $implant->implant_pt_id_card_design ?? '',
                 'hospital_name' => Str::upper($implant->hospital_name) ?? '-',
                 'hospital_phoneno' => $implant->hospital_phoneno ?? '-',
@@ -536,7 +533,7 @@ class RouteController extends Controller
             ->select([
                 'a.id',
                 'a.implant_date',
-                'a.implant_code',
+                'a.implant_refno',
                 'd.hospital_name',
                 'd.hospital_phoneno',
                 'd.hospital_code',
@@ -552,7 +549,7 @@ class RouteController extends Controller
             ->groupBy(
                 'a.id',
                 'a.implant_date',
-                'a.implant_code',
+                'a.implant_refno',
                 'd.hospital_name',
                 'd.hospital_phoneno',
                 'd.hospital_code',
@@ -595,7 +592,7 @@ class RouteController extends Controller
         $formattedData = [
             'id' => $implant->id ?? '-',
             'implant_date' => Carbon::parse($implant->implant_date)->format('d M Y') ?? '-',
-            'implant_code' => $implant->implant_code ?? '-',
+            'implant_refno' => $implant->implant_refno ?? '-',
             'hospital_name' => Str::upper($implant->hospital_name) ?? '-',
             'hospital_phoneno' => $implant->hospital_phoneno ?? '-',
             'hospital_code' => $implant->hospital_code ?? '-',

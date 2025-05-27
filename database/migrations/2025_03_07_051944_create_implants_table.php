@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('implants', function (Blueprint $table) {
             $table->id();
-            $table->string('implant_code')->unique();
+            $table->string('implant_refno')->unique();
             $table->date('implant_date');
             $table->string('implant_pt_name');
             $table->string('implant_pt_icno');
@@ -26,9 +26,11 @@ return new class extends Migration
             $table->integer('implant_pt_id_card_design')->nullable();
             $table->text('implant_pt_directory')->nullable();
             $table->string('implant_generator_sn');
+            $table->integer('implant_generator_qty')->default(1);
+            $table->double('implant_generator_itemPrice')->default(0.00);
             $table->string('implant_invoice_no')->nullable();
             $table->double('implant_sales')->default(0.00);
-            $table->integer('implant_quantity')->default(1);
+            // $table->integer('implant_quantity')->default(1);
             $table->text('implant_remark')->nullable();
             $table->text('implant_note')->nullable();
             $table->string('implant_approval_type')->nullable();

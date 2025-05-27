@@ -96,7 +96,7 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h2>Notification: Your Digital Patient ID Card is Ready</h2>
+            <h2>Notification: Your Digital Patient ID Card is Ready !</h2>
         </div>
 
         <!-- Content -->
@@ -107,7 +107,7 @@
             <p>You can download your card by clicking the button below:</p>
 
             <div class="action-btn">
-                <a href="{{ route('view-patient-id-card-page', ['id' => Crypt::encrypt($data['implant_id']),'opt'=> $data['opt'],'type'=> 2]) }}">DOWNLOAD PATIENT ID CARD</a>
+                <a href="{{ route('guest-view-patient-id-card-page', ['id' => Crypt::encrypt($data['implant_id']),'opt'=> $data['opt'],'type'=> 2]) }}">DOWNLOAD PATIENT ID CARD</a>
             </div>
 
             <p>If you encounter any issues or require further assistance, please do not hesitate to contact our support

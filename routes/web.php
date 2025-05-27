@@ -24,6 +24,10 @@ use App\Http\Controllers\ImplantController;
 Route::prefix('auth')->group(function () {
     Route::get('/login', [RouteController::class, 'loginpage'])->name('login-page');
     Route::post('/authenticate-staff', [AuthenticateController::class, 'staffLogin'])->name('staff-login-post');
+
+    // Guest Patient ID Card Download
+    Route::get('/guest-view-patient-id-card-{id}-{opt}-{type}', [RouteController::class, 'viewDownloadPatientIdCard'])->name('guest-view-patient-id-card-page');
+
 });
 
 Route::prefix('staff')->middleware('auth')->group(function () {

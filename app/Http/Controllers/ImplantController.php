@@ -31,7 +31,7 @@ class ImplantController extends Controller
     public function addImplant(Request $req)
     {
         $validator = Validator::make($req->all(), [
-            'implant_code' => 'nullable|string',
+            'implant_refno' => 'nullable|string',
             'implant_date' => 'required|date',
             'implant_pt_name' => 'required|string',
             'implant_pt_icno' => 'required|min:7|max:15|string',
@@ -42,6 +42,8 @@ class ImplantController extends Controller
             'implant_pt_dob' => 'nullable|string',
             'implant_pt_directory' => 'nullable|string',
             'implant_generator_sn' => 'required|string',
+            'implant_generator_itemPrice' => 'nullable|decimal:0,2',
+            'implant_generator_qty' => 'nullable|integer|min:1',
             'implant_invoice_no' => 'nullable|string',
             'implant_sales' => 'required|numeric',
             'implant_remark' => 'nullable|string',
@@ -55,9 +57,11 @@ class ImplantController extends Controller
             'product_groups' => 'required|array',
             'model_ids' => 'nullable|array',
             'model_sns' => 'nullable|array',
+            'model_price' => 'nullable|array',
+            'model_qty' => 'nullable|array',
             'stock_location_ids' => 'nullable|array',
         ], [], [
-            'implant_code' => 'implant code',
+            'implant_refno' => 'implant code',
             'implant_date' => 'implant date',
             'implant_pt_name' => 'patient name',
             'implant_pt_icno' => 'patient ic number',
@@ -68,6 +72,8 @@ class ImplantController extends Controller
             'implant_pt_dob' => 'patient date of birth',
             'implant_pt_directory' => 'patient directory',
             'implant_generator_sn' => 'generator serial number',
+            'implant_generator_itemPrice' => 'generator price',
+            'implant_generator_qty' => 'generator quantity',
             'implant_invoice_no' => 'implant invoice number',
             'implant_sales' => 'implant sales',
             'implant_remark' => 'remarks',
@@ -81,6 +87,8 @@ class ImplantController extends Controller
             'product_groups' => 'product group',
             'model_ids' => 'model',
             'model_sns' => 'model serial number',
+            'model_price' => 'model price',
+            'model_qty' => 'model quantity',
             'stock_location_ids' => 'model stock location',
         ]);
 
@@ -105,7 +113,7 @@ class ImplantController extends Controller
             Storage::makeDirectory("public/implants/{$implantdirectory}");
 
             // Assign Values
-            $validated['implant_code'] = $implantcode;
+            $validated['implant_refno'] = $implantcode;
             $validated['implant_pt_directory'] = $implantdirectory;
 
             // Store Implant
@@ -125,22 +133,27 @@ class ImplantController extends Controller
             }
 
             /**** 03 - Implants X Model ****/
-            if (!empty($validated['model_ids']) && !empty($validated['model_sns']) && !empty($validated['stock_location_ids'])) {
+            if (!empty($validated['model_ids']) && !empty($validated['model_sns']) && !empty($validated['model_price']) && !empty($validated['model_qty']) && !empty($validated['stock_location_ids'])) {
                 foreach ($validated['model_ids'] as $index => $model) {
-                    if (!isset($validated['model_sns'][$index], $validated['stock_location_ids'][$index])) {
+                    if (!isset($validated['model_sns'][$index], $validated['model_price'][$index], $validated['model_qty'][$index], $validated['stock_location_ids'][$index])) {
                         continue;
                     }
 
                     $modelID = optional(AbbottModel::find($model))->id;
                     $stockLocationID = $validated['stock_location_ids'][$index] ?? null;
                     $modelSN = $validated['model_sns'][$index] ?? null;
+                    $modelPrice = $validated['model_price'][$index] ?? null;
+                    $modelQty = $validated['model_qty'][$index] ?? null;
 
                     if ($modelID && $stockLocationID && $modelSN) {
                         ImplantModel::firstOrCreate([
                             'implant_id' => $implant->id,
                             'model_id' => $modelID,
                             'stock_location_id' => $stockLocationID,
-                            'implant_model_sn' => $modelSN
+                            'implant_model_sn' => $modelSN,
+                            'implant_model_itemPrice' => $modelPrice,
+                            'implant_model_qty' => $modelQty
+
                         ]);
                     }
                 }
@@ -159,7 +172,7 @@ class ImplantController extends Controller
     {
         $id = Crypt::decrypt($id);
         $validator = Validator::make($req->all(), [
-            'implant_code' => 'nullable|string',
+            'implant_refno' => 'nullable|string',
             'implant_date' => 'required|date',
             'implant_pt_name' => 'required|string',
             'implant_pt_icno' => 'required|min:7|max:15|string',
@@ -170,6 +183,8 @@ class ImplantController extends Controller
             'implant_pt_dob' => 'nullable|string',
             'implant_pt_directory' => 'nullable|string',
             'implant_generator_sn' => 'required|string',
+            'implant_generator_itemPrice' => 'nullable|decimal:0,2',
+            'implant_generator_qty' => 'nullable|integer|min:1',
             'implant_invoice_no' => 'nullable|string',
             'implant_sales' => 'required||numeric',
             'implant_remark' => 'nullable|string',
@@ -183,9 +198,11 @@ class ImplantController extends Controller
             'product_groups' => 'nullable|array',
             'model_ids' => 'nullable|array',
             'model_sns' => 'nullable|array',
+            'model_price' => 'nullable|array',
+            'model_qty' => 'nullable|array',
             'stock_location_ids' => 'nullable|array',
         ], [], [
-            'implant_code' => 'implant code',
+            'implant_refno' => 'implant code',
             'implant_date' => 'implant date',
             'implant_pt_name' => 'patient name',
             'implant_pt_icno' => 'patient ic number',
@@ -196,6 +213,8 @@ class ImplantController extends Controller
             'implant_pt_dob' => 'patient date of birth',
             'implant_pt_directory' => 'patient directory',
             'implant_generator_sn' => 'generator serial number',
+            'implant_generator_itemPrice' => 'generator price',
+            'implant_generator_qty' => 'generator quantity',
             'implant_invoice_no' => 'implant invoice number',
             'implant_sales' => 'implant sales',
             'implant_remark' => 'remarks',
@@ -209,6 +228,8 @@ class ImplantController extends Controller
             'product_groups' => 'product group',
             'model_ids' => 'model',
             'model_sns' => 'model serial number',
+            'model_price' => 'model price',
+            'model_qty' => 'model quantity',
             'stock_location_ids' => 'model stock location',
         ]);
 
@@ -238,7 +259,7 @@ class ImplantController extends Controller
             }
 
             $implant->update([
-                'implant_code' => $newImplantCode,
+                'implant_refno' => $newImplantCode,
                 'implant_pt_directory' => $newDirectory,
                 'implant_date' => $validated['implant_date'],
                 'implant_pt_name' => $validated['implant_pt_name'],
@@ -249,6 +270,8 @@ class ImplantController extends Controller
                 'implant_pt_phoneno' => $validated['implant_pt_phoneno'],
                 'implant_pt_dob' => $validated['implant_pt_dob'],
                 'implant_generator_sn' => $validated['implant_generator_sn'],
+                'implant_generator_itemPrice' => $validated['implant_generator_itemPrice'],
+                'implant_generator_qty' => $validated['implant_generator_qty'],
                 'implant_invoice_no' => $validated['implant_invoice_no'],
                 'implant_sales' => $validated['implant_sales'],
                 'implant_remark' => $validated['implant_remark'],
@@ -275,25 +298,31 @@ class ImplantController extends Controller
             ProductGroupList::where('implant_id', $id)->whereNotIn('product_group_id', $validated['product_groups'])->delete();
 
             /**** 03 - Update / Add Implant Models ****/
-            if (isset($validated['model_ids'], $validated['model_sns'], $validated['stock_location_ids'])) {
+            if (isset($validated['model_ids'], $validated['model_sns'],  $validated['model_price'], $validated['model_qty'], $validated['stock_location_ids'])) {
                 foreach ($validated['model_ids'] as $index => $modelID) {
-                    if (isset($validated['model_sns'][$index], $validated['stock_location_ids'][$index])) {
+                    if (isset($validated['model_sns'][$index], $validated['model_price'][$index], $validated['model_qty'][$index] ,$validated['stock_location_ids'][$index])) {
                         $modelSN = $validated['model_sns'][$index];
                         $stockLocationID = $validated['stock_location_ids'][$index];
+                        $modelPrice = $validated['model_price'][$index];
+                        $modelQty = $validated['model_qty'][$index];
 
                         $existingIM = ImplantModel::where('implant_id', $id)->where('model_id', $modelID)->first();
 
                         if ($existingIM) {
                             $existingIM->update([
                                 'implant_model_sn' => $modelSN,
-                                'stock_location_id' => $stockLocationID
+                                'stock_location_id' => $stockLocationID,
+                                'implant_model_itemPrice' => $modelPrice,
+                                'implant_model_qty' => $modelQty
                             ]);
                         } else {
                             ImplantModel::create([
                                 'implant_id' => $id,
                                 'model_id' => $modelID,
                                 'implant_model_sn' => $modelSN,
-                                'stock_location_id' => $stockLocationID
+                                'stock_location_id' => $stockLocationID,
+                                'implant_model_itemPrice' => $modelPrice,
+                                'implant_model_qty' => $modelQty
                             ]);
                         }
                     }
@@ -373,7 +402,7 @@ class ImplantController extends Controller
             ->select([
                 'a.id',
                 'a.implant_date',
-                'a.implant_code',
+                'a.implant_refno',
                 'd.hospital_name',
                 'd.hospital_phoneno',
                 'd.hospital_code',
@@ -388,7 +417,6 @@ class ImplantController extends Controller
                 'a.implant_pt_directory',
                 'a.implant_invoice_no',
                 'a.implant_sales',
-                'a.implant_quantity',
                 'a.implant_remark',
                 'a.implant_pt_mrn',
                 'a.implant_pt_icno',
@@ -401,7 +429,7 @@ class ImplantController extends Controller
             ->groupBy(
                 'a.id',
                 'a.implant_date',
-                'a.implant_code',
+                'a.implant_refno',
                 'd.hospital_name',
                 'd.hospital_phoneno',
                 'd.hospital_code',
@@ -415,7 +443,6 @@ class ImplantController extends Controller
                 'a.implant_pt_directory',
                 'a.implant_invoice_no',
                 'a.implant_sales',
-                'a.implant_quantity',
                 'a.implant_remark',
                 'a.implant_pt_mrn',
                 'a.implant_pt_icno',
@@ -456,7 +483,7 @@ class ImplantController extends Controller
             'id' => $implant->id ?? '-',
             'implant_date' => Carbon::parse($implant->implant_date)->format('d M Y') ?? '-',
             'today_date' => Carbon::now()->format('d M Y') ?? '-',
-            'implant_code' => $implant->implant_code ?? '-',
+            'implant_refno' => $implant->implant_refno ?? '-',
             'hospital_name' => $implant->hospital_name ?? '-',
             'hospital_phoneno' => $implant->hospital_phoneno ?? '-',
             'hospital_code' => $implant->hospital_code ?? '-',
@@ -471,7 +498,6 @@ class ImplantController extends Controller
             'implant_pt_directory' => $implant->implant_pt_directory ?? '-',
             'implant_invoice_no' => $implant->implant_invoice_no ?? '-',
             'implant_sales' => $implant->implant_sales ?? '-',
-            'implant_quantity' => $implant->implant_quantity ?? '-',
             'implant_remark' => $implant->implant_remark ?? '-',
             'implant_pt_mrn' => $implant->implant_pt_mrn ?? '-',
             'implant_pt_icno' => $implant->implant_pt_icno ?? '-',
@@ -630,7 +656,7 @@ class ImplantController extends Controller
                 ->select([
                     'a.id',
                     'a.implant_date',
-                    'a.implant_code',
+                    'a.implant_refno',
                     'd.hospital_name',
                     'd.hospital_phoneno',
                     'd.hospital_code',
@@ -646,7 +672,7 @@ class ImplantController extends Controller
                 ->groupBy(
                     'a.id',
                     'a.implant_date',
-                    'a.implant_code',
+                    'a.implant_refno',
                     'd.hospital_name',
                     'd.hospital_phoneno',
                     'd.hospital_code',
@@ -689,7 +715,7 @@ class ImplantController extends Controller
             $formattedData = [
                 'id' => $implant->id ?? '-',
                 'implant_date' => Carbon::parse($implant->implant_date)->format('d M Y') ?? '-',
-                'implant_code' => $implant->implant_code ?? '-',
+                'implant_refno' => $implant->implant_refno ?? '-',
                 'hospital_name' => Str::upper($implant->hospital_name) ?? '-',
                 'hospital_phoneno' => $implant->hospital_phoneno ?? '-',
                 'hospital_code' => $implant->hospital_code ?? '-',

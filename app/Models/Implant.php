@@ -10,7 +10,7 @@ class Implant extends Model
     use HasFactory;
 
     protected $fillable = [
-        'implant_code',
+        'implant_refno',
         'implant_date',
         'implant_pt_name',
         'implant_pt_icno',
@@ -23,9 +23,10 @@ class Implant extends Model
         'implant_pt_id_card_design',
         'implant_pt_directory',
         'implant_generator_sn',
+        'implant_generator_qty',
+        'implant_generator_itemPrice',
         'implant_invoice_no',
         'implant_sales',
-        'implant_quantity',
         'implant_remark',
         'implant_note',
         'implant_approval_type',

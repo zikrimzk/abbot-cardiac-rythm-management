@@ -76,7 +76,7 @@
             <small><strong>Implant Date :</strong> {{ $im['implant_date'] }}</small>
         </div>
         <div class="text-end">
-            <small><strong>Ref No :</strong> {{ $im['implant_code'] }}</small>
+            <small><strong>Ref No :</strong> {{ $im['implant_refno'] }}</small>
         </div>
     </div>
 
