@@ -1,34 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Inventory Consumption Form</title>
-    <style>
-        /* Global reset and base styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: #f5f7fa;
-            padding: 20px;
-            color: #333;
-        }
-
-        /* Landscape container */
-        .container {
-            width: 297mm;
-            min-height: 210mm;
-            margin: 0 auto;
+ <style>
+        /* Landscape wrapper-form */
+        .wrapper-form {
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto;
             background: white;
-            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);
-            padding: 20mm;
+            border: 1px dashed #555;
+            border-radius: 10px;
+            overflow: hidden;
             position: relative;
+            padding: 30px;
         }
 
         /* Watermark background */
@@ -57,14 +38,6 @@
         .logo-area {
             width: 150px;
             height: 80px;
-            background: #f0f8ff;
-            border: 1px dashed #2c6eb5;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #2c6eb5;
-            font-weight: 500;
         }
 
         .title-area {
@@ -80,7 +53,7 @@
         }
 
         .title-area .subtitle {
-            font-size: 18px;
+            font-size: 12px;
             color: #2c6eb5;
             font-weight: 600;
         }
@@ -96,12 +69,14 @@
             width: 100%;
             margin: 25px 0;
             border-collapse: collapse;
+            font-size: 12px;
         }
 
         .patient-info td {
             border: 1px solid #ddd;
             padding: 8px 12px;
             vertical-align: top;
+
         }
 
         .info-label {
@@ -109,6 +84,7 @@
             font-weight: 600;
             width: 15%;
             color: #1a3c6e;
+            font-size: 12px;
         }
 
         /* Stock Location Section */
@@ -122,7 +98,7 @@
 
         .section-title {
             color: #1a3c6e;
-            font-size: 16px;
+            font-size: 12px;
             font-weight: 600;
             margin-bottom: 10px;
             padding-bottom: 5px;
@@ -133,7 +109,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 10px;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .location-item {
@@ -154,7 +130,7 @@
         .products-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14px;
+            font-size: 12px;
             margin-top: 10px;
         }
 
@@ -201,7 +177,7 @@
         }
 
         .total-invoice {
-            font-size: 16px;
+            font-size: 12px;
             font-weight: 700;
             color: #1a3c6e;
         }
@@ -221,6 +197,7 @@
 
         .documents-section li {
             margin-bottom: 8px;
+            font-size: 12px;
         }
 
         /* Footer */
@@ -260,7 +237,7 @@
                 background: none;
             }
 
-            .container {
+            .wrapper-form {
                 box-shadow: none;
                 margin: 0;
                 padding: 15mm;
@@ -302,210 +279,141 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
     </style>
-</head>
 
-<body>
-    <button class="print-btn no-print" onclick="window.print()">Generate PDF</button>
 
-    <div class="container">
-        <div class="watermark"></div>
+<div class="wrapper-form">
+    <div class="watermark"></div>
 
-        <!-- Header with logo area -->
-        <div class="header">
-            <div class="logo-area">COMPANY LOGO</div>
-            <div class="title-area">
-                <h1>INVENTORY CONSUMPTION FORM</h1>
-                <div class="subtitle">Abbott Medical Devices</div>
-            </div>
-            <div class="form-meta">
-                Form ID: IC-2025-5306<br>
-                Date: 28-Jan-2025
-            </div>
+    <!-- Header with logo area -->
+    <div class="header">
+        <div class="logo-area">
+            <img src="../assets/images/logo/abbott-logo.png" width="150" alt="Abbott Logo">
         </div>
-
-        <!-- Patient Information -->
-        <table class="patient-info">
-            <tr>
-                <td class="info-label">Bill to :</td>
-                <td>NAGAMAL A/P ARAPTTIASAM</td>
-                <td class="info-label">Ship to :</td>
-                <td>HOSPITAL SULTAN IDRIS SHAH SERDANG</td>
-            </tr>
-            <tr>
-                <td class="info-label">Patient Name :</td>
-                <td>NAGAMAL A/P ARAPTTIASAM</td>
-                <td class="info-label">Patient HC :</td>
-                <td>530714-04-5306</td>
-            </tr>
-            <tr>
-                <td class="info-label">Patient MRN :</td>
-                <td>S001372783</td>
-                <td class="info-label">Address :</td>
-                <td>NO 67, KERONGSANG 10, BANDAR PUTERI, KLANG, 41200 SELANGOR</td>
-            </tr>
-        </table>
-
-        <!-- Stock Location -->
-        <div class="stock-section">
-            <div class="section-title">Stock Location Codes</div>
-            <div class="location-grid">
-                <div class="location-item"><span class="location-code">HC</span> = Hospital Consignment</div>
-                <div class="location-item"><span class="location-code">MC</span> = Michael Chuah (Penang)</div>
-                <div class="location-item"><span class="location-code">AC</span> = Alan Chee (Sabah)</div>
-                <div class="location-item"><span class="location-code">ZA</span> = Zulkhairi Ayop (Johor)</div>
-                <div class="location-item"><span class="location-code">KL</span> = Kyle Lee (Central)</div>
-                <div class="location-item"><span class="location-code">IDH</span> = Indahaus Resources (Sarawak)</div>
-            </div>
+        <div class="title-area">
+            <h1>INVENTORY CONSUMPTION FORM</h1>
+            <div class="subtitle">Abbott Medical Devices</div>
         </div>
-
-        <!-- Products Table -->
-        <div class="products-section">
-            <div class="section-title">Implanted Products</div>
-            <table class="products-table">
-                <thead>
-                    <tr>
-                        <th>Implant Date</th>
-                        <th>Model No.</th>
-                        <th>Serial / Batch No.</th>
-                        <th>Stk Loc</th>
-                        <th>Product Description</th>
-                        <th>Qty</th>
-                        <th>Unit Price (MYR)</th>
-                        <th>Amount (MYR)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>28-Jan-25</td>
-                        <td>PM1172</td>
-                        <td>8838983</td>
-                        <td>KL</td>
-                        <td>ENDURITY MRI</td>
-                        <td>1</td>
-                        <td>7,000.00</td>
-                        <td>7,000.00</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>2088TC/68</td>
-                        <td>EEM190133</td>
-                        <td>KL</td>
-                        <td>TENDRIL STS 86CM</td>
-                        <td>1</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>4051L</td>
-                        <td>2411011</td>
-                        <td>KL</td>
-                        <td>DISPOSABLE SURGICAL CABLE</td>
-                        <td>1</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>DSN028-59</td>
-                        <td>8323158</td>
-                        <td>KL</td>
-                        <td>CPS AIM UNIVERSAL SUBO8146</td>
-                        <td>2</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="6" style="text-align: right; font-weight: 600;">TOTAL:</td>
-                        <td>7,000.00</td>
-                        <td>7,000.00</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-
-        <!-- Payment Section -->
-        <div class="payment-section">
-            <div class="payment-method">Payment Method : Patient Self-Paid (RM7,000)</div>
-            <div class="payment-note">*(Patient self-paid / Welfare Approval / Hospital / Burm Agent)</div>
-            <div class="total-invoice">Total Invoice: 7,000.00 MYR</div>
-        </div>
-
-        <!-- Documents Section -->
-        <div class="documents-section">
-            <div class="section-title">Required Supporting Documents:</div>
-            <ol>
-                <li>Delivery Order (with Stamp and Signature)</li>
-                <li>Implant Registration Form (IRF)</li>
-                <li>Welfare Approval Letter / GL (if applicable)</li>
-                <li>Purchase Order (if applicable)</li>
-                <li>Patient Consent Form</li>
-            </ol>
-        </div>
-
-        <!-- Signature Area -->
-        <div class="signature-area">
-            <div class="signature-box">
-                Prepared by<br>(Sales Representative)
-            </div>
-            <div class="signature-box">
-                Approved by<br>(Hospital Inventory Manager)
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            <div><strong>Remark from Sales:</strong> All products delivered and implanted as per schedule</div>
-            <div class="form-version">Inventory Consumption Form_Ver4.0_23Apr2024</div>
+        <div class="form-meta">
+            Form ID: IC-2025-5306<br>
+            Date: 28-Jan-2025
         </div>
     </div>
 
-    <script>
-        // Automatically set today's date in form meta
-        document.addEventListener('DOMContentLoaded', function() {
-            const today = new Date();
-            const formattedDate = today.toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric'
-            }).replace(/ /g, '-');
+    <!-- Patient Information -->
+    <table class="patient-info">
+        <tr>
+            <td class="info-label">Bill to :</td>
+            <td>{{ $data['implant_pt_name'] }}</td>
+            <td class="info-label">Ship to :</td>
+            <td>{{ $data['hospital_name'] }}</td>
+        </tr>
+        <tr>
+            <td class="info-label">Patient Name :</td>
+            <td>{{ $data['implant_pt_name'] }}</td>
+            <td class="info-label">Patient IC :</td>
+            <td>{{ $data['implant_pt_icno'] }}</td>
+        </tr>
+        <tr>
+            <td class="info-label">Patient MRN :</td>
+            <td>{{ $data['implant_pt_mrn'] }}</td>
+            <td class="info-label">Address :</td>
+            <td>{{ $data['implant_pt_address'] }}</td>
+        </tr>
+    </table>
 
-            document.querySelector('.form-meta').innerHTML =
-                `Form ID: IC-${today.getFullYear()}-${Math.floor(Math.random()*9000)+1000}<br>Date: ${formattedDate}`;
-        });
-    </script>
-</body>
+    <!-- Products Table -->
+    <div class="products-section">
+        <div class="section-title">Implanted Products</div>
+        <table class="products-table">
+            <thead>
+                <tr>
+                    <th>Implant Date</th>
+                    <th>Model No.</th>
+                    <th>Serial / Batch No.</th>
+                    <th>Stk Loc</th>
+                    <th>Product Description</th>
+                    <th>Qty</th>
+                    <th>Unit Price (MYR)</th>
+                    <th>Amount (MYR)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $total = 0;
+                    $total += $data['implant_generator_qty'] * $data['implant_generator_itemPrice'];
+                @endphp
+                <tr>
+                    <td>{{ $data['implant_date'] }}</td>
+                    <td>{{ $data['generator_code'] }}</td>
+                    <td>{{ $data['implant_generator_sn'] }}</td>
+                    <td>{{ $data['stock_location_code'] }}</td>
+                    <td>{{ $data['generator_name'] }}</td>
+                    <td>{{ $data['implant_generator_qty'] }}</td>
+                    <td>{{ $data['implant_generator_itemPrice'] == 0 ? '' : $data['implant_generator_itemPrice'] }}</td>
+                    <td>{{ $data['implant_generator_qty'] * $data['implant_generator_itemPrice'] == 0 ? '' : $data['implant_generator_qty'] * $data['implant_generator_itemPrice'] }}</td>
+                </tr>
+                @foreach ($data['models'] as $item)
+                    @php
+                        $total += $item['implant_model_qty'] * $item['implant_model_itemPrice'];
+                    @endphp
+                    @if ($item['model_code'] !== '-')
+                        <tr>
+                            <td></td>
+                            <td>{{ $item['model_code'] }}</td>
+                            <td>{{ $item['implant_model_sn'] }}</td>
+                            <td>{{ $item['stock_location_code'] }}</td>
+                            <td>{{ $item['model_name'] }}</td>
+                            <td>{{ $item['implant_model_qty'] }}</td>
+                            <td>{{ $item['implant_model_itemPrice'] == 0 ? '' : $item['implant_model_itemPrice'] }}</td>
+                            <td>{{ $item['implant_model_qty'] * $item['implant_model_itemPrice'] == 0 ? '' : $item['implant_model_qty'] * $item['implant_model_itemPrice'] }}</td>
+                        </tr>
+                    @endif
+                @endforeach
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="7" style="text-align: right; font-weight: 600;">TOTAL:</td>
+                    <td>{{ $total }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 
-</html>
+    <!-- Payment Section -->
+    <div class="payment-section">
+        <div class="payment-method">Payment Method : Patient Self-Paid (RM7,000)</div>
+        <div class="payment-note">*(Patient self-paid / Welfare Approval / Hospital / Burm Agent)</div>
+        <div class="total-invoice">Total Invoice: 7,000.00 MYR</div>
+    </div>
+
+    <!-- Stock Location -->
+    <div class="stock-section">
+        <div class="section-title">Stock Location Codes</div>
+        <div class="location-grid">
+            <div class="location-item"><span class="location-code">HC</span> = Hospital Consignment</div>
+            <div class="location-item"><span class="location-code">MC</span> = Michael Chuah (Penang)</div>
+            <div class="location-item"><span class="location-code">AC</span> = Alan Chee (Sabah)</div>
+            <div class="location-item"><span class="location-code">ZA</span> = Zulkhairi Ayop (Johor)</div>
+            <div class="location-item"><span class="location-code">KL</span> = Kyle Lee (Central)</div>
+            <div class="location-item"><span class="location-code">IDH</span> = Indahaus Resources (Sarawak)</div>
+        </div>
+    </div>
+
+    <!-- Documents Section -->
+    <div class="documents-section">
+        <div class="section-title">Required Supporting Documents:</div>
+        <ol>
+            <li>Delivery Order (with Stamp and Signature)</li>
+            <li>Implant Registration Form (IRF)</li>
+            <li>Welfare Approval Letter / GL (if applicable)</li>
+            <li>Purchase Order (if applicable)</li>
+            <li>Patient Consent Form</li>
+        </ol>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div><strong>Remark from Sales:</strong> All products delivered and implanted as per schedule</div>
+        <div class="form-version">Inventory Consumption Form_Ver4.0_23Apr2024</div>
+    </div>
+</div>

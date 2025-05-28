@@ -8,6 +8,7 @@ use App\Http\Controllers\AuthenticateController;
 use App\Http\Controllers\OtherSettingController;
 use App\Http\Controllers\HospitalDoctorController;
 use App\Http\Controllers\ImplantController;
+use App\Http\Controllers\SalesBillingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,6 +64,8 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::get('/generate-inventory-consumption-form', [RouteController::class, 'generateInventoryConsumptionForm'])->name('generate-icf-page');
     Route::get('/view-icf-editable-{id}', [RouteController::class, 'viewInventoryConsumptionFormEditable'])->name('view-editable-icf-page');
     Route::get('/view-icf-document-{id}', [RouteController::class, 'viewGenerateDownloadICF'])->name('view-icf-document');
+    Route::post('/icf-preview', [SalesBillingController::class, 'previewICF'])->name('icf-preview-post');
+
 
 
 
