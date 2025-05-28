@@ -388,8 +388,7 @@ class RouteController extends Controller
             } elseif ($option == 3) // Download PDF
             {
                 return $pdf->download($title . '.pdf');
-            } else 
-            {
+            } else {
                 return back()->with('error', 'Invalid option selected.');
             }
         } catch (Exception $e) {
@@ -629,6 +628,154 @@ class RouteController extends Controller
         }
 
         return $pdf->stream($title . '.pdf');
+    }
+
+    // Manage ICF Route
+    public function generateInventoryConsumptionForm(Request $req)
+    {
+        if ($req->ajax()) {
+
+            $data = DB::table('implants')
+                ->select(
+                    'id',
+                    'implant_refno',
+                    'implant_date',
+                    'implant_pt_name',
+                    'implant_pt_icno',
+                    'implant_pt_directory',
+                    'implant_backup_form',
+                    'region_id',
+                    'hospital_id',
+                    'generator_id',
+                    'region_id',
+                    'doctor_id',
+                );
+
+            if ($req->has('date_range') && !empty($req->input('date_range'))) {
+                $dates = explode(' to ', $req->date_range);
+                $startdate = Carbon::parse($dates[0])->format('Y-m-d');
+                $enddate = Carbon::parse($dates[1])->format('Y-m-d');
+                $data->whereBetween('implant_date', [$startdate, $enddate]);
+            }
+
+            if ($req->has('hospital') && !empty($req->input('hospital'))) {
+                $data->where('hospital_id', $req->input('hospital'));
+            }
+
+            if ($req->has('generator') && !empty($req->input('generator'))) {
+                $data->where('generator_id', $req->input('generator'));
+            }
+
+            if ($req->has('region') && !empty($req->input('region'))) {
+                $data->where('region_id', $req->input('region'));
+            }
+
+            $data = $data->get();
+
+            $table = DataTables::of($data)->addIndexColumn();
+
+            $table->addColumn('implant_date', function ($row) {
+                $date = Carbon::parse($row->implant_date)->format('d M Y');
+                return $date;
+            });
+
+            $table->addColumn('implant_refno', function ($row) {
+                $code =
+                    '
+                    <a href="' . route('view-irf-document', ['id' => Crypt::encrypt($row->id), 'option' => 2]) . '" class="link-primary" target="_blank">
+                        ' . $row->implant_refno . '
+                    </a>
+                
+                ';
+                return $code;
+            });
+
+
+            $table->addColumn('action', function ($row) {
+
+                $button =
+                    '
+                        <a href="' . route('view-editable-icf-page', Crypt::encrypt($row->id)) . '" class="avtar avtar-xs btn-light-primary">
+                            <i class="ti ti-edit f-20"></i>
+                        </a>
+                        <a href="' . route('download-implant-directory', Crypt::encrypt($row->id)) . '" class="avtar avtar-xs  btn-light-warning">
+                            <i class="ti ti-download f-20"></i>
+                        </a>
+                    ';
+                return $button;
+            });
+
+            $table->rawColumns(['implant_date', 'implant_backup_form', 'implant_refno', 'action']);
+
+            return $table->make(true);
+        }
+        return view('crmd-system.sales-billing.generate-icf', [
+            'title' => 'CRMD System | Generate Inventory Consumption Form (ICF)',
+            'ims' => Implant::all(),
+            'hosp' => Hospital::all(),
+            'gene' => Generator::all(),
+            'region' => Region::all(),
+        ]);
+    }
+
+    public function viewInventoryConsumptionFormEditable($id)
+    {
+        try {
+            $id = Crypt::decrypt($id);
+            $data = DB::table('implants as a')
+                ->join('hospitals as b', 'a.hospital_id', '=', 'b.id')
+                ->join('generators as c', 'a.generator_id', '=', 'c.id')
+                ->select(
+                    'a.id as implant_id',
+                    'a.*',
+                    'b.hospital_name',
+                    'c.*',
+                )
+                ->where('a.id', $id)
+                ->first();
+
+            return view('crmd-system.sales-billing.view-editable-icf', [
+                'title' => 'CRMD System | View Inventory Consumption Form (ICF)',
+                'ims' => $data,
+                'impmodel' => ImplantModel::where('implant_id', $id)->get(),
+                'hosp' => Hospital::all(),
+                'gene' => Generator::all(),
+                'region' => Region::all(),
+            ]);
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return abort(404, $e->getMessage());
+        }
+    }
+
+    public function viewGenerateDownloadICF($id)
+    {
+        try {
+            $id = Crypt::decrypt($id);
+            $data = DB::table('implants as a')
+                ->join('hospitals as b', 'a.hospital_id', '=', 'b.id')
+                ->join('generators as c', 'a.generator_id', '=', 'c.id')
+                ->select(
+                    'a.id as implant_id',
+                    'a.*',
+                    'b.hospital_name',
+                    'c.*',
+                )
+                ->where('a.id', $id)
+                ->first();
+
+            return view('crmd-system.sales-billing.icf-generator', [
+                'title' => 'CRMD System | View Inventory Consumption Form (ICF)',
+                'ims' => $data,
+                'impmodel' => ImplantModel::where('implant_id', $id)->get(),
+                'hosp' => Hospital::all(),
+                'gene' => Generator::all(),
+                'region' => Region::all(),
+            ]);
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return abort(404, $e->getMessage());
+        }
     }
 
     // Manage Designation Route

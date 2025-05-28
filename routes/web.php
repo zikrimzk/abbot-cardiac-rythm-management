@@ -59,6 +59,13 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::post('/patient-id-card-preview-{id}', [ImplantController::class, 'previewPatientIDCard'])->name('patient-id-card-preview-post');
     Route::post('/send-pt-id-card-email/{id}', [ImplantController::class, 'sendPatientIDCard'])->name('send-pt-id-card-email-post');
 
+    //Sales Biling >  Generate Inventory Consumption Form 
+    Route::get('/generate-inventory-consumption-form', [RouteController::class, 'generateInventoryConsumptionForm'])->name('generate-icf-page');
+    Route::get('/view-icf-editable-{id}', [RouteController::class, 'viewInventoryConsumptionFormEditable'])->name('view-editable-icf-page');
+    Route::get('/view-icf-document-{id}', [RouteController::class, 'viewGenerateDownloadICF'])->name('view-icf-document');
+
+
+
     //Manage Designation
     Route::get('/manage-designation', [RouteController::class, 'manageDesignation'])->name('manage-designation-page');
     Route::post('/add-designation', [StaffController::class, 'addDesignation'])->name('add-designation-post');
