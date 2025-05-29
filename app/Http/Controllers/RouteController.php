@@ -736,11 +736,17 @@ class RouteController extends Controller
 
             return view('crmd-system.sales-billing.view-editable-icf', [
                 'title' => 'CRMD System | View Inventory Consumption Form (ICF)',
-                'ims' => $data,
-                'impmodel' => ImplantModel::where('implant_id', $id)->get(),
-                'hosp' => Hospital::all(),
-                'gene' => Generator::all(),
-                'region' => Region::all(),
+                'im' => Implant::where('id', $id)->first(),
+                'pgslist' => ProductGroupList::where('implant_id', $id)->get(),
+                'ims' => ImplantModel::where('implant_id', $id)->get(),
+                'regions' => Region::all(),
+                'hospitals' => Hospital::all(),
+                'doctors' => Doctor::all(),
+                'pgs' => ProductGroup::all(),
+                'mcs' => ModelCategory::all(),
+                'generators' => Generator::all(),
+                'abbottmodels' => AbbottModel::all(),
+                'stocklocations' => StockLocation::all(),
             ]);
         } catch (Exception $e) {
             dd($e->getMessage());

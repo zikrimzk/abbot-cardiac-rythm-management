@@ -558,8 +558,6 @@
                                         @endif
                                     @endforeach
 
-
-
                                     <hr class="my-4" />
 
                                     <!-- [ Patient Name ] Input -->
