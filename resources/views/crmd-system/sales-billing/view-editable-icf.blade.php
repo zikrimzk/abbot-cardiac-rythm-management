@@ -3,7 +3,7 @@
 
 <!-- [ Main Content ] start -->
 @section('content')
-    <style>
+    {{-- <style>
         /* Landscape wrapper-form */
         .wrapper-form {
             width: 100%;
@@ -283,6 +283,108 @@
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
+    </style> --}}
+
+    <style>
+        .form-container {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 1200px;
+        }
+
+        .form-header {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .section-title {
+            color: #0d6efd;
+            border-left: 4px solid #0d6efd;
+            padding-left: 12px;
+            margin-bottom: 20px;
+        }
+
+        .price-input,
+        .qty-input,
+        .sn-input {
+            text-align: right;
+        }
+
+        .total-invoice {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #0d6efd;
+        }
+
+        .input-icon {
+            background-color: #f1f5f9;
+            border-right: none;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .required-star {
+            color: #dc3545;
+        }
+
+        .btn-remove {
+            background-color: #ffeded;
+            color: #dc3545;
+            border: none;
+            height: 38px;
+            margin-top: 29px;
+        }
+
+        .btn-remove:hover {
+            background-color: #f8d7da;
+        }
+
+        .btn-add {
+            background-color: #e8f4ff;
+            color: #0d6efd;
+            font-weight: 500;
+        }
+
+        .btn-add:hover {
+            background-color: #d1e7ff;
+        }
+
+        .btn-submit {
+            padding: 10px 30px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 15px;
+            }
+
+            .mobile-spacing {
+                margin-bottom: 15px;
+            }
+
+            .btn-remove {
+                margin-top: 0;
+            }
+        }
     </style>
 
     <div class="pc-container">
@@ -301,7 +403,12 @@
                         </div>
                         <div class="col-md-12">
                             <div class="page-header-title">
-                                <h2 class="mb-0">{{ $im->implant_pt_name }}</h2>
+                                <a href="{{ route('generate-icf-page') }}" class="btn me-2 d-flex align-items-center">
+                                    <span class="f-18">
+                                        <i class="ti ti-arrow-left me-2"></i>
+                                    </span>
+                                    Back
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -341,428 +448,302 @@
 
             <!-- [ Main Content ] start -->
             <div class="row">
-
-                <!-- [ Generate ICF ] start -->
                 <div class="col-sm-12">
-                    <div class="card">
-                        <div class="card-body">
+                    <div class="form-container">
+                        <form action="{{ route('update-implant-post', Crypt::encrypt($im->id)) }}" method="POST"
+                            id="update-implant-form">
+                            @csrf
 
-                            <a href="{{ route('view-icf-document', Crypt::encrypt($im->id)) }}"
-                                class="btn btn-light-danger">View ICF</a>
-
-                            <div class="row">
-
-                                <div class="col-sm-12 mb-4">
-                                    <div class="h5 mb-3 text-center">Setting</div>
-                                    <form action="{{ route('update-implant-post', Crypt::encrypt($im->id)) }}"
-                                        method="POST" id="update-implant-form">
-                                        @csrf
-
-                                        <div class="row">
-                                            <!-- [ Generator Model ] Input -->
-                                            <div class="col-sm-3">
-                                                <div class="mb-3">
-                                                    <label for="generator_id" class="form-label">Model <span
-                                                            class="text-danger">*</span></label>
-                                                    <select name="generator_id" id="generator_id"
-                                                        class="form-select @error('generator_id') is-invalid @enderror"
-                                                        required>
-                                                        @foreach ($generators as $g)
-                                                            @if ($im->generator_id == $g->id)
-                                                                <option value="{{ $g->id }}" selected>
-                                                                    {{ $g->generator_code }}
-                                                                </option>
-                                                            @else
-                                                                <option value="{{ $g->id }}">
-                                                                    {{ $g->generator_code }}
-                                                                </option>
-                                                            @endif
-                                                        @endforeach
-                                                    </select>
-                                                    @error('generator_id')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-
-                                            <!-- [ Generator Serial Number ] Input -->
-                                            <div class="col-sm-3">
-                                                <div class="mb-3">
-                                                    <label for="implant_generator_sn" class="form-label">Serial
-                                                        Number <span class="text-danger">*</span></label>
-                                                    <input type="text" name="implant_generator_sn"
-                                                        id="implant_generator_sn"
-                                                        class="form-control sn-input @error('implant_generator_sn') is-invalid @enderror"
-                                                        placeholder="Enter Serial Number"
-                                                        value="{{ $im->implant_generator_sn }}" required>
-                                                    @error('implant_generator_sn')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-
-                                            <!-- [ Generator Price ] Input -->
-                                            <div class="col-sm-2">
-                                                <div class="mb-3">
-                                                    <label for="implant_generator_itemPrice" class="form-label">Price
-                                                        (RM)</label>
-                                                    <input type="text" name="implant_generator_itemPrice"
-                                                        class="form-control price-input @error('implant_generator_sn') is-invalid @enderror"
-                                                        placeholder="Enter Generator Price (RM)"
-                                                        value="{{ $im->implant_generator_itemPrice }}">
-                                                    @error('implant_generator_sn')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-
-                                            <!-- [ Generator Quantity ] Input -->
-                                            <div class="col-sm-1">
-                                                <div class="mb-3">
-                                                    <label for="implant_generator_qty" class="form-label">Quantity</label>
-                                                    <input type="text" name="implant_generator_qty"
-                                                        class="form-control qty-input @error('implant_generator_qty') is-invalid @enderror"
-                                                        placeholder="Enter Quantity"
-                                                        value="{{ $im->implant_generator_qty }}">
-                                                    @error('implant_generator_qty')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-
-                                            <!-- [ Generator Stock Location ] Input -->
-                                            <div class="col-sm-3">
-                                                <div class="mb-3">
-                                                    <label for="stock_location_id" class="form-label">Stock Location <span
-                                                            class="text-danger">*</span></label>
-                                                    <select name="stock_location_id" id="stock_location_id"
-                                                        class="form-select @error('stock_location_id') is-invalid @enderror"
-                                                        required>
-                                                        @foreach ($stocklocations as $sl)
-                                                            @if ($im->stock_location_id == $sl->id)
-                                                                <option value="{{ $sl->id }}" selected>
-                                                                    ({{ $sl->stock_location_code }})
-                                                                    - {{ $sl->stock_location_name }}</option>
-                                                            @else
-                                                                <option value="{{ $sl->id }}">
-                                                                    ({{ $sl->stock_location_code }})
-                                                                    - {{ $sl->stock_location_name }}</option>
-                                                            @endif
-                                                        @endforeach
-                                                    </select>
-                                                    @error('stock_location_id')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-
-                                            @foreach ($mcs as $mc)
-                                                <h5 class="mt-4">{{ $mc->mcategory_name }}</h5>
-                                                @php
-                                                    $categoryImplants = $ims->filter(function ($imd) use (
-                                                        $abbottmodels,
-                                                        $mc,
-                                                    ) {
-                                                        $model = $abbottmodels->firstWhere('id', $imd->model_id);
-                                                        return $model && $model->mcategory_id == $mc->id;
-                                                    });
-
-                                                    if ($categoryImplants->isEmpty()) {
-                                                        $categoryImplants = collect([
-                                                            (object) [
-                                                                'model_id' => null,
-                                                                'implant_model_sn' => null,
-                                                                'implant_model_itemPrice' => null,
-                                                                'implant_model_qty' => null,
-                                                                'stock_location_id' => null,
-                                                            ],
-                                                        ]);
-                                                    }
-                                                @endphp
-
-                                                @if ($mc->mcategory_ismorethanone == 1)
-                                                    @foreach ($categoryImplants as $index => $imd)
-                                                        <div id="model_container_{{ $mc->id }}">
-                                                            <div class="row col-sm-12 model-loop ">
-
-                                                                <!-- [ Model ] Input -->
-                                                                <div class="col-sm-3">
-                                                                    <div class="mb-3">
-                                                                        <label
-                                                                            for="model_ids_{{ $mc->id }}_{{ $index }}"
-                                                                            class="form-label">Model</label>
-                                                                        <select name="model_ids[]"
-                                                                            id="model_ids_{{ $mc->id }}_{{ $index }}"
-                                                                            class="form-select @error('model_ids') is-invalid @enderror model-select">
-                                                                            <option value="" selected>Select Model
-                                                                            </option>
-                                                                            @foreach ($abbottmodels->where('mcategory_id', $mc->id) as $am)
-                                                                                <option value="{{ $am->id }}"
-                                                                                    {{ $imd->model_id == $am->id ? 'selected' : '' }}>
-                                                                                    {{ $am->model_code }}
-                                                                                </option>
-                                                                            @endforeach
-                                                                        </select>
-                                                                        @error('model_ids')
-                                                                            <div class="invalid-feedback">{{ $message }}
-                                                                            </div>
-                                                                        @enderror
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- [ Serial Number ] Input -->
-                                                                <div class="col-sm-3">
-                                                                    <div class="mb-3">
-                                                                        <label
-                                                                            for="model_sns_{{ $mc->id }}_{{ $index }}"
-                                                                            class="form-label">Serial Number</label>
-                                                                        <input type="text" name="model_sns[]"
-                                                                            id="model_sns_{{ $mc->id }}_{{ $index }}"
-                                                                            class="form-control sn-input @error('model_sns') is-invalid @enderror"
-                                                                            placeholder="Enter Serial Number"
-                                                                            value="{{ $imd->implant_model_sn }}">
-                                                                        @error('model_sns')
-                                                                            <div class="invalid-feedback">{{ $message }}
-                                                                            </div>
-                                                                        @enderror
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- [ Model Price ] Input -->
-                                                                <div class="col-sm-2">
-                                                                    <div class="mb-3">
-                                                                        <label
-                                                                            for="model_price_{{ $mc->id }}_{{ $index }}"
-                                                                            class="form-label">Price (RM)</label>
-                                                                        <input type="text" name="model_price[]"
-                                                                            id="model_price_{{ $mc->id }}_{{ $index }}"
-                                                                            class="form-control price-input @error('model_price') is-invalid @enderror"
-                                                                            placeholder="Enter Model Price (RM)"
-                                                                            value="{{ $imd->implant_model_itemPrice }}">
-                                                                        @error('model_price')
-                                                                            <div class="invalid-feedback">{{ $message }}
-                                                                            </div>
-                                                                        @enderror
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- [ Model Quantity ] Input -->
-                                                                <div class="col-sm-1">
-                                                                    <div class="mb-3">
-                                                                        <label
-                                                                            for="model_qty_{{ $mc->id }}_{{ $index }}"
-                                                                            class="form-label">Quantity</label>
-                                                                        <input type="text" name="model_qty[]"
-                                                                            id="model_qty_{{ $mc->id }}_{{ $index }}"
-                                                                            class="form-control qty-input @error('model_qty') is-invalid @enderror"
-                                                                            placeholder="Enter Quantity"
-                                                                            value="{{ $imd->implant_model_qty }}">
-                                                                        @error('model_qty')
-                                                                            <div class="invalid-feedback">{{ $message }}
-                                                                            </div>
-                                                                        @enderror
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- [ Stock Location ] Input -->
-                                                                <div class="col-sm-2">
-                                                                    <div class="mb-3">
-                                                                        <label
-                                                                            for="stock_location_ids_{{ $mc->id }}_{{ $index }}"
-                                                                            class="form-label">Stock Location</label>
-                                                                        <select name="stock_location_ids[]"
-                                                                            id="stock_location_ids_{{ $mc->id }}_{{ $index }}"
-                                                                            class="form-select @error('stock_location_ids') is-invalid @enderror stock-location-select">
-                                                                            <option value="" selected>Select Stock
-                                                                                Location
-                                                                            </option>
-                                                                            @foreach ($stocklocations as $sl)
-                                                                                <option value="{{ $sl->id }}"
-                                                                                    {{ $imd->stock_location_id == $sl->id ? 'selected' : '' }}>
-                                                                                    ({{ $sl->stock_location_code }})
-                                                                                    - {{ $sl->stock_location_name }}
-                                                                                </option>
-                                                                            @endforeach
-                                                                        </select>
-                                                                        @error('stock_location_ids')
-                                                                            <div class="invalid-feedback">{{ $message }}
-                                                                            </div>
-                                                                        @enderror
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- [ Remove Button ] -->
-                                                                <div
-                                                                    class="col-sm-1 d-flex align-items-center justify-content-center">
-                                                                    <button type="button"
-                                                                        class="btn btn-danger btn-sm shadow-none remove-row">
-                                                                        <i class="ti ti-trash f-20"></i>
-                                                                    </button>
-                                                                </div>
-
-                                                            </div>
-                                                        </div>
-                                                    @endforeach
-
-                                                    <!-- [ Add Row Button ] -->
-                                                    <div class="row">
-                                                        <div class="col-sm-12">
-                                                            <div class="d-grid">
-                                                                <button type="button"
-                                                                    class="btn btn-light-primary mt-2 add-row"
-                                                                    data-category="{{ $mc->id }}">
-                                                                    <i class="ti ti-plus"></i> Add Model
-                                                                </button>
-                                                            </div>
-
-                                                        </div>
-                                                    </div>
-                                                @else
-                                                    @foreach ($categoryImplants as $index => $imd)
-                                                        <div class="row model-loop">
-
-                                                            <!-- [ Model ] Input -->
-                                                            <div class="col-sm-3">
-                                                                <div class="mb-3">
-                                                                    <label
-                                                                        for="model_ids_{{ $mc->id }}_{{ $index }}"
-                                                                        class="form-label">Model</label>
-                                                                    <select name="model_ids[]"
-                                                                        id="model_ids_{{ $mc->id }}_{{ $index }}"
-                                                                        class="form-select @error('model_ids') is-invalid @enderror model-select">
-                                                                        <option value="" selected>Select Model
-                                                                        </option>
-                                                                        @foreach ($abbottmodels->where('mcategory_id', $mc->id) as $am)
-                                                                            <option value="{{ $am->id }}"
-                                                                                {{ $imd->model_id == $am->id ? 'selected' : '' }}>
-                                                                                {{ $am->model_code }}
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                    @error('model_ids')
-                                                                        <div class="invalid-feedback">{{ $message }}
-                                                                        </div>
-                                                                    @enderror
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- [ Serial Number ] Input -->
-                                                            <div class="col-sm-3">
-                                                                <div class="mb-3">
-                                                                    <label
-                                                                        for="model_sns_{{ $mc->id }}_{{ $index }}"
-                                                                        class="form-label">Serial Number</label>
-                                                                    <input type="text" name="model_sns[]"
-                                                                        id="model_sns_{{ $mc->id }}_{{ $index }}"
-                                                                        class="form-control sn-input @error('model_sns') is-invalid @enderror"
-                                                                        placeholder="Enter Serial Number"
-                                                                        value="{{ $imd->implant_model_sn }}">
-                                                                    @error('model_sns')
-                                                                        <div class="invalid-feedback">{{ $message }}
-                                                                        </div>
-                                                                    @enderror
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- [ Model Price ] Input -->
-                                                            <div class="col-sm-2">
-                                                                <div class="mb-3">
-                                                                    <label
-                                                                        for="model_price_{{ $mc->id }}_{{ $index }}"
-                                                                        class="form-label">Price (RM)</label>
-                                                                    <input type="text" name="model_price[]"
-                                                                        id="model_price_{{ $mc->id }}_{{ $index }}"
-                                                                        class="form-control price-input @error('model_price') is-invalid @enderror"
-                                                                        placeholder="Enter Model Price (RM)"
-                                                                        value="{{ $imd->implant_model_itemPrice }}">
-                                                                    @error('model_price')
-                                                                        <div class="invalid-feedback">{{ $message }}
-                                                                        </div>
-                                                                    @enderror
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- [ Model Quantity ] Input -->
-                                                            <div class="col-sm-1">
-                                                                <div class="mb-3">
-                                                                    <label
-                                                                        for="model_qty_{{ $mc->id }}_{{ $index }}"
-                                                                        class="form-label">Quantity</label>
-                                                                    <input type="text" name="model_qty[]"
-                                                                        id="model_qty_{{ $mc->id }}_{{ $index }}"
-                                                                        class="form-control qty-input @error('model_qty') is-invalid @enderror"
-                                                                        placeholder="Enter Quantity"
-                                                                        value="{{ $imd->implant_model_qty }}">
-                                                                    @error('model_qty')
-                                                                        <div class="invalid-feedback">{{ $message }}
-                                                                        </div>
-                                                                    @enderror
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- [ Stock Location ] Input -->
-                                                            <div class="col-sm-2">
-                                                                <div class="mb-3">
-                                                                    <label
-                                                                        for="stock_location_ids_{{ $mc->id }}_{{ $index }}"
-                                                                        class="form-label">Stock Location</label>
-                                                                    <select name="stock_location_ids[]"
-                                                                        id="stock_location_ids_{{ $mc->id }}_{{ $index }}"
-                                                                        class="form-select @error('stock_location_ids') is-invalid @enderror stock-location-select">
-                                                                        <option value="" selected>Select Stock
-                                                                            Location
-                                                                        </option>
-                                                                        @foreach ($stocklocations as $sl)
-                                                                            <option value="{{ $sl->id }}"
-                                                                                {{ $imd->stock_location_id == $sl->id ? 'selected' : '' }}>
-                                                                                ({{ $sl->stock_location_code }})
-                                                                                - {{ $sl->stock_location_name }}
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                    @error('stock_location_ids')
-                                                                        <div class="invalid-feedback">{{ $message }}
-                                                                        </div>
-                                                                    @enderror
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- [ Dustbin Button ] -->
-                                                            <div
-                                                                class="col-sm-1 d-flex align-items-center justify-content-center">
-                                                                <button type="button"
-                                                                    class="avtar avtar-xs  btn btn-danger shadow-none reset-row"
-                                                                    id="reset_{{ $mc->id }}_{{ $index }}"
-                                                                    disabled>
-
-                                                                    <i class="ti ti-trash f-20"></i>
-
-                                                                </button>
-                                                            </div>
-
-                                                        </div>
-                                                    @endforeach
-                                                @endif
-                                            @endforeach
-
-                                        </div>
-
-                                    </form>
-                                </div>
-
-                                <div class="col-sm-12 mb-4">
-                                    <div class="card-wrapper">
-                                        <div class="h5 mb-3 text-center">Preview</div>
-                                        <div id="formContainer"></div>
+                            <!-- Form Header -->
+                            <div class="form-header">
+                                <div class="row align-items-center">
+                                    <div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
+                                        <img src="../assets/images/logo/abbott-logo.png" width="150" alt="Abbott Logo"
+                                            class="img-fluid">
+                                    </div>
+                                    <div class="col-md-4 text-center">
+                                        <h4 class="mb-0">INVENTORY CONSUMPTION FORM</h4>
+                                    </div>
+                                    <div class="col-md-4 text-center text-md-end">
+                                        <div class="text-muted">Form ID: IC-2025-5306</div>
+                                        <div class="text-muted">Date: 28-Jan-2025</div>
                                     </div>
                                 </div>
                             </div>
 
-                        </div>
+                            <!-- Patient Information Section -->
+                            <div class="form-section">
+                                <h5 class="section-title">Patient Information</h5>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Bill to:</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text input-icon"><i class="fas fa-user"></i></span>
+                                            <input type="text" class="form-control" value="{{ $im->implant_pt_name }}"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Ship to:</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text input-icon"><i class="fas fa-truck"></i></span>
+                                            <input type="text" class="form-control" value="{{ $im->implant_pt_name }}"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Patient IC:</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text input-icon"><i class="fas fa-id-card"></i></span>
+                                            <input type="text" class="form-control" value="{{ $im->implant_pt_icno }}"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Patient MRN:</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text input-icon"><i
+                                                    class="fas fa-hospital"></i></span>
+                                            <input type="text" class="form-control" value="{{ $im->implant_pt_mrn }}"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label">Patient Address:</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text input-icon"><i
+                                                    class="fas fa-map-marker-alt"></i></span>
+                                            <textarea class="form-control" rows="2" readonly>{{ $im->implant_pt_address }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Generator Section -->
+                            <div class="form-section">
+                                <h5 class="section-title">Generator</h5>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-6 mb-3">
+                                        <label for="generator_id" class="form-label">Model <span
+                                                class="required-star">*</span></label>
+                                        <select name="generator_id" id="generator_id" class="form-select" required>
+                                            @foreach ($generators as $g)
+                                                @if ($im->generator_id == $g->id)
+                                                    <option value="{{ $g->id }}" selected>{{ $g->generator_code }}
+                                                    </option>
+                                                @else
+                                                    <option value="{{ $g->id }}">{{ $g->generator_code }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="col-lg-3 col-md-6 mb-3">
+                                        <label for="implant_generator_sn" class="form-label">Serial Number <span
+                                                class="required-star">*</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text input-icon"><i
+                                                    class="fas fa-barcode"></i></span>
+                                            <input type="text" name="implant_generator_sn" id="implant_generator_sn"
+                                                class="form-control sn-input" placeholder="Enter Serial Number"
+                                                value="{{ $im->implant_generator_sn }}" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-3 col-md-6 mb-3">
+                                        <label for="stock_location_id" class="form-label">Stock Location <span
+                                                class="required-star">*</span></label>
+                                        <select name="stock_location_id" id="stock_location_id" class="form-select"
+                                            required>
+                                            @foreach ($stocklocations as $sl)
+                                                @if ($im->stock_location_id == $sl->id)
+                                                    <option value="{{ $sl->id }}" selected>
+                                                        ({{ $sl->stock_location_code }})
+                                                        - {{ $sl->stock_location_name }}
+                                                    </option>
+                                                @else
+                                                    <option value="{{ $sl->id }}">({{ $sl->stock_location_code }})
+                                                        -
+                                                        {{ $sl->stock_location_name }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="col-lg-1 col-md-2 mb-3">
+                                        <label for="implant_generator_qty" class="form-label">Qty</label>
+                                        <input type="text" name="implant_generator_qty" class="form-control qty-input"
+                                            placeholder="1" value="{{ $im->implant_generator_qty }}">
+                                    </div>
+
+                                    <div class="col-lg-2 col-md-4 mb-3">
+                                        <label for="implant_generator_itemPrice" class="form-label">Price (RM)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text input-icon">RM</span>
+                                            <input type="text" name="implant_generator_itemPrice"
+                                                class="form-control price-input" placeholder="0.00"
+                                                value="{{ $im->implant_generator_itemPrice }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Model Categories -->
+                            @foreach ($mcs as $mc)
+                                <div class="form-section">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 class="section-title mb-0">{{ $mc->mcategory_name }}</h5>
+                                        @if ($mc->mcategory_ismorethanone == 1)
+                                            <button type="button" class="btn btn-sm btn-add add-row"
+                                                data-category="{{ $mc->id }}">
+                                                <i class="fas fa-plus me-1"></i> Add Model
+                                            </button>
+                                        @endif
+                                    </div>
+
+                                    @php
+                                        $categoryImplants = $ims->filter(function ($imd) use ($abbottmodels, $mc) {
+                                            $model = $abbottmodels->firstWhere('id', $imd->model_id);
+                                            return $model && $model->mcategory_id == $mc->id;
+                                        });
+
+                                        if ($categoryImplants->isEmpty()) {
+                                            $categoryImplants = collect([
+                                                (object) [
+                                                    'model_id' => null,
+                                                    'implant_model_sn' => null,
+                                                    'implant_model_itemPrice' => null,
+                                                    'implant_model_qty' => null,
+                                                    'stock_location_id' => null,
+                                                ],
+                                            ]);
+                                        }
+                                    @endphp
+
+                                    <div id="model_container_{{ $mc->id }}">
+                                        @foreach ($categoryImplants as $index => $imd)
+                                            <div class="row model-loop mb-3">
+                                                <div class="col-lg-3 col-md-6 mb-2 mobile-spacing">
+                                                    <label class="form-label">Model</label>
+                                                    <select name="model_ids[]" class="form-select model-select">
+                                                        <option value="" selected>Select Model</option>
+                                                        @foreach ($abbottmodels->where('mcategory_id', $mc->id) as $am)
+                                                            <option value="{{ $am->id }}"
+                                                                {{ $imd->model_id == $am->id ? 'selected' : '' }}>
+                                                                {{ $am->model_code }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-lg-3 col-md-6 mb-2 mobile-spacing">
+                                                    <label class="form-label">Serial Number</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text input-icon"><i
+                                                                class="fas fa-barcode"></i></span>
+                                                        <input type="text" name="model_sns[]"
+                                                            class="form-control sn-input"
+                                                            placeholder="Enter Serial Number"
+                                                            value="{{ $imd->implant_model_sn }}">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-2 col-md-4 mb-2 mobile-spacing">
+                                                    <label class="form-label">Stock Location</label>
+                                                    <select name="stock_location_ids[]"
+                                                        class="form-select stock-location-select">
+                                                        <option value="" selected>Select Location</option>
+                                                        @foreach ($stocklocations as $sl)
+                                                            <option value="{{ $sl->id }}"
+                                                                {{ $imd->stock_location_id == $sl->id ? 'selected' : '' }}>
+                                                                {{ $sl->stock_location_code }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-lg-1 col-md-2 mb-2 mobile-spacing">
+                                                    <label class="form-label">Qty</label>
+                                                    <input type="text" name="model_qty[]"
+                                                        class="form-control qty-input" placeholder="1"
+                                                        value="{{ $imd->implant_model_qty }}">
+                                                </div>
+
+                                                <div class="col-lg-2 col-md-4 mb-2 mobile-spacing">
+                                                    <label class="form-label">Price (RM)</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text input-icon">RM</span>
+                                                        <input type="text" name="model_price[]"
+                                                            class="form-control price-input" placeholder="0.00"
+                                                            value="{{ $imd->implant_model_itemPrice }}">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-1 col-md-2 mb-2 d-flex align-items-end">
+                                                    @if ($mc->mcategory_ismorethanone == 1)
+                                                        <button type="button"
+                                                            class="btn btn-remove btn-sm remove-row w-100">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    @else
+                                                        <button type="button"
+                                                            class="btn btn-remove btn-sm reset-row w-100" disabled>
+                                                            <i class="fas fa-times"></i>
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
+
+                            <!-- Total Invoice Section -->
+                            <div class="form-section bg-light p-4 rounded">
+                                <div class="row">
+                                    <div class="col-12 d-flex justify-content-between align-items-center">
+                                        <div class="fs-5 fw-semibold">Total Invoice Amount:</div>
+                                        <div class="fs-3 fw-bold total-invoice">0.00</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Payment & Remarks -->
+                            <div class="form-section">
+                                <h5 class="section-title">Payment & Remarks</h5>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="sales_payment_method" class="form-label">Payment Method:</label>
+                                        <textarea name="sales_payment_method" id="sales_payment_method" class="form-control" rows="2"
+                                            placeholder="Enter payment method"></textarea>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="sales_remark" class="form-label">Remarks from Sales:</label>
+                                        <textarea name="sales_remark" id="sales_remark" class="form-control" rows="2"
+                                            placeholder="Enter any remarks"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-flex justify-content-end mt-4">
+                                <button type="submit" class="btn btn-primary btn-submit">
+                                    <i class="fas fa-check-circle me-2"></i> Confirm & Generate ICF
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-                <!-- [ Generate ICF ] end -->
-
             </div>
             <!-- [ Main Content ] end -->
         </div>
@@ -771,26 +752,26 @@
     <script type="text/javascript">
         $(document).ready(function() {
 
-            function getFormData() {
-                $.ajax({
-                    url: "{{ route('icf-preview-post') }}",
-                    type: "POST",
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        id: "{{ $im->id }}",
-                    },
-                    success: function(response) {
-                        $('#formContainer').html(response.html);
-                    },
-                    error: function() {
-                        alert("Something went wrong!");
-                    }
-                });
-            }
+            // function getFormData() {
+            //     $.ajax({
+            //         url: "{{ route('icf-preview-post') }}",
+            //         type: "POST",
+            //         data: {
+            //             _token: "{{ csrf_token() }}",
+            //             id: "{{ $im->id }}",
+            //         },
+            //         success: function(response) {
+            //             $('#formContainer').html(response.html);
+            //         },
+            //         error: function() {
+            //             alert("Something went wrong!");
+            //         }
+            //     });
+            // }
 
-            getFormData();
+            // getFormData();
 
-             // === FORMAT : IC/PASSPORT === //
+            // === FORMAT : IC/PASSPORT === //
             $("#implant_pt_icno").on("input", function() {
                 let value = $(this).val().toUpperCase(); // Pastikan huruf besar untuk passport
 
@@ -907,6 +888,37 @@
             applyPriceInputFormat($(".price-input"));
             applySnInputFormat($(".sn-input"));
             applyQtyInputFormat($(".qty-input"));
+
+            // Calculate total invoice function
+            function calculateTotal() {
+                let total = 0;
+
+                // Calculate generator total
+                const genQty = parseFloat($('#implant_generator_qty').val()) || 0;
+                const genPrice = parseFloat($('#implant_generator_itemPrice').val()) || 0;
+                total += genQty * genPrice;
+
+                // Calculate model totals
+                $('.model-loop').each(function() {
+                    const qtyInput = $(this).find('.qty-input');
+                    const priceInput = $(this).find('.price-input');
+
+                    const qty = parseFloat(qtyInput.val()) || 0;
+                    const price = parseFloat(priceInput.val()) || 0;
+
+                    total += qty * price;
+                });
+
+                // Update total display
+                $('.total-invoice').text(total.toFixed(2));
+            }
+
+            // Initial calculation
+            calculateTotal();
+
+            // Bind calculation to input events
+            $(document).on('input', '.qty-input, .price-input', calculateTotal);
+
 
             // FUNCTION : RESET BUTTON
             function checkResetButton(loopContainer) {
