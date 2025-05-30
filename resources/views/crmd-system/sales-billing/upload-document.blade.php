@@ -12,13 +12,13 @@
                         <div class="col-md-12">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="javascript: void(0)">Sales Biling</a></li>
-                                <li class="breadcrumb-item" aria-current="page">Generate Inventory Consumption Form (ICF)
+                                <li class="breadcrumb-item" aria-current="page">Upload Sales Billing Document
                                 </li>
                             </ul>
                         </div>
                         <div class="col-md-12">
                             <div class="page-header-title">
-                                <h2 class="mb-0">Generate Inventory Consumption Form (ICF)</h2>
+                                <h2 class="mb-0">Upload Sales Billing Document</h2>
                             </div>
                         </div>
                     </div>
@@ -58,7 +58,7 @@
             <!-- [ Main Content ] start -->
             <div class="row">
 
-                <!-- [ Generate ICF ] start -->
+                <!-- [ Upload Sales Billing Document ] start -->
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body">
@@ -123,7 +123,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- [ Generate ICF ] end -->
+                <!-- [ Upload Sales Billing Document ] end -->
 
             </div>
             <!-- [ Main Content ] end -->
@@ -138,7 +138,7 @@
                 serverSide: true,
                 responsive: true,
                 ajax: {
-                    url: "{{ route('generate-icf-page') }}",
+                    url: "{{ route('upload-sales-billing-document-page') }}",
                     data: function(d) {
                         d.date_range = $('#dateRangeFilter')
                             .val();
@@ -233,7 +233,6 @@
                 $('#generatorFilter').val("");
                 $('.data-table').DataTable().ajax.reload();
             });
-
         });
     </script>
 @endsection

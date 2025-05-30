@@ -27,10 +27,9 @@ return new class extends Migration
             $table->text('implant_pt_directory')->nullable();
             $table->string('implant_generator_sn');
             $table->integer('implant_generator_qty')->default(1);
-            $table->double('implant_generator_itemPrice')->default(0.00);
+            $table->decimal('implant_generator_itemPrice', 10, 2)->default(0.00);
             $table->string('implant_invoice_no')->nullable();
             $table->double('implant_sales')->default(0.00);
-            // $table->integer('implant_quantity')->default(1);
             $table->text('implant_remark')->nullable();
             $table->text('implant_note')->nullable();
             $table->string('implant_approval_type')->nullable();

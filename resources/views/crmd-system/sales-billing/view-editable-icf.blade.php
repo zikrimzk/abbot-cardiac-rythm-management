@@ -3,288 +3,6 @@
 
 <!-- [ Main Content ] start -->
 @section('content')
-    {{-- <style>
-        /* Landscape wrapper-form */
-        .wrapper-form {
-            width: 100%;
-            max-width: 1200px;
-            margin: 20px auto;
-            background: white;
-            border: 1px dashed #555;
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-            padding: 30px;
-        }
-
-        /* Watermark background */
-        .watermark {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"><text x="50%" y="50%" font-family="Arial" font-size="40" fill="rgba(0,100,200,0.05)" text-anchor="middle" dominant-baseline="middle" transform="rotate(-45, 200, 200)">CONFIDENTIAL - INVENTORY FORM</text></svg>');
-            background-repeat: repeat;
-            opacity: 0.3;
-            z-index: -1;
-        }
-
-        /* Header section */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #2c6eb5;
-            margin-bottom: 25px;
-        }
-
-        .logo-area {
-            width: 150px;
-            height: 80px;
-        }
-
-        .title-area {
-            text-align: center;
-        }
-
-        .title-area h1 {
-            font-size: 24px;
-            color: #1a3c6e;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-        }
-
-        .title-area .subtitle {
-            font-size: 12px;
-            color: #2c6eb5;
-            font-weight: 600;
-        }
-
-        .form-meta {
-            text-align: right;
-            font-size: 12px;
-            color: #666;
-        }
-
-        /* Patient Information Section */
-        .patient-info {
-            width: 100%;
-            margin: 25px 0;
-            border-collapse: collapse;
-            font-size: 12px;
-        }
-
-        .patient-info td {
-            border: 1px solid #ddd;
-            padding: 8px 12px;
-            vertical-align: top;
-
-        }
-
-        .info-label {
-            background-color: #e9f0f8;
-            font-weight: 600;
-            width: 15%;
-            color: #1a3c6e;
-            font-size: 12px;
-        }
-
-        /* Stock Location Section */
-        .stock-section {
-            background: #f8fbff;
-            border: 1px solid #cde;
-            border-radius: 4px;
-            padding: 12px 15px;
-            margin: 20px 0;
-        }
-
-        .section-title {
-            color: #1a3c6e;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #cde;
-        }
-
-        .location-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
-            font-size: 12px;
-        }
-
-        .location-item {
-            display: flex;
-        }
-
-        .location-code {
-            font-weight: 700;
-            width: 40px;
-            color: #2c6eb5;
-        }
-
-        /* Products Table */
-        .products-section {
-            margin: 30px 0;
-        }
-
-        .products-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            margin-top: 10px;
-        }
-
-        .products-table th {
-            background-color: #1a3c6e;
-            color: white;
-            padding: 10px 8px;
-            text-align: left;
-            font-weight: 600;
-        }
-
-        .products-table td {
-            padding: 10px 8px;
-            border: 1px solid #ddd;
-        }
-
-        .products-table tr:nth-child(even) {
-            background-color: #f8fbff;
-        }
-
-        .products-table tr:hover {
-            background-color: #edf5ff;
-        }
-
-        /* Payment Section */
-        .payment-section {
-            margin: 25px 0;
-            padding: 15px;
-            background: #f0f8ff;
-            border-left: 4px solid #2c6eb5;
-        }
-
-        .payment-method {
-            font-weight: 600;
-            color: #1a3c6e;
-            margin-bottom: 5px;
-        }
-
-        .payment-note {
-            font-size: 12px;
-            color: #666;
-            font-style: italic;
-            margin-bottom: 10px;
-        }
-
-        .total-invoice {
-            font-size: 12px;
-            font-weight: 700;
-            color: #1a3c6e;
-        }
-
-        /* Documents Section */
-        .documents-section {
-            margin: 25px 0;
-            padding: 15px;
-            background: #f8fafd;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .documents-section ol {
-            padding-left: 25px;
-        }
-
-        .documents-section li {
-            margin-bottom: 8px;
-            font-size: 12px;
-        }
-
-        /* Footer */
-        .footer {
-            margin-top: 40px;
-            padding-top: 15px;
-            border-top: 1px solid #ddd;
-            font-size: 12px;
-            color: #666;
-        }
-
-        .form-version {
-            font-style: italic;
-            text-align: right;
-        }
-
-        /* Signature area */
-        .signature-area {
-            margin-top: 30px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .signature-box {
-            width: 45%;
-            padding-top: 50px;
-            text-align: center;
-            border-top: 1px solid #ccc;
-            font-size: 14px;
-            color: #555;
-        }
-
-        /* Print-specific styles */
-        @media print {
-            body {
-                padding: 0;
-                background: none;
-            }
-
-            .wrapper-form {
-                box-shadow: none;
-                margin: 0;
-                padding: 15mm;
-                width: 100%;
-                min-height: 100%;
-            }
-
-            .no-print {
-                display: none;
-            }
-
-            /* Landscape orientation for printing */
-            @page {
-                size: landscape;
-                margin: 10mm;
-            }
-        }
-
-        /* Print button styling */
-        .print-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #1a3c6e;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .print-btn:hover {
-            background: #2c6eb5;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-    </style> --}}
-
     <style>
         .form-container {
             background-color: #fff;
@@ -450,7 +168,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-container">
-                        <form action="{{ route('update-implant-post', Crypt::encrypt($im->id)) }}" method="POST"
+                        <form action="{{ route('confirm-icf-post', Crypt::encrypt($im->id)) }}" method="POST"
                             id="update-implant-form">
                             @csrf
 
@@ -465,7 +183,7 @@
                                         <h4 class="mb-0">INVENTORY CONSUMPTION FORM</h4>
                                     </div>
                                     <div class="col-md-4 text-center text-md-end">
-                                        <div class="text-muted">Form ID: IC-2025-5306</div>
+                                        <div class="text-muted">Invoice No: IC-2025-5306</div>
                                         <div class="text-muted">Date: 28-Jan-2025</div>
                                     </div>
                                 </div>
@@ -506,8 +224,7 @@
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Patient MRN:</label>
                                         <div class="input-group">
-                                            <span class="input-group-text input-icon"><i
-                                                    class="fas fa-hospital"></i></span>
+                                            <span class="input-group-text input-icon"><i class="fas fa-hospital"></i></span>
                                             <input type="text" class="form-control" value="{{ $im->implant_pt_mrn }}"
                                                 readonly>
                                         </div>
@@ -520,8 +237,13 @@
                                         <div class="input-group">
                                             <span class="input-group-text input-icon"><i
                                                     class="fas fa-map-marker-alt"></i></span>
-                                            <textarea class="form-control" rows="2" readonly>{{ $im->implant_pt_address }}</textarea>
+                                            <textarea name="implant_pt_address" id="implant_pt_address"
+                                                class="form-control @error('implant_pt_address') is-invalid @enderror" placeholder="Enter Patient Address"
+                                                row="2">{{ $im->implant_pt_address }}</textarea>
                                         </div>
+                                        @error('implant_pt_address')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
@@ -664,7 +386,8 @@
                                                         @foreach ($stocklocations as $sl)
                                                             <option value="{{ $sl->id }}"
                                                                 {{ $imd->stock_location_id == $sl->id ? 'selected' : '' }}>
-                                                                {{ $sl->stock_location_code }}
+                                                                ({{ $sl->stock_location_code }})
+                                                                - {{ $sl->stock_location_name }}
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -691,7 +414,7 @@
                                                     @if ($mc->mcategory_ismorethanone == 1)
                                                         <button type="button"
                                                             class="btn btn-remove btn-sm remove-row w-100">
-                                                            <i class="fas fa-trash"></i>
+                                                            <i class="fas fa-times"></i>
                                                         </button>
                                                     @else
                                                         <button type="button"
@@ -725,6 +448,7 @@
                                         <label for="sales_payment_method" class="form-label">Payment Method:</label>
                                         <textarea name="sales_payment_method" id="sales_payment_method" class="form-control" rows="2"
                                             placeholder="Enter payment method"></textarea>
+                                        <small>*(Patient self-paid / Welfare Approval / Hospital / Bumi Agent)</small>
                                     </div>
 
                                     <div class="col-md-6 mb-3">
@@ -738,7 +462,7 @@
                             <!-- Submit Button -->
                             <div class="d-flex justify-content-end mt-4">
                                 <button type="submit" class="btn btn-primary btn-submit">
-                                    <i class="fas fa-check-circle me-2"></i> Confirm & Generate ICF
+                                    <i class="fas fa-check-circle me-2"></i> Generate ICF
                                 </button>
                             </div>
                         </form>
@@ -752,32 +476,12 @@
     <script type="text/javascript">
         $(document).ready(function() {
 
-            // function getFormData() {
-            //     $.ajax({
-            //         url: "{{ route('icf-preview-post') }}",
-            //         type: "POST",
-            //         data: {
-            //             _token: "{{ csrf_token() }}",
-            //             id: "{{ $im->id }}",
-            //         },
-            //         success: function(response) {
-            //             $('#formContainer').html(response.html);
-            //         },
-            //         error: function() {
-            //             alert("Something went wrong!");
-            //         }
-            //     });
-            // }
-
-            // getFormData();
-
             // === FORMAT : IC/PASSPORT === //
             $("#implant_pt_icno").on("input", function() {
-                let value = $(this).val().toUpperCase(); // Pastikan huruf besar untuk passport
+                let value = $(this).val().toUpperCase();
 
                 if (/^\d/.test(value)) {
-                    // Jika input bermula dengan nombor (IC), format sebagai IC
-                    value = value.replace(/\D/g, ""); // Buang semua bukan nombor
+                    value = value.replace(/\D/g, ""); 
 
                     if (value.length > 12) {
                         value = value.slice(0, 12); // Hadkan 12 digit sahaja
@@ -790,8 +494,7 @@
                         value = value.slice(0, 9) + "-" + value.slice(9);
                     }
                 } else {
-                    // Jika input bermula dengan huruf (Passport), benarkan tanpa format
-                    value = value.replace(/[^A-Za-z0-9]/g, ""); // Benarkan hanya huruf dan nombor
+                    value = value.replace(/[^A-Za-z0-9]/g, "");
                 }
 
                 $(this).val(value);
@@ -889,13 +592,13 @@
             applySnInputFormat($(".sn-input"));
             applyQtyInputFormat($(".qty-input"));
 
-            // Calculate total invoice function
+            // === ICF : CALCULATE TOTAL INVOICE FUNCTION === //
             function calculateTotal() {
                 let total = 0;
 
                 // Calculate generator total
-                const genQty = parseFloat($('#implant_generator_qty').val()) || 0;
-                const genPrice = parseFloat($('#implant_generator_itemPrice').val()) || 0;
+                const genQty = parseFloat($('[name="implant_generator_qty"]').val()) || 0;
+                const genPrice = parseFloat($('[name="implant_generator_itemPrice"]').val()) || 0;
                 total += genQty * genPrice;
 
                 // Calculate model totals
@@ -913,10 +616,7 @@
                 $('.total-invoice').text(total.toFixed(2));
             }
 
-            // Initial calculation
             calculateTotal();
-
-            // Bind calculation to input events
             $(document).on('input', '.qty-input, .price-input', calculateTotal);
 
 
@@ -928,8 +628,6 @@
                 let modelqty = loopContainer.find(".qty-input").val();
                 let stockLocation = loopContainer.find(".stock-location-select").val();
                 let dustbinBtn = loopContainer.find(".reset-row");
-
-                // Aktifkan butang jika ada input dalam mana-mana field
                 if (modelSelected || serialNumber || modelprice != "0.00" || modelqty != "1" || stockLocation) {
                     dustbinBtn.prop("disabled", false);
                 } else {
@@ -969,6 +667,8 @@
                 loopContainer.find(".qty-input").val("1");
                 loopContainer.find(".stock-location-select").val("");
                 $(this).prop("disabled", true);
+                calculateTotal();
+
             });
 
             $(document).on("click", ".add-row", function() {
@@ -1007,20 +707,34 @@
                     row.find('.remove-row').prop('disabled', false);
                 });
 
+                let modelSelected = row.find(".model-select").val();
+                let serialNumber = row.find(".sn-input").val();
+                let modelprice = row.find(".price-input").val();
+                let modelqty = row.find(".qty-input").val();
+                let stockLocation = row.find(".stock-location-select").val();
+
+                if (modelSelected || serialNumber || modelprice != "0.00" || modelqty != "1" ||
+                    stockLocation) {
+                    $(this).prop("disabled", false);
+                } else {
+                    $(this).prop("disabled", true);
+                }
+
                 $(this).on('click', function() {
                     row.find('input.sn-input, select.model-select, select.stock-location-select')
                         .val('');
                     row.find('input.price-input').val('0.00');
                     row.find('input.qty-input').val('1');
-
                     $(this).prop('disabled', true);
+                    calculateTotal();
+
                 });
             });
 
             $('.model-loop').each(function() {
                 let row = $(this);
                 let removeBtn = row.find(".remove-row");
-                let inputs = row.find("input, select");
+                let inputs = row.find("input.sn-input, select.model-select, select.stock-location-select");
 
                 let hasData = inputs.filter(function() {
                     return $(this).val().trim() !== "";
@@ -1035,8 +749,8 @@
 
             $(document).on('click', '.remove-row:not(:first)', function() {
                 $(this).closest('.model-loop').remove();
+                calculateTotal();
             });
-
         });
     </script>
 @endsection

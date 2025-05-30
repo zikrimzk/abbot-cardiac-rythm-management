@@ -58,7 +58,7 @@
                      <ul class="pc-submenu">
                          <li class="pc-item"><a class="pc-link" href="{{ route('generate-icf-page') }}">Generate Inventory Consumption Form (ICF)</a>
                          </li>
-                         <li class="pc-item"><a class="pc-link" href="javascript: void(0)">Upload Sales Billing Document</a>
+                         <li class="pc-item"><a class="pc-link" href="{{ route('upload-sales-billing-document-page') }}">Upload Sales Billing Document</a>
                          </li>
                      </ul>
                  </li>

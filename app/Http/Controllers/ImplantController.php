@@ -511,7 +511,7 @@ class ImplantController extends Controller
 
         $title =  $formattedData['hospital_code'] . '_' . $formattedData['generator_code'] . '_' . strtoupper(Carbon::parse($formattedData['implant_date'])->format('dMY')) . '_' .  strtoupper(str_replace(' ', '_', $formattedData['implant_pt_name'])) . '_SYS_IRF';
 
-        $pdf = Pdf::loadView('crmd-system.implant-management.view-irf-document', [
+        $pdf = Pdf::loadView('crmd-system.implant-management.irf-template-doc', [
             'title' =>  $title ?? 'CRMD System | View Implant Registration Form',
             'im' => $formattedData
 

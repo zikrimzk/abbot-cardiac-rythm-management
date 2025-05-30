@@ -10,17 +10,6 @@ use App\Http\Controllers\HospitalDoctorController;
 use App\Http\Controllers\ImplantController;
 use App\Http\Controllers\SalesBillingController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
 
 Route::prefix('auth')->group(function () {
     Route::get('/login', [RouteController::class, 'loginpage'])->name('login-page');
@@ -63,11 +52,15 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     //Sales Biling >  Generate Inventory Consumption Form 
     Route::get('/generate-inventory-consumption-form', [RouteController::class, 'generateInventoryConsumptionForm'])->name('generate-icf-page');
     Route::get('/view-icf-editable-{id}', [RouteController::class, 'viewInventoryConsumptionFormEditable'])->name('view-editable-icf-page');
-    Route::get('/view-icf-document-{id}', [RouteController::class, 'viewGenerateDownloadICF'])->name('view-icf-document');
-    Route::post('/icf-preview', [SalesBillingController::class, 'previewICF'])->name('icf-preview-post');
+    Route::post('/confirm-icf-data/{id}', [SalesBillingController::class, 'confirmICFData'])->name('confirm-icf-post');
+    Route::get('/icf-document/{id}/{opt}', [SalesBillingController::class, 'generatePreviewDownloadICF'])->name('icf-document-get');
 
-
-
+    //Sales Biling >  Upload Sales Billing Document
+    Route::get('/upload-sales-billing-document', [RouteController::class, 'uploadSalesBillingDocument'])->name('upload-sales-billing-document-page');
+    Route::get('/upload-document-area-{id}', [RouteController::class, 'uploadDocumentArea'])->name('upload-document-area-page');
+    Route::post('/upload-document-{id}', [SalesBillingController::class, 'uploadDocument'])->name('upload-document-post');
+    Route::post('/delete-uploaded-document', [SalesBillingController::class, 'deleteUploadedFile'])->name('delete-upload-document-post');
+    Route::get('/view-document/{path}', [SalesBillingController::class, 'viewUploadedDocument'])->where('path', '.*')->name('view-uploaded-document-get');
 
     //Manage Designation
     Route::get('/manage-designation', [RouteController::class, 'manageDesignation'])->name('manage-designation-page');
