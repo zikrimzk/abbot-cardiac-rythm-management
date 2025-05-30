@@ -108,7 +108,7 @@ class ImplantController extends Controller
             // Create Directory
             $sequenceNumber = str_pad(Implant::count() + 1, 3, '0', STR_PAD_LEFT);
             $hospital_code = optional(Hospital::find($validated['hospital_id']))->hospital_code ?? 'H0000';
-            $implantdirectory = "{$sequenceNumber}_" . Carbon::parse($validated['implant_date'])->format('d.m.Y') . '_' . strtoupper(str_replace(' ', '_', $validated['implant_pt_name'])) . "_{$hospital_code}";
+            $implantdirectory = "{$sequenceNumber}_" . Carbon::parse($validated['implant_date'])->format('d.m.Y') . '_' . strtoupper(preg_replace('/[^A-Za-z0-9]/', '_', $validated['implant_pt_name'])) . "_{$hospital_code}";
 
             Storage::makeDirectory("public/implants/{$implantdirectory}");
 
@@ -250,7 +250,7 @@ class ImplantController extends Controller
             $newImplantCode = 'IMP' . str_pad($implant->id, 3, '0', STR_PAD_LEFT) . Carbon::parse($validated['implant_date'])->format('dmY');
             $sequenceNumber = str_pad($implant->id, 3, '0', STR_PAD_LEFT);
             $hospital_code = Hospital::find($validated['hospital_id'])->hospital_code ?? 'H0000';
-            $newDirectory = $sequenceNumber . '_' . Carbon::parse($validated['implant_date'])->format('d.m.Y') . '_' . strtoupper(str_replace(' ', '_', $validated['implant_pt_name'])) . '_' . strtoupper($hospital_code);
+            $newDirectory = $sequenceNumber . '_' . Carbon::parse($validated['implant_date'])->format('d.m.Y') . '_' . strtoupper(preg_replace('/[^A-Za-z0-9]/', '_', $validated['implant_pt_name'])) . '_' . strtoupper($hospital_code);
 
             if ($oldDirectory !== $newDirectory) {
                 Storage::move('public/implants/' . $oldDirectory, 'public/implants/' . $newDirectory);
@@ -370,7 +370,7 @@ class ImplantController extends Controller
 
         if ($req->hasFile('implant_backup_form')) {
             $file = $req->file('implant_backup_form');
-            $filename = $hospital->hospital_code . '_' . $generator->generator_code . '_' . strtoupper(Carbon::parse($implant->implant_date)->format('dMY')) . '_' .  strtoupper(str_replace(' ', '_', $implant->implant_pt_name)) . '_BACKUP_IRF' . '.' . $file->getClientOriginalExtension();
+            $filename = $hospital->hospital_code . '_' . $generator->generator_code . '_' . strtoupper(Carbon::parse($implant->implant_date)->format('dMY')) . '_' .  strtoupper(preg_replace('/[^A-Za-z0-9]/', '_', $implant->implant_pt_name)) . '_BACKUP_IRF' . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('implants/' . $implant->implant_pt_directory, $filename, 'public');
 
             Implant::find($id)->update([
@@ -509,7 +509,7 @@ class ImplantController extends Controller
             'models' => $mergedModels,
         ];
 
-        $title =  $formattedData['hospital_code'] . '_' . $formattedData['generator_code'] . '_' . strtoupper(Carbon::parse($formattedData['implant_date'])->format('dMY')) . '_' .  strtoupper(str_replace(' ', '_', $formattedData['implant_pt_name'])) . '_SYS_IRF';
+        $title =  $formattedData['hospital_code'] . '_' . $formattedData['generator_code'] . '_' . strtoupper(Carbon::parse($formattedData['implant_date'])->format('dMY')) . '_' .  strtoupper(preg_replace('/[^A-Za-z0-9]/', '_', $formattedData['implant_pt_name'])) . '_SYS_IRF';
 
         $pdf = Pdf::loadView('crmd-system.implant-management.irf-template-doc', [
             'title' =>  $title ?? 'CRMD System | View Implant Registration Form',

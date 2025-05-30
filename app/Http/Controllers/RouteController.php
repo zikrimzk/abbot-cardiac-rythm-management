@@ -370,7 +370,7 @@ class RouteController extends Controller
                 'models' => $mergedModels,
             ];
 
-            $title = $formattedData['hospital_code'] . '_' . $formattedData['generator_code'] . '_' . strtoupper(Carbon::parse($formattedData['implant_date'])->format('dMY')) . '_' .  strtoupper(str_replace(' ', '_', $formattedData['implant_pt_name'])) . '_SYS_IRF';
+            $title = $formattedData['hospital_code'] . '_' . $formattedData['generator_code'] . '_' . strtoupper(preg_replace('/[^A-Za-z0-9]/', '_', $formattedData['implant_pt_name'])) . '_SYS_IRF';
 
             $pdf = Pdf::loadView('crmd-system.implant-management.irf-template-doc', [
                 'title' =>  $title ?? 'CRMD System | View Implant Registration Form',
@@ -378,7 +378,7 @@ class RouteController extends Controller
 
             ]);
 
-            if ($option == 1) // Generate PDF & Store to Storage
+            if ($option == 1)
             {
                 $filePath = 'storage/implants/' . $formattedData['implant_pt_directory'] . '/' . $title . '.pdf';
                 $pdf->save(public_path($filePath));
@@ -393,7 +393,7 @@ class RouteController extends Controller
                 return back()->with('error', 'Invalid option selected.');
             }
         } catch (Exception $e) {
-            return abort(404);
+            return abort(404, $e->getMessage());
         }
     }
 
@@ -607,7 +607,7 @@ class RouteController extends Controller
             'models' => $mergedModels,
         ];
 
-        $title =  $formattedData['hospital_code'] . '_' . $formattedData['generator_code'] . '_' . strtoupper(Carbon::parse($formattedData['implant_date'])->format('dMY')) . '_' .  strtoupper(str_replace(' ', '_', $formattedData['implant_pt_name'])) . '_PATIENT_ID_CARD';
+        $title =  $formattedData['hospital_code'] . '_' . $formattedData['generator_code'] . '_' . strtoupper(Carbon::parse($formattedData['implant_date'])->format('dMY')) . '_' .  strtoupper(preg_replace('/[^A-Za-z0-9]/', '_', $formattedData['implant_pt_name'])) . '_PATIENT_ID_CARD';
 
         $pdf = Pdf::loadView('crmd-system.implant-management.view-pt-id-card', [
             'title' => $title,
@@ -634,7 +634,6 @@ class RouteController extends Controller
     // GENERATE ICF 
     public function generateInventoryConsumptionForm(Request $req)
     {
-
         try {
             if ($req->ajax()) {
                 $data = DB::table('implants')

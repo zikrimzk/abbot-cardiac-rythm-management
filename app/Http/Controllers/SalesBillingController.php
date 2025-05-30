@@ -217,20 +217,41 @@ class SalesBillingController extends Controller
                 ->get();
 
             $mergedModels = [];
+           
             foreach ($modelCategories as $category) {
-                $foundModel = $models->firstWhere('model_category_id', $category->model_category_id);
+                // Get all models that belong to this category
+                $matchedModels = $models->where('model_category_id', $category->model_category_id);
 
-                $mergedModels[] = [
-                    'model_category_id' => $category->model_category_id,
-                    'model_category' => $category->model_category,
-                    'model_name' => $foundModel->model_name ?? '-',
-                    'model_code' => $foundModel->model_code ?? '-',
-                    'implant_model_sn' => $foundModel->implant_model_sn ?? '-',
-                    'implant_model_qty' => $foundModel->implant_model_qty ?? 0,
-                    'implant_model_itemPrice' => $foundModel->implant_model_itemPrice ?? 0,
-                    'stock_location_name' => $foundModel->stock_location_name ?? '-',
-                    'stock_location_code' => $foundModel->stock_location_code ?? '-',
-                ];
+                // If no models found, you can optionally add a default/empty row
+                if ($matchedModels->isEmpty()) {
+                    $mergedModels[] = [
+                        'model_category_id' => $category->model_category_id,
+                        'model_category' => $category->model_category,
+                        'model_name' => '-',
+                        'model_code' => '-',
+                        'implant_model_sn' => '-',
+                        'implant_model_qty' => 0,
+                        'implant_model_itemPrice' => 0,
+                        'stock_location_name' => '-',
+                        'stock_location_code' => '-',
+                    ];
+                    continue;
+                }
+
+                // Loop through each matched model
+                foreach ($matchedModels as $model) {
+                    $mergedModels[] = [
+                        'model_category_id' => $category->model_category_id,
+                        'model_category' => $category->model_category,
+                        'model_name' => $model->model_name ?? '-',
+                        'model_code' => $model->model_code ?? '-',
+                        'implant_model_sn' => $model->implant_model_sn ?? '-',
+                        'implant_model_qty' => $model->implant_model_qty ?? 0,
+                        'implant_model_itemPrice' => $model->implant_model_itemPrice ?? 0,
+                        'stock_location_name' => $model->stock_location_name ?? '-',
+                        'stock_location_code' => $model->stock_location_code ?? '-',
+                    ];
+                }
             }
 
             $formattedData = [
@@ -257,7 +278,7 @@ class SalesBillingController extends Controller
                 'models' => $mergedModels,
             ];
 
-            $title =  $formattedData['hospital_code'] . '_' . $formattedData['generator_code'] . '_' . strtoupper(Carbon::parse($formattedData['implant_date'])->format('dMY')) . '_' .  strtoupper(str_replace(' ', '_', $formattedData['implant_pt_name'])) . '_ICF';
+            $title =  $formattedData['hospital_code'] . '_' . $formattedData['generator_code'] . '_' . strtoupper(Carbon::parse($formattedData['implant_date'])->format('dMY')) . '_' .  strtoupper(preg_replace('/[^A-Za-z0-9]/', '_', $formattedData['implant_pt_name'])) . '_ICF';
             $pdf = Pdf::loadView('crmd-system.sales-billing.icf-template-doc', [
                 'title' => $title,
                 'data' => $formattedData,
@@ -339,7 +360,7 @@ class SalesBillingController extends Controller
             $hospitalCode = $implant->hospital_code;
             $generatorCode = $implant->generator_code;
             $implantDate = strtoupper(Carbon::parse($implant->implant_date)->format('dMY'));
-            $patientName = strtoupper(str_replace(' ', '_', $implant->implant_pt_name));
+            $patientName = strtoupper(preg_replace('/[^A-Za-z0-9]/', '_', $implant->implant_pt_name));
             $targetFolder = 'public/implants/' . $implant->implant_pt_directory;
 
             Storage::makeDirectory($targetFolder);
