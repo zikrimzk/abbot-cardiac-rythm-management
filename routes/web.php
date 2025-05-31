@@ -49,14 +49,11 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::post('/patient-id-card-preview-{id}', [ImplantController::class, 'previewPatientIDCard'])->name('patient-id-card-preview-post');
     Route::post('/send-pt-id-card-email/{id}', [ImplantController::class, 'sendPatientIDCard'])->name('send-pt-id-card-email-post');
 
-    //Sales Biling >  Generate Inventory Consumption Form 
-    Route::get('/generate-inventory-consumption-form', [RouteController::class, 'generateInventoryConsumptionForm'])->name('generate-icf-page');
+    // MANAGE SALES BILLING
+    Route::get('/manage-sales-billing', [RouteController::class, 'manageSalesBilling'])->name('manage-sales-billing');
     Route::get('/view-icf-editable-{id}', [RouteController::class, 'viewInventoryConsumptionFormEditable'])->name('view-editable-icf-page');
     Route::post('/confirm-icf-data/{id}', [SalesBillingController::class, 'confirmICFData'])->name('confirm-icf-post');
     Route::get('/icf-document/{id}/{opt}', [SalesBillingController::class, 'generatePreviewDownloadICF'])->name('icf-document-get');
-
-    //Sales Biling >  Upload Sales Billing Document
-    Route::get('/upload-sales-billing-document', [RouteController::class, 'uploadSalesBillingDocument'])->name('upload-sales-billing-document-page');
     Route::get('/upload-document-area-{id}', [RouteController::class, 'uploadDocumentArea'])->name('upload-document-area-page');
     Route::post('/upload-document-{id}', [SalesBillingController::class, 'uploadDocument'])->name('upload-document-post');
     Route::post('/delete-uploaded-document', [SalesBillingController::class, 'deleteUploadedFile'])->name('delete-upload-document-post');

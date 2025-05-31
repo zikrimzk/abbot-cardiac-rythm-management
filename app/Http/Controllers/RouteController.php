@@ -129,7 +129,7 @@ class RouteController extends Controller
                         <div class="d-block mb-3 mt-3">
                             <a href="' . route('view-irf-document', ['id' => Crypt::encrypt($row->id), 'option' => 2]) . '" target="_blank" class="link-dark">
                                 <i class="fas fa-file-pdf f-20 text-danger me-2"></i>
-                                    View System Generated Form
+                                    Generated IRF
                             </a>
                         </div>
 
@@ -141,20 +141,19 @@ class RouteController extends Controller
                     <div class="d-block mb-3 mt-3">
                         <a href="' . route('view-irf-document', ['id' => Crypt::encrypt($row->id), 'option' => 2]) . '" target="_blank" class="link-dark">
                             <i class="fas fa-file-pdf f-20 text-danger me-2"></i>
-                                View System Generated Form
+                                 Generated IRF
                         </a>
                     </div>
 
                     <div class="d-block mb-3">
                         <a href="' . URL::signedRoute('view-imbackupform', ['filename' => Crypt::encrypt($row->implant_backup_form)]) . '" target="_blank" class="link-dark">
                             <i class="fas fa-file-pdf f-20 text-danger me-2"></i>
-                                View Uploaded Backup Form
+                                Uploaded IRF
                         </a>
                     </div>
                 ';
                 return $directory;
             });
-
 
             $table->addColumn('action', function ($row) {
 
@@ -378,8 +377,7 @@ class RouteController extends Controller
 
             ]);
 
-            if ($option == 1)
-            {
+            if ($option == 1) {
                 $filePath = 'storage/implants/' . $formattedData['implant_pt_directory'] . '/' . $title . '.pdf';
                 $pdf->save(public_path($filePath));
                 return back();
@@ -631,8 +629,8 @@ class RouteController extends Controller
         return $pdf->stream($title . '.pdf');
     }
 
-    // GENERATE ICF 
-    public function generateInventoryConsumptionForm(Request $req)
+    // MANAGE SALES BILLING
+    public function manageSalesBilling(Request $req)
     {
         try {
             if ($req->ajax()) {
@@ -691,12 +689,42 @@ class RouteController extends Controller
                     return $name;
                 });
 
+                $table->addColumn('inventory_consumption_form', function ($row) {
+                    if ($row->implant_backup_form == null) {
+                        $directory =
+                            '
+                        <div class="d-block mb-3 mt-3">
+                            <a href="' . route('view-irf-document', ['id' => Crypt::encrypt($row->id), 'option' => 2]) . '" target="_blank" class="link-dark">
+                                <i class="fas fa-file-pdf f-20 text-danger me-2"></i>
+                                    Generated ICF
+                            </a>
+                        </div>
+
+                    ';
+                        return $directory;
+                    }
+                    $directory =
+                        '
+                    <div class="d-block mb-3 mt-3">
+                        <a href="' . route('view-irf-document', ['id' => Crypt::encrypt($row->id), 'option' => 2]) . '" target="_blank" class="link-dark">
+                            <i class="fas fa-file-pdf f-20 text-danger me-2"></i>
+                                 Generated ICF
+                        </a>
+                    </div>
+                ';
+                    return $directory;
+                });
+
+
                 $table->addColumn('action', function ($row) {
 
                     $button =
                         '
                         <a href="' . route('view-editable-icf-page', Crypt::encrypt($row->id)) . '" class="avtar avtar-xs btn-light-primary">
                             <i class="ti ti-edit f-20"></i>
+                        </a>
+                         <a href="' . route('upload-document-area-page', Crypt::encrypt($row->id)) . '" class="avtar avtar-xs btn-light-info">
+                            <i class="ti ti-file-upload f-20"></i>
                         </a>
                         <a href="' . route('icf-document-get', ['id' => Crypt::encrypt($row->id), 'opt' => 1]) . '" class="avtar avtar-xs  btn-light-warning">
                             <i class="ti ti-download f-20"></i>
@@ -705,12 +733,12 @@ class RouteController extends Controller
                     return $button;
                 });
 
-                $table->rawColumns(['implant_date', 'implant_pt_name', 'action']);
+                $table->rawColumns(['implant_date', 'implant_pt_name', 'inventory_consumption_form', 'action']);
 
                 return $table->make(true);
             }
-            return view('crmd-system.sales-billing.generate-icf', [
-                'title' => 'CRMD System | Generate Inventory Consumption Form (ICF)',
+            return view('crmd-system.sales-billing.manage-sales-billing', [
+                'title' => 'CRMD System | Manage Sales Billing',
                 'ims' => Implant::all(),
                 'hosp' => Hospital::all(),
                 'gene' => Generator::all(),
@@ -741,94 +769,7 @@ class RouteController extends Controller
         }
     }
 
-    // UPLOAD SALES BILLING DOCUMENT
-    public function uploadSalesBillingDocument(Request $req)
-    {
-        try {
-            if ($req->ajax()) {
-                $data = DB::table('implants')
-                    ->select(
-                        'id',
-                        'implant_refno',
-                        'implant_date',
-                        'implant_pt_name',
-                        'implant_pt_icno',
-                        'implant_pt_directory',
-                        'implant_backup_form',
-                        'region_id',
-                        'hospital_id',
-                        'generator_id',
-                        'region_id',
-                        'doctor_id',
-                    );
-
-                if ($req->has('date_range') && !empty($req->input('date_range'))) {
-                    $dates = explode(' to ', $req->date_range);
-                    $startdate = Carbon::parse($dates[0])->format('Y-m-d');
-                    $enddate = Carbon::parse($dates[1])->format('Y-m-d');
-                    $data->whereBetween('implant_date', [$startdate, $enddate]);
-                }
-
-                if ($req->has('hospital') && !empty($req->input('hospital'))) {
-                    $data->where('hospital_id', $req->input('hospital'));
-                }
-
-                if ($req->has('generator') && !empty($req->input('generator'))) {
-                    $data->where('generator_id', $req->input('generator'));
-                }
-
-                if ($req->has('region') && !empty($req->input('region'))) {
-                    $data->where('region_id', $req->input('region'));
-                }
-
-                $data = $data->get();
-
-                $table = DataTables::of($data)->addIndexColumn();
-
-                $table->addColumn('implant_date', function ($row) {
-                    $date = Carbon::parse($row->implant_date)->format('d M Y');
-                    return $date;
-                });
-
-                $table->addColumn('implant_pt_name', function ($row) {
-                    $name =
-                        '
-                    <a href="' . route('view-irf-document', ['id' => Crypt::encrypt($row->id), 'option' => 2]) . '" class="link-primary" target="_blank">
-                        ' . $row->implant_pt_name . '
-                    </a>
-                
-                ';
-                    return $name;
-                });
-
-                $table->addColumn('action', function ($row) {
-
-                    $button =
-                        '
-                        <a href="' . route('upload-document-area-page', Crypt::encrypt($row->id)) . '" class="avtar avtar-xs btn-light-primary">
-                            <i class="ti ti-file-upload f-20"></i>
-                        </a>
-                    ';
-                    return $button;
-                });
-
-                $table->rawColumns(['implant_date', 'implant_pt_name', 'action']);
-
-                return $table->make(true);
-            }
-            return view('crmd-system.sales-billing.upload-document', [
-                'title' => 'CRMD System | Upload Sales Billing Document',
-                'ims' => Implant::all(),
-                'hosp' => Hospital::all(),
-                'gene' => Generator::all(),
-                'region' => Region::all(),
-            ]);
-        } catch (Exception $e) {
-            return abort(500, $e->getMessage());
-        }
-    }
-
-    // VIEW OR UPDATE ICF DATA 
+    // UPLOAD SALES BILLING AREA
     public function uploadDocumentArea($id)
     {
         try {
@@ -849,7 +790,6 @@ class RouteController extends Controller
             return abort(500, $e->getMessage());
         }
     }
-
 
     // Manage Designation Route
     public function manageDesignation(Request $req)

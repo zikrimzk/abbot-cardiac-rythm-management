@@ -36,31 +36,15 @@
                      </a>
                  </li>
 
-                 {{-- <li class="pc-item">
-                     <a href="{{ route('generate-patient-id-card-page') }}" class="pc-link">
-                         <span class="pc-micon">
-                             <i class="pc-icon fas fa-id-card"></i>
-                         </span>
-                         <span class="pc-mtext">Patient ID Card</span>
-                     </a>
-                 </li> --}}
-
-                 <li class="pc-item pc-hasmenu">
-                     <a href="javascript: void(0)" class="pc-link">
+                 <li class="pc-item">
+                     <a href="{{ route('manage-sales-billing') }}" class="pc-link">
                          <span class="pc-micon">
                              <span class="pc-micon">
                                  <i class="pc-icon fas fa-file-invoice-dollar"></i>
                              </span>
                          </span>
                          <span class="pc-mtext">Sales Billing</span>
-                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                      </a>
-                     <ul class="pc-submenu">
-                         <li class="pc-item"><a class="pc-link" href="{{ route('generate-icf-page') }}">Generate Inventory Consumption Form (ICF)</a>
-                         </li>
-                         <li class="pc-item"><a class="pc-link" href="{{ route('upload-sales-billing-document-page') }}">Upload Sales Billing Document</a>
-                         </li>
-                     </ul>
                  </li>
 
                  {{-- <li class="pc-item pc-hasmenu">

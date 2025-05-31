@@ -12,13 +12,13 @@
                         <div class="col-md-12">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="javascript: void(0)">Sales Biling</a></li>
-                                <li class="breadcrumb-item" aria-current="page">Generate Inventory Consumption Form (ICF)
+                                <li class="breadcrumb-item" aria-current="page">Manage Sales Billing
                                 </li>
                             </ul>
                         </div>
                         <div class="col-md-12">
                             <div class="page-header-title">
-                                <h2 class="mb-0">Generate Inventory Consumption Form (ICF)</h2>
+                                <h2 class="mb-0">Manage Sales Billing</h2>
                             </div>
                         </div>
                     </div>
@@ -114,6 +114,7 @@
                                             <th scope="col">Implant Date</th>
                                             <th scope="col">Patient</th>
                                             <th scope="col">IC Number</th>
+                                            <th scope="col">Inventory Consumption Form (ICF)</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -138,7 +139,7 @@
                 serverSide: true,
                 responsive: true,
                 ajax: {
-                    url: "{{ route('generate-icf-page') }}",
+                    url: "{{ route('manage-sales-billing') }}",
                     data: function(d) {
                         d.date_range = $('#dateRangeFilter')
                             .val();
@@ -169,6 +170,10 @@
                         data: 'implant_pt_icno',
                         name: 'implant_pt_icno',
                         className: 'avoid-long-column'
+                    },
+                    {
+                        data: 'inventory_consumption_form',
+                        name: 'inventory_consumption_form',
                     },
                     {
                         data: 'action',

@@ -62,7 +62,7 @@
                         <div class="col-md-12">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="javascript: void(0)">Sales Biling</a></li>
-                                <li class="breadcrumb-item"><a href="javascript: void(0)">Upload Sales Billing Document</a>
+                                <li class="breadcrumb-item"><a href="{{ route('manage-sales-billing') }}">Manage Sales Billing</a>
                                 </li>
                                 <li class="breadcrumb-item" aria-current="page">Upload Document ({{ $im->implant_pt_name }})
                                 </li>
@@ -71,7 +71,7 @@
                         <div class="col-md-12">
                             <div class="page-header-title">
                                 <div class="d-flex align-items-center">
-                                    <a href="{{ route('upload-sales-billing-document-page') }}"
+                                    <a href="{{ route('manage-sales-billing') }}"
                                         class="btn me-2 d-flex align-items-center">
                                         <span class="f-18">
                                             <i class="ti ti-arrow-left"></i>
@@ -127,7 +127,7 @@
                                     $inputs = [
                                         'sb_approval' => 'Upload Approval',
                                         'sb_borangG' => 'Upload Borang G',
-                                        'sb_do' => 'Upload Direct Order (DO)',
+                                        'sb_do' => 'Upload Delivery Order (DO)',
                                         'sb_borangF' => 'Upload Borang F',
                                         'sb_receipt' => 'Upload Receipt',
                                         'sb_other_one' => 'Upload Others 1',

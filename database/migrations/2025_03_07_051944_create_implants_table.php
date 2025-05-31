@@ -25,11 +25,12 @@ return new class extends Migration
             $table->string('implant_pt_id_card')->nullable();
             $table->integer('implant_pt_id_card_design')->nullable();
             $table->text('implant_pt_directory')->nullable();
+            $table->text('implant_pt_icf')->nullable(); //new
             $table->string('implant_generator_sn');
             $table->integer('implant_generator_qty')->default(1);
             $table->decimal('implant_generator_itemPrice', 10, 2)->default(0.00);
-            $table->string('implant_invoice_no')->nullable();
-            $table->double('implant_sales')->default(0.00);
+            $table->text('implant_remarkSales')->nullable(); //new
+            $table->decimal('implant_sales_total_price', 10, 2)->default(0.00); //new
             $table->text('implant_remark')->nullable();
             $table->text('implant_note')->nullable();
             $table->string('implant_approval_type')->nullable();

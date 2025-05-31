@@ -137,7 +137,7 @@
                                             <th scope="col">Implant Date</th>
                                             <th scope="col">Patient</th>
                                             <th scope="col">IC Number</th>
-                                            <th scope="col">Implant Form</th>
+                                            <th scope="col">Implant Registration Form (IRF)</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>

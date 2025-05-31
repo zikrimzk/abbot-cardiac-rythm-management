@@ -114,14 +114,13 @@
                         <div class="col-md-12">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="javascript: void(0)">Sales Biling</a></li>
-                                <li class="breadcrumb-item"><a href="{{ route('generate-icf-page') }}">Generate Inventory
-                                        Consumption Form (ICF)</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('manage-sales-billing') }}">Manage Sales Billing</a></li>
                                 <li class="breadcrumb-item" aria-current="page">{{ $im->implant_pt_name }}</li>
                             </ul>
                         </div>
                         <div class="col-md-12">
                             <div class="page-header-title">
-                                <a href="{{ route('generate-icf-page') }}" class="btn me-2 d-flex align-items-center">
+                                <a href="{{ route('manage-sales-billing') }}" class="btn me-2 d-flex align-items-center">
                                     <span class="f-18">
                                         <i class="ti ti-arrow-left me-2"></i>
                                     </span>
@@ -183,8 +182,7 @@
                                         <h4 class="mb-0">INVENTORY CONSUMPTION FORM</h4>
                                     </div>
                                     <div class="col-md-4 text-center text-md-end">
-                                        <div class="text-muted">Invoice No: IC-2025-5306</div>
-                                        <div class="text-muted">Date: 28-Jan-2025</div>
+                                        <div class="text-muted">Date: {{ date('d M Y', strtotime($im->implant_date)) }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -445,9 +443,9 @@
 
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="sales_payment_method" class="form-label">Payment Method:</label>
-                                        <textarea name="sales_payment_method" id="sales_payment_method" class="form-control" rows="2"
-                                            placeholder="Enter payment method"></textarea>
+                                        <label for="implant_approval_type" class="form-label">Payment Method:</label>
+                                        <textarea name="implant_approval_type" id="implant_approval_type" class="form-control" rows="2"
+                                            placeholder="Enter payment method">{{ $im->implant_approval_type }}</textarea>
                                         <small>*(Patient self-paid / Welfare Approval / Hospital / Bumi Agent)</small>
                                     </div>
 

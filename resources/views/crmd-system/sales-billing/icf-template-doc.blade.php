@@ -175,8 +175,7 @@
                 <small style="text-align: center; display:block; font-size: 8pt; font-weight: normal;">Cardiac Rythm Management Division</small>
             </td>
             <td class="meta-cell">
-                <strong>Invoice No:</strong> ??<br>
-                <strong>Date:</strong> ??<br>
+                <strong>Date:</strong> {{ $data['implant_date'] }}<br>
             </td>
         </tr>
     </table>
@@ -264,7 +263,7 @@
 
     <!-- Payment Section -->
     <div class="payment-section">
-        <div class="payment-method">Payment Method: ???? (MYR {{ number_format($total, 2) }})</div>
+        <div class="payment-method">Payment Method: {{ $data['implant_approval_type'] }} (MYR {{ number_format($total, 2) }})</div>
         <div class="payment-note">*(Patient self-paid / Welfare Approval / Hospital / Bumi Agent)</div>
     </div>
 
