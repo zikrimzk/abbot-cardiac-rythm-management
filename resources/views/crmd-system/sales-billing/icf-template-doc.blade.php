@@ -290,9 +290,4 @@
             </td>
         </tr>
     </table>
-
-    <!-- Footer -->
-    <div class="footer">
-        <div><strong>Remark from Sales:</strong> All products delivered and implanted as per schedule</div>
-    </div>
 </div>

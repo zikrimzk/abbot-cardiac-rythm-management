@@ -17,30 +17,31 @@ return new class extends Migration
             $table->date('implant_date');
             $table->string('implant_pt_name');
             $table->string('implant_pt_icno');
-            $table->string('implant_pt_mrn')->nullable();
             $table->string('implant_pt_address')->nullable();
+            $table->string('implant_pt_mrn')->nullable();
             $table->string('implant_pt_email')->nullable();
             $table->string('implant_pt_phoneno')->nullable();
             $table->date('implant_pt_dob')->nullable();
             $table->string('implant_pt_id_card')->nullable();
             $table->integer('implant_pt_id_card_design')->nullable();
             $table->text('implant_pt_directory')->nullable();
-            $table->text('implant_pt_icf')->nullable(); //new
+            $table->text('implant_pt_icf')->nullable();
             $table->string('implant_generator_sn');
             $table->integer('implant_generator_qty')->default(1);
             $table->decimal('implant_generator_itemPrice', 10, 2)->default(0.00);
-            $table->text('implant_remarkSales')->nullable(); //new
-            $table->decimal('implant_sales_total_price', 10, 2)->default(0.00); //new
-            $table->text('implant_remark')->nullable();
-            $table->text('implant_note')->nullable();
-            $table->string('implant_approval_type')->nullable();
             $table->text('implant_backup_form')->nullable();
+            $table->decimal('implant_sales_total_price', 10, 2)->default(0.00);
             $table->foreignId('generator_id')->constrained('generators');
             $table->foreignId('region_id')->constrained('regions');
             $table->foreignId('hospital_id')->constrained('hospitals');
             $table->foreignId('doctor_id')->constrained('doctors');
             $table->foreignId('stock_location_id')->constrained('stock_locations');
+            $table->foreignId('approval_type_id')->constrained('approval_types');
             $table->timestamps();
+
+            // $table->text('implant_remarkSales')->nullable();
+            // $table->text('implant_remark')->nullable();
+            // $table->text('implant_note')->nullable();
         });
     }
 

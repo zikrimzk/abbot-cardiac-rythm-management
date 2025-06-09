@@ -114,7 +114,8 @@
                         <div class="col-md-12">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="javascript: void(0)">Sales Biling</a></li>
-                                <li class="breadcrumb-item"><a href="{{ route('manage-sales-billing') }}">Manage Sales Billing</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('manage-sales-billing') }}">Manage Sales
+                                        Billing</a></li>
                                 <li class="breadcrumb-item" aria-current="page">{{ $im->implant_pt_name }}</li>
                             </ul>
                         </div>
@@ -161,10 +162,14 @@
                     </div>
                 @endif
             </div>
+            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+                <div id="toastContainer"></div>
+            </div>
             <!-- [ Alert ] end -->
 
             <!-- [ Main Content ] start -->
             <div class="row">
+                <!-- [ Update ICF ] start -->
                 <div class="col-sm-12">
                     <div class="form-container">
                         <form action="{{ route('confirm-icf-post', Crypt::encrypt($im->id)) }}" method="POST"
@@ -182,7 +187,8 @@
                                         <h4 class="mb-0">INVENTORY CONSUMPTION FORM</h4>
                                     </div>
                                     <div class="col-md-4 text-center text-md-end">
-                                        <div class="text-muted">Date: {{ date('d M Y', strtotime($im->implant_date)) }}</div>
+                                        <div class="text-muted">Date: {{ date('d M Y', strtotime($im->implant_date)) }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -408,7 +414,9 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-lg-1 col-md-2 mb-2 d-flex align-items-end">
+                                                <!-- [ Remove Button ] -->
+                                                <div
+                                                    class="col-lg-1 col-md-2 mb-4 d-flex align-items-center position-relative">
                                                     @if ($mc->mcategory_ismorethanone == 1)
                                                         <button type="button"
                                                             class="btn btn-remove btn-sm remove-row w-100">
@@ -420,12 +428,46 @@
                                                             <i class="fas fa-times"></i>
                                                         </button>
                                                     @endif
+                                                    <i class="fas fa-exclamation-circle text-danger position-absolute end-0 me-2 d-none warning-icon"
+                                                        title="Please complete required fields"></i>
                                                 </div>
                                             </div>
                                         @endforeach
                                     </div>
                                 </div>
                             @endforeach
+
+                            <!-- Payment & Remarks -->
+                            <div class="form-section">
+                                <h5 class="section-title">Payment </h5>
+
+                                <div class="row">
+
+                                    <!-- [ Approval Type ] Dropdown -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="approval_type_id" class="form-label">Approval Type / Payment
+                                            Method <span class="required-star">*</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
+                                            <select name="approval_type_id" id="approval_type_id" class="form-control">
+                                                <option value="">Select Approval Type</option>
+                                            </select>
+                                            <button type="button"
+                                                class="btn btn-outline-secondary d-flex align-items-center"
+                                                id="addApprovalBtn"><i class="ti ti-circle-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div id="selectedApprovalWrapper" class="mt-2" style="display: none;">
+                                            <a href="javascript:void(0)" class="link-danger" id="deleteApprovalBtn"
+                                                aria-label="Remove">
+                                                <i class="ti ti-trash"></i>
+                                                Delete Type
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
 
                             <!-- Total Invoice Section -->
                             <div class="form-section bg-light p-4 rounded">
@@ -437,35 +479,58 @@
                                 </div>
                             </div>
 
-                            <!-- Payment & Remarks -->
-                            <div class="form-section">
-                                <h5 class="section-title">Payment & Remarks</h5>
-
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="implant_approval_type" class="form-label">Payment Method:</label>
-                                        <textarea name="implant_approval_type" id="implant_approval_type" class="form-control" rows="2"
-                                            placeholder="Enter payment method">{{ $im->implant_approval_type }}</textarea>
-                                        <small>*(Patient self-paid / Welfare Approval / Hospital / Bumi Agent)</small>
-                                    </div>
-
-                                    <div class="col-md-6 mb-3">
-                                        <label for="sales_remark" class="form-label">Remarks from Sales:</label>
-                                        <textarea name="sales_remark" id="sales_remark" class="form-control" rows="2"
-                                            placeholder="Enter any remarks"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
                             <!-- Submit Button -->
                             <div class="d-flex justify-content-end mt-4">
-                                <button type="submit" class="btn btn-primary btn-submit">
+                                <button type="submit" class="btn btn-primary btn-submit" id="generate-icf-btn">
                                     <i class="fas fa-check-circle me-2"></i> Generate ICF
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
+                <!-- [ Update ICF ] end -->
+
+                <!-- [ Approval Type Modal ] start -->
+                <div class="modal fade" id="approvalModal" tabindex="-1" aria-labelledby="approvalModal"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addModalLabel">Add Approval Type
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                        <div class="mb-3">
+                                            <label for="approval_type_name" class="form-label">Approval Type
+                                                <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="approval_type_name"
+                                                name="approval_type_name" placeholder="Enter Approval Type">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer justify-content-end">
+                                <div class="flex-grow-1 text-end">
+                                    <div class="col-sm-12">
+                                        <div class="d-flex justify-content-between gap-3 align-items-center">
+                                            <button type="button" class="btn btn-light btn-pc-default w-100"
+                                                data-bs-dismiss="modal">Cancel</button>
+                                            <button type="button" id="approvalFormBtn" class="btn btn-primary w-100">
+                                                Add Approval Type
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- [ Approval Type Modal ] end -->
+
             </div>
             <!-- [ Main Content ] end -->
         </div>
@@ -474,12 +539,40 @@
     <script type="text/javascript">
         $(document).ready(function() {
 
+            // === TOAST : ALERT === //
+            function showToast(type, message) {
+                const toastId = 'toast-' + Date.now();
+                const iconClass = type === 'success' ? 'fas fa-check-circle' : 'fas fa-info-circle';
+                const bgClass = type === 'success' ? 'bg-light-success' : 'bg-light-danger';
+                const txtClass = type === 'success' ? 'text-success' : 'text-danger';
+                const colorClass = type === 'success' ? 'success' : 'danger';
+                const title = type === 'success' ? 'Success' : 'Error';
+
+                const toastHtml = `
+                    <div id="${toastId}" class="toast border-0 shadow-sm mb-3" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+                        <div class="toast-body text-white ${bgClass} rounded d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="mb-0 ${txtClass}">
+                                    <i class="${iconClass} me-2"></i> ${title}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                            <p class="mb-0 ${txtClass}">${message}</p>
+                        </div>
+                    </div>
+                `;
+
+                $('#toastContainer').append(toastHtml);
+                const toastEl = new bootstrap.Toast(document.getElementById(toastId));
+                toastEl.show();
+            }
+
             // === FORMAT : IC/PASSPORT === //
             $("#implant_pt_icno").on("input", function() {
                 let value = $(this).val().toUpperCase();
 
                 if (/^\d/.test(value)) {
-                    value = value.replace(/\D/g, ""); 
+                    value = value.replace(/\D/g, "");
 
                     if (value.length > 12) {
                         value = value.slice(0, 12); // Hadkan 12 digit sahaja
@@ -585,12 +678,15 @@
                 });
             }
 
-            // === FORMAT : INITIALIZATION === //
+            // === GLOBAL : INITIALIZATION === //
+            bindValidationEvents();
+            getApprovalTypes();
+
             applyPriceInputFormat($(".price-input"));
             applySnInputFormat($(".sn-input"));
             applyQtyInputFormat($(".qty-input"));
 
-            // === ICF : CALCULATE TOTAL INVOICE FUNCTION === //
+            // === FUNCTION : CALCULATE TOTAL INVOICE FUNCTION === //
             function calculateTotal() {
                 let total = 0;
 
@@ -618,43 +714,84 @@
             $(document).on('input', '.qty-input, .price-input', calculateTotal);
 
 
-            // FUNCTION : RESET BUTTON
-            function checkResetButton(loopContainer) {
+            // === VALIDATION : CHECK EMPTY FIELD === //
+            function validateAllModelLoops() {
+                let anyInvalid = false;
+
+                $(".model-loop").each(function() {
+                    const isInvalid = validateLoopFields($(this));
+                    if (isInvalid) anyInvalid = true;
+                });
+
+                $("#generate-icf-btn").prop("disabled", anyInvalid);
+            }
+
+            // === VALIDATION : CHECK SPECIFIC CONTAINER EMPTY FIELD === //
+            function validateLoopFields(loopContainer) {
                 let modelSelected = loopContainer.find(".model-select").val();
                 let serialNumber = loopContainer.find(".sn-input").val();
-                let modelprice = loopContainer.find(".price-input").val();
-                let modelqty = loopContainer.find(".qty-input").val();
                 let stockLocation = loopContainer.find(".stock-location-select").val();
-                let dustbinBtn = loopContainer.find(".reset-row");
-                if (modelSelected || serialNumber || modelprice != "0.00" || modelqty != "1" || stockLocation) {
-                    dustbinBtn.prop("disabled", false);
+
+
+                let price = loopContainer.find(".price-input").val();
+                let qty = loopContainer.find(".qty-input").val();
+                let resetBtn = loopContainer.find(".reset-row");
+                let warningIcon = loopContainer.find(".warning-icon");
+
+                // Enable reset if anything is filled
+                if (modelSelected || serialNumber || stockLocation || price !== "0.00" || qty !== "1") {
+                    resetBtn.prop("disabled", false);
                 } else {
-                    dustbinBtn.prop("disabled", true);
+                    resetBtn.prop("disabled", true);
+                }
+
+                // Validation: If any of the 3 is filled, all must be
+                let anyFilled = modelSelected || serialNumber || stockLocation;
+                let allFilled = modelSelected && serialNumber && stockLocation;
+
+                if (anyFilled && !allFilled) {
+                    warningIcon.removeClass("d-none");
+                    return true; // Invalid state
+                } else {
+                    warningIcon.addClass("d-none");
+                    return false; // Valid state
                 }
             }
 
+            // === VALIDATION : BIND VALIDATION EVENT === //
+            function bindValidationEvents() {
+                $(document).on("change input",
+                    ".model-select, .sn-input, .stock-location-select, .price-input, .qty-input",
+                    function() {
+                        validateAllModelLoops();
+                    });
+
+                validateAllModelLoops();
+            }
+
+            // === FUNCTIONS : ADD ROW RELATED === //
             $(".model-loop").each(function() {
-                checkResetButton($(this));
+                validateLoopFields($(this));
             });
 
             $(document).on("change", ".model-select", function() {
-                checkResetButton($(this).closest(".model-loop"));
+                validateLoopFields($(this).closest(".model-loop"));
             });
 
             $(document).on("input", ".sn-input", function() {
-                checkResetButton($(this).closest(".model-loop"));
+                validateLoopFields($(this).closest(".model-loop"));
             });
 
             $(document).on("input", ".price-input", function() {
-                checkResetButton($(this).closest(".model-loop"));
+                validateLoopFields($(this).closest(".model-loop"));
             });
 
             $(document).on("input", ".qty-input", function() {
-                checkResetButton($(this).closest(".model-loop"));
+                validateLoopFields($(this).closest(".model-loop"));
             });
 
             $(document).on("change", ".stock-location-select", function() {
-                checkResetButton($(this).closest(".model-loop"));
+                validateLoopFields($(this).closest(".model-loop"));
             });
 
             $(document).on("click", ".reset-row", function() {
@@ -664,9 +801,9 @@
                 loopContainer.find(".price-input").val("0.00");
                 loopContainer.find(".qty-input").val("1");
                 loopContainer.find(".stock-location-select").val("");
-                $(this).prop("disabled", true);
                 calculateTotal();
-
+                validateAllModelLoops();
+                $(this).prop("disabled", true);
             });
 
             $(document).on("click", ".add-row", function() {
@@ -681,42 +818,38 @@
                 let lastRow = container.find(".model-loop").last();
                 let newRow = lastRow.clone();
 
-                // Clear input/select values
-                newRow.find(
-                    "input.sn-input, input.price-input, input.qty-input, select.stock-location-select, select.model-select"
-                ).val("");
-                newRow.find(".remove-row").prop("disabled", false);
+                // Clear specific fields in new row
+                newRow.find("input.sn-input").val("");
+                newRow.find("input.price-input").val("0.00");
+                newRow.find("input.qty-input").val("1");
+                newRow.find("select.stock-location-select").val("");
+                newRow.find("select.model-select").val("").trigger("change");
 
-                // Append the row
-                lastRow.after(newRow);
+                // Enable remove/reset buttons
+                newRow.find(".remove-row, .reset-row").prop("disabled", false);
+                newRow.find(".warning-icon").addClass("d-none");
 
-                // Apply formatting to the new inputs
+                // Append the new row
+                container.append(newRow);
+
+                // Apply input formatting
                 applyPriceInputFormat(newRow.find(".price-input"));
                 applySnInputFormat(newRow.find(".sn-input"));
                 applyQtyInputFormat(newRow.find(".qty-input"));
 
-                console.log("Row baru ditambah!", newRow);
+                // Re-run validation
+                validateAllModelLoops();
+
+                console.log("Row baru ditambah untuk kategori:", categoryID);
             });
 
             $('.remove-row').each(function() {
                 let row = $(this).closest('.model-loop');
+                $(this).prop('disabled', true);
 
                 row.find('input, select').on('input', function() {
                     row.find('.remove-row').prop('disabled', false);
                 });
-
-                let modelSelected = row.find(".model-select").val();
-                let serialNumber = row.find(".sn-input").val();
-                let modelprice = row.find(".price-input").val();
-                let modelqty = row.find(".qty-input").val();
-                let stockLocation = row.find(".stock-location-select").val();
-
-                if (modelSelected || serialNumber || modelprice != "0.00" || modelqty != "1" ||
-                    stockLocation) {
-                    $(this).prop("disabled", false);
-                } else {
-                    $(this).prop("disabled", true);
-                }
 
                 $(this).on('click', function() {
                     row.find('input.sn-input, select.model-select, select.stock-location-select')
@@ -725,29 +858,114 @@
                     row.find('input.qty-input').val('1');
                     $(this).prop('disabled', true);
                     calculateTotal();
+                    validateAllModelLoops();
 
                 });
-            });
-
-            $('.model-loop').each(function() {
-                let row = $(this);
-                let removeBtn = row.find(".remove-row");
-                let inputs = row.find("input.sn-input, select.model-select, select.stock-location-select");
-
-                let hasData = inputs.filter(function() {
-                    return $(this).val().trim() !== "";
-                }).length > 0;
-
-                if (hasData || row.is(":not(:first-child)")) {
-                    $(this).prop("disabled", true);
-                } else {
-                    $(this).prop("disabled", false);
-                }
             });
 
             $(document).on('click', '.remove-row:not(:first)', function() {
                 $(this).closest('.model-loop').remove();
                 calculateTotal();
+                validateAllModelLoops();
+            });
+
+
+            // === GET : APPROVAL TYPE === //
+            function getApprovalTypes() {
+                $.get("{{ route('get-approval-type-get') }}", function(res) {
+                    if (res.success) {
+                        const $select = $('#approval_type_id');
+                        $select.empty().append('<option value="">Select Approval Type</option>');
+                        res.approvalType.forEach(type => {
+                            $select.append(
+                                `<option value="${type.id}">${type.approval_type_name}</option>`
+                            );
+                        });
+                        $('#approval_type_id').trigger('change');
+
+                    }
+                });
+            }
+
+            // === TRIGGER : APPROVAL TYPE MODAL === //
+            $('#addApprovalBtn').on('click', function() {
+                $('#approvalModal').modal('show');
+            });
+
+            // === TRIGGER : DELETE APPROVAL TYPE BUTTON === //
+            $('#approval_type_id').on('change', function() {
+                const selectedId = $(this).val();
+                const selectedName = $(this).find('option:selected').text();
+
+                if (selectedId) {
+                    $('#selectedApprovalWrapper').show();
+                    $('#selectedApprovalName').text(selectedName);
+                    $('#deleteApprovalBtn').data('id', selectedId);
+                } else {
+                    $('#selectedApprovalWrapper').hide();
+                }
+            });
+
+            // === AJAX : ADD APPROVAL TYPE === //
+            $('#approvalFormBtn').on('click', function(e) {
+                e.preventDefault();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('add-approval-type-post') }}",
+                    data: {
+                        approval_type_name: $('#approval_type_name').val(),
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(res) {
+                        if (res.success) {
+                            showToast('success', res.message);
+                            $('#approvalModal').modal('hide');
+                            $('#approval_type_name').val('');
+                            getApprovalTypes();
+                        }
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
+                            const errors = xhr.responseJSON.errors;
+                            Object.values(errors).forEach(errArray => {
+                                errArray.forEach(err => showToast('error', err));
+                            });
+                        } else {
+                            showToast('error', xhr.responseJSON.message ||
+                                'An unexpected error occurred.');
+                        }
+                    }
+                });
+            });
+
+            // === AJAX : DELETE APPROVAL TYPE === //
+            $('#deleteApprovalBtn').on('click', function() {
+                const id = $(this).data('id');
+
+                if (!id) return;
+
+                if (!confirm("Are you sure you want to delete this approval type?")) return;
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('delete-approval-type-post') }}",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id: id
+                    },
+                    success: function(res) {
+                        if (res.success) {
+                            showToast('success', res.message);
+                            $('#selectedApprovalWrapper').hide();
+                            $('#approval_type_id').val('');
+                            getApprovalTypes();
+                        }
+                    },
+                    error: function(xhr) {
+                        showToast('error', 'Unable to delete approval type.');
+                    }
+                });
             });
         });
     </script>

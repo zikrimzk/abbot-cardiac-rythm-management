@@ -195,7 +195,7 @@ class RouteController extends Controller
     // Add Implant Route
     public function addImplant()
     {
-        return view('crmd-system.implant-management.add-implant', [
+        return view('crmd-system.implant-management.add-implant-new-design', [
             'title' => 'CRMD System | Add Implant',
             'regions' => Region::all(),
             'hospitals' => Hospital::all(),
@@ -694,7 +694,7 @@ class RouteController extends Controller
                         $directory =
                             '
                         <div class="d-block mb-3 mt-3">
-                            <a href="' . route('view-irf-document', ['id' => Crypt::encrypt($row->id), 'option' => 2]) . '" target="_blank" class="link-dark">
+                            <a href="' . route('icf-document-get', ['id' => Crypt::encrypt($row->id), 'opt' => 1]) . '" target="_blank" class="link-dark">
                                 <i class="fas fa-file-pdf f-20 text-danger me-2"></i>
                                     Generated ICF
                             </a>
@@ -706,7 +706,7 @@ class RouteController extends Controller
                     $directory =
                         '
                     <div class="d-block mb-3 mt-3">
-                        <a href="' . route('view-irf-document', ['id' => Crypt::encrypt($row->id), 'option' => 2]) . '" target="_blank" class="link-dark">
+                        <a href="' . route('icf-document-get', ['id' => Crypt::encrypt($row->id), 'opt' => 1]) . '" target="_blank" class="link-dark">
                             <i class="fas fa-file-pdf f-20 text-danger me-2"></i>
                                  Generated ICF
                         </a>

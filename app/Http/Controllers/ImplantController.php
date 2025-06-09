@@ -10,6 +10,7 @@ use App\Models\Hospital;
 use App\Models\Generator;
 use App\Models\AbbottModel;
 use Illuminate\Support\Str;
+use App\Models\ApprovalType;
 use App\Models\ImplantModel;
 use App\Models\ProductGroup;
 use Illuminate\Http\Request;
@@ -27,33 +28,31 @@ use Illuminate\Support\Facades\Validator;
 
 class ImplantController extends Controller
 {
-    //Manage Implant Function
+    // ADD IMPLANT - FUNCTION
     public function addImplant(Request $req)
     {
+        dd($req->all());
         $validator = Validator::make($req->all(), [
             'implant_refno' => 'nullable|string',
             'implant_date' => 'required|date',
             'implant_pt_name' => 'required|string',
             'implant_pt_icno' => 'required|min:7|max:15|string',
-            'implant_pt_mrn' => 'nullable|string',
             'implant_pt_address' => 'nullable|string',
+            'implant_pt_mrn' => 'nullable|string',
             'implant_pt_email' => 'nullable|email',
             'implant_pt_phoneno' => 'nullable|string',
             'implant_pt_dob' => 'nullable|string',
             'implant_pt_directory' => 'nullable|string',
             'implant_generator_sn' => 'required|string',
-            'implant_generator_itemPrice' => 'nullable|decimal:0,2',
             'implant_generator_qty' => 'nullable|integer|min:1',
-            'implant_remarkSales' => 'nullable|string',
+            'implant_generator_itemPrice' => 'nullable|decimal:0,2',
             'implant_sales_total_price' => 'required|decimal:0,2',
-            'implant_remark' => 'nullable|string',
-            'implant_note' => 'nullable|string',
-            'implant_approval_type' => 'nullable|string',
             'generator_id' => 'required|integer',
             'region_id' => 'required|integer',
             'hospital_id' => 'required|integer',
             'doctor_id' => 'required|integer',
             'stock_location_id' => 'required|integer',
+            'approval_type_id' => 'required|integer',
             'product_groups' => 'required|array',
             'model_ids' => 'nullable|array',
             'model_sns' => 'nullable|array',
@@ -65,25 +64,22 @@ class ImplantController extends Controller
             'implant_date' => 'implant date',
             'implant_pt_name' => 'patient name',
             'implant_pt_icno' => 'patient ic number',
-            'implant_pt_mrn' => 'patient mrn',
             'implant_pt_address' => 'patient address',
+            'implant_pt_mrn' => 'patient mrn',
             'implant_pt_email' => 'patient email',
             'implant_pt_phoneno' => 'patient phone number',
             'implant_pt_dob' => 'patient date of birth',
             'implant_pt_directory' => 'patient directory',
             'implant_generator_sn' => 'generator serial number',
-            'implant_generator_itemPrice' => 'generator price',
             'implant_generator_qty' => 'generator quantity',
-            'implant_remarkSales' => 'implant invoice number',
+            'implant_generator_itemPrice' => 'generator price',
             'implant_sales_total_price' => 'implant sales',
-            'implant_remark' => 'remarks',
-            'implant_note' => 'notes',
-            'implant_approval_type' => 'implant approval type',
             'generator_id' => 'generator',
             'region_id' => 'region',
             'hospital_id' => 'hospital',
             'doctor_id' => 'doctor',
             'stock_location_id' => 'stock location',
+            'approval_type_id' => 'approval type',
             'product_groups' => 'product group',
             'model_ids' => 'model',
             'model_sns' => 'model serial number',
@@ -300,7 +296,7 @@ class ImplantController extends Controller
             /**** 03 - Update / Add Implant Models ****/
             if (isset($validated['model_ids'], $validated['model_sns'],  $validated['model_price'], $validated['model_qty'], $validated['stock_location_ids'])) {
                 foreach ($validated['model_ids'] as $index => $modelID) {
-                    if (isset($validated['model_sns'][$index], $validated['model_price'][$index], $validated['model_qty'][$index] ,$validated['stock_location_ids'][$index])) {
+                    if (isset($validated['model_sns'][$index], $validated['model_price'][$index], $validated['model_qty'][$index], $validated['stock_location_ids'][$index])) {
                         $modelSN = $validated['model_sns'][$index];
                         $stockLocationID = $validated['stock_location_ids'][$index];
                         $modelPrice = $validated['model_price'][$index];
@@ -344,6 +340,80 @@ class ImplantController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Error updating implant: ' . $e->getMessage());
+        }
+    }
+
+    // GET APPROVAL TYPE - FUNCTION
+    public function getApprovalType()
+    {
+        try {
+            $approvalType = ApprovalType::all();
+            return response()->json([
+                'success' => true,
+                'approvalType' => $approvalType
+            ], 200);
+        } catch (Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching approval type: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // ADD APPROVAL TYPE - FUNCTION
+    public function addApprovalType(Request $req)
+    {
+        $validator = Validator::make($req->all(), [
+            'approval_type_name' => 'required|string|unique:approval_types,approval_type_name',
+        ], [], [
+            'approval_type_name' => 'approval type name',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $validated = $validator->validated();
+
+            $type = ApprovalType::create([
+                'approval_type_name' => $validated['approval_type_name'],
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Approval type added successfully.',
+                'data' => $type
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error adding approval type: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // DELETE APPROVAL TYPE - FUNCTION
+    public function deleteApprovalType(Request $req)
+    {
+        try {
+            $id = $req->input('id');
+
+            ApprovalType::where('id', $id)->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Approval type deleted successfully.'
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting approval type: ' . $e->getMessage()
+            ], 500);
         }
     }
 

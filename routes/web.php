@@ -43,6 +43,13 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::get('/download-implant-directory/{id}', [ImplantController::class, 'downloadImplantDirectory'])->name('download-implant-directory');
     Route::get('/download-multiple-implant-directory', [ImplantController::class, 'downloadMultipleImplantDirectory'])->name('download-multiple-implant-directory');
 
+    // MANAGE IMPLANT > APPROVAL TYPE
+    Route::get('/get-approval-type', [ImplantController::class, 'getApprovalType'])->name('get-approval-type-get');
+    Route::post('/add-approval-type', [ImplantController::class, 'addApprovalType'])->name('add-approval-type-post');
+    Route::post('/delete-approval-type', [ImplantController::class, 'deleteApprovalType'])->name('delete-approval-type-post');
+
+
+
     //Generate Patient ID Card
     Route::get('/generate-patient-id-card-{id}', [RouteController::class, 'generatePatientIdCard'])->name('generate-patient-id-card-page');
     Route::get('/view-patient-id-card-{id}-{opt}-{type}', [RouteController::class, 'viewDownloadPatientIdCard'])->name('view-patient-id-card-page');
