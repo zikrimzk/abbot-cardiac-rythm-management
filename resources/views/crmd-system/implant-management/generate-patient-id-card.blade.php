@@ -86,14 +86,14 @@
                                 <li class="breadcrumb-item" aria-current="page">Generate Patient ID Card</li>
                             </ul>
                         </div>
-                        <div class="col-md-12 mt-2 mb-2">
-                            <div class="d-flex">
-                                <a href="{{ route('manage-implant-page') }}"
-                                    class="btn btn-primary btn-sm d-flex align-items-center">
-                                    <i class="fas fa-arrow-circle-left me-2"></i>
-                                    Back to Manage Implant
+                        <div class="col-md-12">
+                            <div class="page-header-title">
+                                <a href="{{ route('manage-implant-page') }}" class="btn me-2 d-flex align-items-center">
+                                    <span class="f-18">
+                                        <i class="ti ti-arrow-left me-2"></i>
+                                    </span>
+                                    Back
                                 </a>
-
                             </div>
                         </div>
                     </div>

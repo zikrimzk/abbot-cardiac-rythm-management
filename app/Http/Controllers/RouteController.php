@@ -211,7 +211,7 @@ class RouteController extends Controller
     // Update Implant Route
     public function updateImplant($id)
     {
-        return view('crmd-system.implant-management.update-implant', [
+        return view('crmd-system.implant-management.update-implant-new-design', [
             'title' => 'CRMD System | Update Implant',
             'im' => Implant::where('id', Crypt::decrypt($id))->first(),
             'pgslist' => ProductGroupList::where('implant_id', Crypt::decrypt($id))->get(),
