@@ -819,7 +819,7 @@
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
                                                 <select name="approval_type_id" id="approval_type_id"
-                                                    class="form-control">
+                                                    class="form-control" required>
                                                     <option value="">Select Approval Type</option>
                                                 </select>
                                                 <button type="button"
@@ -1255,20 +1255,29 @@
                 );
             });
 
-
             // === GET : APPROVAL TYPE === //
             function getApprovalTypes() {
                 $.get("{{ route('get-approval-type-get') }}", function(res) {
+
+                    var selectData = "{{ $im->approval_type_id }}";
                     if (res.success) {
                         const $select = $('#approval_type_id');
-                        $select.empty().append('<option value="">Select Approval Type</option>');
+                        $select.empty();
                         res.approvalType.forEach(type => {
-                            $select.append(
-                                `<option value="${type.id}">${type.approval_type_name}</option>`
-                            );
+
+                            if (type.id == selectData) {
+                                $select.append(
+                                    `<option value="${type.id}" selected>${type.approval_type_name}</option>`
+                                );
+
+                            } else {
+                                $select.append(
+                                    `<option value="${type.id}">${type.approval_type_name}</option>`
+                                );
+                            }
+
                         });
                         $('#approval_type_id').trigger('change');
-
                     }
                 });
             }

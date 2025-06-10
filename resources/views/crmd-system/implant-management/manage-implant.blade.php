@@ -57,39 +57,46 @@
             <!-- [ Main Content ] start -->
             <div class="row">
                 <!-- [ Manage Implant ] start -->
+
+                <!-- [ Option ] start -->
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="d-grid gap-2 gap-md-3 d-md-flex flex-wrap">
+                            <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
                                 <a href="{{ route('add-implant-page') }}" id="addImplantBtn"
-                                    class="btn btn-primary d-inline-flex align-items-center gap-2">
+                                    class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Add Implant">
                                     <i class="ti ti-plus f-18"></i>
-                                    Add Implant
+                                    <span class="d-none d-md-inline">Add Implant</span>
                                 </a>
                                 <a href="{{ route('export-implant-data-excel') }}" id="exportExcelBtn"
-                                    class="btn btn-primary d-inline-flex align-items-center gap-2">
+                                    class="btn btn-outline-primary d-flex align-items-center gap-2" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Export Data">
                                     <i class="ti ti-file-export f-18"></i>
-                                    Export Data
+                                    <span class="d-none d-md-inline">Export Data</span>
                                 </a>
-                                <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-2"
-                                    id="downloadMultipleDirBtn" disabled>
+                                <button type="button" class="btn btn-outline-primary d-flex align-items-center gap-2"
+                                    id="downloadMultipleDirBtn" disabled data-bs-toggle="tooltip" data-bs-placement="top"
+                                    title="Download Directory">
                                     <i class="ti ti-download f-18"></i>
-                                    Download Directory (.zip)
+                                    <span class="d-none d-md-inline">Download Directory (.zip)</span>
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
+                <!-- [ Option ] end -->
 
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body">
+
                             <!-- [ Filter ] start -->
                             <div class="row">
 
                                 <div class="col-sm-3 mb-3">
                                     <input type="text" class="form-control mb-2" id="dateRangeFilter"
-                                        placeholder="-- Select date range --" readonly />
+                                        placeholder="Start Date to End Date" readonly />
                                     <a href="javascript:void(0)" id="clearDateRangeFilter" class="link-primary">Clear</a>
                                 </div>
 
@@ -143,6 +150,7 @@
                                     </thead>
                                 </table>
                             </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -202,7 +210,7 @@
 
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {
-            var modalToShow = "{{ session('modal') }}"; // Ambil modal yang perlu dibuka dari session
+            var modalToShow = "{{ session('modal') }}";
             if (modalToShow) {
                 var modalElement = document.getElementById(modalToShow);
                 if (modalElement) {
@@ -213,7 +221,6 @@
         });
 
         $(document).ready(function() {
-
 
             // DATATABLE : IMPLANT
             var table = $('.data-table').DataTable({
@@ -345,7 +352,6 @@
             const downloadBtn = $("#downloadMultipleDirBtn");
             let selectedIds = new Set();
 
-            // Handle "Select All" checkbox
             $("#select-all").on("change", function() {
                 let isChecked = $(this).prop("checked");
 
@@ -362,7 +368,6 @@
                 toggleDownloadButton();
             });
 
-            // Handle individual checkbox selection
             $(document).on("change", ".implant-checkbox", function() {
                 let id = $(this).val();
                 if ($(this).prop("checked")) {
@@ -373,7 +378,6 @@
                 toggleDownloadButton();
             });
 
-            // Restore checkbox states after DataTables refresh
             $('.data-table').on("draw.dt", function() {
                 $(".implant-checkbox").each(function() {
                     let id = $(this).val();
@@ -389,7 +393,6 @@
                 toggleDownloadButton();
             });
 
-            // Enable/disable the download button based on selections
             function toggleDownloadButton() {
                 downloadBtn.prop("disabled", selectedIds.size === 0);
                 addImpBtn.toggleClass("disabled-a", selectedIds.size !== 0);
@@ -424,10 +427,8 @@
                     return;
                 }
 
-                // Convert selected IDs to a JSON string and encode for URL
                 let idsParam = encodeURIComponent(JSON.stringify(selectedIds));
 
-                // Redirect the browser to download ZIP directly
                 window.location.href = "{{ route('download-multiple-implant-directory') }}?ids=" +
                     idsParam;
             });

@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Models\Implant;
 use App\Models\Document;
 use Illuminate\Support\Str;
+use App\Models\ApprovalType;
 use App\Models\ImplantModel;
 use Illuminate\Http\Request;
 use App\Models\StockLocation;
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\Validator;
 
 class SalesBillingController extends Controller
 {
-    // CONFIRM & UPDATE ICF DATA 
+    // CONFIRM & UPDATE ICF - FUNCTION 
     public function confirmICFData(Request $req, $id)
     {
         $id = Crypt::decrypt($id);
@@ -27,11 +28,10 @@ class SalesBillingController extends Controller
             'implant_generator_sn' => 'required|string',
             'implant_generator_itemPrice' => 'nullable|decimal:0,2',
             'implant_generator_qty' => 'nullable|integer|min:1',
-            'implant_remarkSales' => 'nullable|string',
             'implant_sales_total_price' => 'nullable|decimal:0,2',
-            'implant_approval_type' => 'nullable|string',
             'generator_id' => 'required|integer',
             'stock_location_id' => 'required|integer',
+            'approval_type_id' => 'required|integer',
             'model_ids' => 'nullable|array',
             'model_sns' => 'nullable|array',
             'model_price' => 'nullable|array',
@@ -42,11 +42,10 @@ class SalesBillingController extends Controller
             'implant_generator_sn' => 'generator serial number',
             'implant_generator_itemPrice' => 'generator price',
             'implant_generator_qty' => 'generator quantity',
-            'implant_remarkSales' => 'implant Sales Remark',
             'implant_sales_total_price' => 'implant sales',
-            'implant_approval_type' => 'payment method',
             'generator_id' => 'generator',
             'stock_location_id' => 'stock location',
+            'approval_type_id' => 'payment method / approval type',
             'model_ids' => 'model',
             'model_sns' => 'model serial number',
             'model_price' => 'model price',
@@ -73,11 +72,10 @@ class SalesBillingController extends Controller
                 'implant_generator_sn' => $validated['implant_generator_sn'],
                 'implant_generator_itemPrice' => $validated['implant_generator_itemPrice'],
                 'implant_generator_qty' => $validated['implant_generator_qty'],
-                // 'implant_invoice_no' => $validated['implant_invoice_no'],
-                // 'implant_sales' => $validated['implant_sales'],
-                'implant_approval_type' => $validated['implant_approval_type'],
+                'implant_sales_total_price' => $validated['implant_sales_total_price'],
                 'generator_id' => $validated['generator_id'],
-                'stock_location_id' => $validated['stock_location_id']
+                'stock_location_id' => $validated['stock_location_id'],
+                'approval_type_id' => $validated['approval_type_id']
             ]);
 
             /**** 02 - Update / Add Implant Models ****/
@@ -127,13 +125,14 @@ class SalesBillingController extends Controller
             /**** 04 - Inventory Consumption Form Generation ****/
             $this->generatePreviewDownloadICF(Crypt::encrypt($implant->id), 2);
 
-            return back()->with('success', 'Inventory Consumption Form confirmed and generated successfully.');
+            return back()->with('success', 'Inventory Consumption Form updated successfully.');
         } catch (Exception $e) {
-            return back()->with('error', 'Opps!, Error confirming ICF: ' . $e->getMessage());
+            return back()->with('error', 'Opps!, Error updating ICF: ' . $e->getMessage());
         }
     }
 
-    // ICF DOCUMENT HANDLER : 1 - Preview, 2 - Generate, 3 - Download
+    // ICF HANDLER - FUNCTION
+    // NOTES : [1] -> VIEW [2] -> GENERATE [3] -> DOWNLOAD
     public function generatePreviewDownloadICF($id, $opt)
     {
         try {
@@ -171,7 +170,7 @@ class SalesBillingController extends Controller
                     'a.implant_pt_directory',
                     'a.implant_pt_mrn',
                     'a.implant_pt_icno',
-                    'a.implant_approval_type',
+                    'a.approval_type_id',
                     'f.stock_location_name',
                     'f.stock_location_code',
                 ])
@@ -194,7 +193,7 @@ class SalesBillingController extends Controller
                     'a.implant_pt_directory',
                     'a.implant_pt_mrn',
                     'a.implant_pt_icno',
-                    'a.implant_approval_type',
+                    'a.approval_type_id',
                     'f.stock_location_name',
                     'f.stock_location_code',
                 )
@@ -219,7 +218,7 @@ class SalesBillingController extends Controller
                 ->get();
 
             $mergedModels = [];
-           
+
             foreach ($modelCategories as $category) {
                 // Get all models that belong to this category
                 $matchedModels = $models->where('model_category_id', $category->model_category_id);
@@ -275,7 +274,7 @@ class SalesBillingController extends Controller
                 'implant_pt_directory' => $implant->implant_pt_directory ?? '-',
                 'implant_pt_mrn' => $implant->implant_pt_mrn ?? '-',
                 'implant_pt_icno' => $implant->implant_pt_icno ?? '-',
-                'implant_approval_type' => $implant->implant_approval_type ?? '-',
+                'implant_approval_type' => ApprovalType::whereId($implant->approval_type_id)->first()->approval_type_name ?? '-',
                 'stock_location_name' => Str::upper($implant->stock_location_name) ?? '-',
                 'stock_location_code' => $implant->stock_location_code ?? '-',
                 'models' => $mergedModels,
@@ -297,8 +296,13 @@ class SalesBillingController extends Controller
                 return $pdf->stream($title . '.pdf');
             } elseif ($opt == 2) {
                 // SAVE TO STORAGE
-                $filePath = 'storage/implants/' . $formattedData['implant_pt_directory'] . '/' . $title . '.pdf';
-                return $pdf->save(public_path($filePath));
+                $filePath = 'implants/' . $formattedData['implant_pt_directory'] . '/' . $title . '.pdf';
+
+                $implant = Implant::where('id', $id)->first();
+                $implant->implant_pt_icf = $filePath;
+                $implant->save();
+
+                return $pdf->save(public_path("storage/{$filePath}"));
             } elseif ($opt == 3) {
                 // DOWNLOAD
                 return $pdf->download($title . '.pdf');
@@ -356,7 +360,6 @@ class SalesBillingController extends Controller
                 ->first();
 
             if (!$implant) {
-                // return back()->with('error', 'Oops! Implant not found. Please try again.');
                 return response()->json(['success' => false, 'message' => 'Oops! Implant not found.']);
             }
 
@@ -415,10 +418,8 @@ class SalesBillingController extends Controller
                 ]
             );
 
-            // return back()->with('success', 'Documents uploaded and saved successfully.');
             return response()->json(['success' => true, 'message' => 'Documents uploaded and saved successfully.']);
         } catch (Exception $e) {
-            // return back()->with('error', 'Oops! Error uploading documents: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Error uploading documents: ' . $e->getMessage()]);
         }
     }

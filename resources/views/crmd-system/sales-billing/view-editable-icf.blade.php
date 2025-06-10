@@ -475,6 +475,8 @@
                                     <div class="col-12 d-flex justify-content-between align-items-center">
                                         <div class="fs-5 fw-semibold">Total Invoice Amount:</div>
                                         <div class="fs-3 fw-bold total-invoice">0.00</div>
+                                        <input type="hidden" id="implant_sales_total_price"
+                                            name="implant_sales_total_price">
                                     </div>
                                 </div>
                             </div>
@@ -482,7 +484,7 @@
                             <!-- Submit Button -->
                             <div class="d-flex justify-content-end mt-4">
                                 <button type="submit" class="btn btn-primary btn-submit" id="generate-icf-btn">
-                                    <i class="fas fa-check-circle me-2"></i> Generate ICF
+                                    <i class="fas fa-check-circle me-2"></i> Update ICF
                                 </button>
                             </div>
                         </form>
@@ -708,6 +710,8 @@
 
                 // Update total display
                 $('.total-invoice').text(total.toFixed(2));
+                $('#implant_sales_total_price').val(total.toFixed(2));
+
             }
 
             calculateTotal();
@@ -873,13 +877,24 @@
             // === GET : APPROVAL TYPE === //
             function getApprovalTypes() {
                 $.get("{{ route('get-approval-type-get') }}", function(res) {
+
+                    var selectData = "{{ $im->approval_type_id }}";
                     if (res.success) {
                         const $select = $('#approval_type_id');
-                        $select.empty().append('<option value="">Select Approval Type</option>');
+                        $select.empty();
                         res.approvalType.forEach(type => {
-                            $select.append(
-                                `<option value="${type.id}">${type.approval_type_name}</option>`
-                            );
+
+                            if (type.id == selectData) {
+                                $select.append(
+                                    `<option value="${type.id}" selected>${type.approval_type_name}</option>`
+                                );
+
+                            } else {
+                                $select.append(
+                                    `<option value="${type.id}">${type.approval_type_name}</option>`
+                                );
+                            }
+
                         });
                         $('#approval_type_id').trigger('change');
 

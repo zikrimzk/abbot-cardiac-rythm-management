@@ -774,7 +774,7 @@
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
                                                 <select name="approval_type_id" id="approval_type_id"
-                                                    class="form-control">
+                                                    class="form-control" required>
                                                     <option value="">Select Approval Type</option>
                                                 </select>
                                                 <button type="button"

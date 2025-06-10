@@ -67,7 +67,7 @@
 
                                 <div class="col-sm-3 mb-3">
                                     <input type="text" class="form-control mb-2" id="dateRangeFilter"
-                                        placeholder="-- Select date range --" readonly />
+                                        placeholder="Start Date to End Date" readonly />
                                     <a href="javascript:void(0)" id="clearDateRangeFilter" class="link-primary">Clear</a>
                                 </div>
 
