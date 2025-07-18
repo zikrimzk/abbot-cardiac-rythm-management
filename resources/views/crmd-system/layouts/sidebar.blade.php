@@ -47,7 +47,7 @@
                      </a>
                  </li>
 
-                 {{-- <li class="pc-item pc-hasmenu">
+                 <li class="pc-item pc-hasmenu">
                      <a href="javascript: void(0)" class="pc-link">
                          <span class="pc-micon">
                              <span class="pc-micon">
@@ -61,11 +61,11 @@
                          <li class="pc-item"><a class="pc-link" href="{{ route('manage-designation-page') }}">Generate
                                  Quotation</a>
                          </li>
-                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-staff-page') }}">Assign Generator
+                         <li class="pc-item"><a class="pc-link" href="{{ route('assign-generator-model-page') }}">Assign Generator
                                  & Model</a>
                          </li>
                      </ul>
-                 </li> --}}
+                 </li>
 
                  <li class="pc-item pc-caption">
                      <label>Setting</label>

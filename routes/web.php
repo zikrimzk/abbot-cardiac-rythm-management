@@ -4,12 +4,17 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ModelController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\ImplantController;
+use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\AuthenticateController;
 use App\Http\Controllers\OtherSettingController;
-use App\Http\Controllers\HospitalDoctorController;
-use App\Http\Controllers\ImplantController;
 use App\Http\Controllers\SalesBillingController;
+use App\Http\Controllers\HospitalDoctorController;
 
+
+Route::get('/',function () {
+    return redirect()->route('login-page');
+});
 
 Route::prefix('auth')->group(function () {
     Route::get('/login', [RouteController::class, 'loginpage'])->name('login-page');
@@ -65,6 +70,13 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::post('/upload-document-{id}', [SalesBillingController::class, 'uploadDocument'])->name('upload-document-post');
     Route::post('/delete-uploaded-document', [SalesBillingController::class, 'deleteUploadedFile'])->name('delete-upload-document-post');
     Route::get('/view-document/{path}', [SalesBillingController::class, 'viewUploadedDocument'])->where('path', '.*')->name('view-uploaded-document-get');
+
+    //MANAGE QUOTATION > ASSIGN GENERATOR AND MODEL
+    Route::get('/assign-generator-model', [RouteController::class, 'assignGeneratorModel'])->name('assign-generator-model-page');
+    Route::post('/add-assign-generator-model', [QuotationController::class, 'addAssignGeneratorModel'])->name('add-assign-generator-model-post');
+    Route::post('/update-assign-generator-model/{generator_id}', [QuotationController::class, 'updateAssignGeneratorModel'])->name('update-assign-generator-model-post');
+    Route::get('/delete-assign-generator-model/{generator_id}', [QuotationController::class, 'deleteAssignGeneratorModel'])->name('delete-assign-generator-model-get');
+
 
     //Manage Designation
     Route::get('/manage-designation', [RouteController::class, 'manageDesignation'])->name('manage-designation-page');

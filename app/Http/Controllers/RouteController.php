@@ -803,6 +803,99 @@ class RouteController extends Controller
         }
     }
 
+    // ASSIGN MODEL & GENERATOR - ROUTE
+    public function assignGeneratorModel(Request $req)
+    {
+        try {
+            if ($req->ajax()) {
+                // Get the generator and its models grouped together
+                $data = DB::table('quote_generator_models as qgm')
+                    ->join('generators as g', 'qgm.generator_id', '=', 'g.id')
+                    ->join('abbott_models as am', 'qgm.model_id', '=', 'am.id')
+                    ->select(
+                        'g.id as generator_id',
+                        'g.generator_name',
+                        DB::raw('GROUP_CONCAT(am.model_name SEPARATOR ", ") as model_names'),
+                        DB::raw('MAX(qgm.updated_at) as updated_at')
+                    )
+                    ->groupBy('qgm.generator_id')
+                    ->get();
+
+
+                $table = DataTables::of($data)->addIndexColumn();
+
+                // generator_name column already selected
+                $table->addColumn('generator_name', function ($row) {
+                    return '<div>' . e($row->generator_name) . '</div>';
+                });
+
+                // model_name column - already grouped
+                $table->addColumn('model_name', function ($row) {
+                    $models = explode(',', $row->model_names);
+                    $html = '';
+                    foreach ($models as $model) {
+                        $html .= '<div class="mb-1">' . e(trim($model)) . '</div>';
+                    }
+                    return $html;
+                });
+
+                $table->addColumn('updated_at', function ($row) {
+                    return Carbon::parse($row->updated_at)->format('d M Y g:i A');
+                });
+
+                $table->addColumn('action', function ($row) {
+                    // Use generator_id only since all models are grouped under it
+                    return '
+                    <a href="javascript:void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
+                        data-bs-target="#updateGeneratorModelModal-' . $row->generator_id . '">
+                        <i class="ti ti-edit f-20"></i>
+                    </a>
+                    <a href="javascript:void(0)" class="avtar avtar-xs btn-light-danger" data-bs-toggle="modal"
+                        data-bs-target="#deleteGeneratorModelModal-' . $row->generator_id . '">
+                        <i class="ti ti-trash f-20"></i>
+                    </a>
+                ';
+                });
+
+                $table->rawColumns(['generator_name', 'model_name', 'updated_at', 'action']);
+
+                return $table->make(true);
+            }
+
+            $data = DB::table('quote_generator_models as qgm')
+                ->select(
+                    'qgm.generator_id',
+                    DB::raw('GROUP_CONCAT(qgm.model_id) as model_ids')
+                )
+                ->groupBy('qgm.generator_id')
+                ->get()
+                ->map(function ($item) {
+                    // Convert CSV string to array
+                    $item->model_ids = array_filter(explode(',', $item->model_ids));
+                    return $item;
+                });
+
+            $qgmtwo = DB::table('quote_generator_models as qgm')
+                ->join('abbott_models as am', 'qgm.model_id', '=', 'am.id')
+                ->select('qgm.generator_id', 'qgm.model_id', 'am.mcategory_id')
+                ->get();
+
+            return view('crmd-system.quotation.assign-generator-model', [
+                'title' => 'CRMD System | Assign Generator & Model',
+                'ims' => ImplantModel::all(),
+                'mcs' => ModelCategory::all(),
+                'generators' => Generator::all(),
+                'abbottmodels' => AbbottModel::all(),
+                'stocklocations' => StockLocation::all(),
+                'qgms' => $data,
+                'qgmtwo' => $qgmtwo
+            ]);
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return abort(500, $e->getMessage());
+        }
+    }
+
     // Manage Designation Route
     public function manageDesignation(Request $req)
     {
