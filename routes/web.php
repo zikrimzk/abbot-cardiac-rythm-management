@@ -71,7 +71,17 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::post('/delete-uploaded-document', [SalesBillingController::class, 'deleteUploadedFile'])->name('delete-upload-document-post');
     Route::get('/view-document/{path}', [SalesBillingController::class, 'viewUploadedDocument'])->where('path', '.*')->name('view-uploaded-document-get');
 
-    //MANAGE QUOTATION > ASSIGN GENERATOR AND MODEL
+    //QUOTATION > MANAGE QUOTATION
+    Route::get('/manage-quotation', [RouteController::class, 'manageQuotation'])->name('manage-quotation-page');
+    Route::get('/generate-quotation', [RouteController::class, 'generateQuotation'])->name('generate-quotation-page');
+    Route::get('/view-editable-quotation-document', [QuotationController::class, 'viewEditableQuotation'])->name('view-editable-quotation-document-get');
+    Route::get('/quotation-document', [QuotationController::class, 'generatePreviewDownloadQuotation'])->name('quotation-document-get');
+    Route::get('/update-quotation-{id}', [RouteController::class, 'updateQuotation'])->name('update-quotation-page');
+    Route::post('/add-quotation', [QuotationController::class, 'addQuotation'])->name('add-quotation-post');
+    Route::post('/update-quotation/{id}', [QuotationController::class, 'updateQuotation'])->name('update-quotation-post');
+
+
+    //QUOTATION > ASSIGN GENERATOR AND MODEL
     Route::get('/assign-generator-model', [RouteController::class, 'assignGeneratorModel'])->name('assign-generator-model-page');
     Route::post('/add-assign-generator-model', [QuotationController::class, 'addAssignGeneratorModel'])->name('add-assign-generator-model-post');
     Route::post('/update-assign-generator-model/{generator_id}', [QuotationController::class, 'updateAssignGeneratorModel'])->name('update-assign-generator-model-post');

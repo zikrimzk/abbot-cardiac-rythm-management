@@ -803,6 +803,33 @@ class RouteController extends Controller
         }
     }
 
+    // MANAGE QUOTATION - ROUTE
+    public function manageQuotation(Request $req)
+    {
+        try {
+            return view('crmd-system.quotation.manage-quotation', [
+                'title' => 'CRMD System | Manage Quotation',
+            ]);
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return abort(500, $e->getMessage());
+        }
+    }
+
+    // GENERATE QUOTATION - ROUTE
+    public function generateQuotation()
+    {
+        try {
+            return view('crmd-system.quotation.generate-quotation', [
+                'title' => 'CRMD System | Generate Quotation',
+            ]);
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return abort(500, $e->getMessage());
+        }
+    }
+
+
     // ASSIGN MODEL & GENERATOR - ROUTE
     public function assignGeneratorModel(Request $req)
     {

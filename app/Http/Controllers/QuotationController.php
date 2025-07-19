@@ -127,4 +127,19 @@ class QuotationController extends Controller
             return redirect()->back()->with('error', 'Failed to update assignment: ' . $e->getMessage());
         }
     }
+
+    public function viewEditableQuotation(Request $req)
+    {
+        $company = $req->input('company');
+        try {
+            $html = view('crmd-system.quotation.quotation-editable-doc', [
+                'title' => 'Quotation-Document',
+                'company' => $company
+            ])->render();
+            return response()->json(['html' => $html]);
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return abort(500, $e->getMessage());
+        }
+    }
 }

@@ -58,7 +58,7 @@
                          <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                      </a>
                      <ul class="pc-submenu">
-                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-designation-page') }}">Generate
+                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-quotation-page') }}">Manage
                                  Quotation</a>
                          </li>
                          <li class="pc-item"><a class="pc-link" href="{{ route('assign-generator-model-page') }}">Assign Generator
