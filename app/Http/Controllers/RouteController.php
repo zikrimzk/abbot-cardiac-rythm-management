@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Doctor;
 use App\Models\Region;
+use App\Models\Company;
 use App\Models\Implant;
 use App\Models\Document;
 use App\Models\Hospital;
@@ -25,6 +26,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
 
@@ -807,8 +809,100 @@ class RouteController extends Controller
     public function manageQuotation(Request $req)
     {
         try {
+            if ($req->ajax()) {
+                $data = DB::table('quotations')
+                    ->select(
+                        'id',
+                        'quotation_date',
+                        'quotation_pt_name',
+                        'quotation_pt_icno',
+                        'quotation_price',
+                        'quotation_directory',
+                        'hospital_id',
+                    );
+
+                if ($req->has('date_range') && !empty($req->input('date_range'))) {
+                    $dates = explode(' to ', $req->date_range);
+                    $startdate = Carbon::parse($dates[0])->format('Y-m-d');
+                    $enddate = Carbon::parse($dates[1])->format('Y-m-d');
+                    $data->whereBetween('quotation_date', [$startdate, $enddate]);
+                }
+
+                if ($req->has('hospital') && !empty($req->input('hospital'))) {
+                    $data->where('hospital_id', $req->input('hospital'));
+                }
+
+                $data = $data->get();
+
+                $table = DataTables::of($data)->addIndexColumn();
+
+                $table->addColumn('quotation_pt', function ($row) {
+
+                    $html = '
+                        <div class="d-block mb-3 mt-3">
+                            <div>' . $row->quotation_pt_name . '</div>
+                            <div class="text-muted">' . $row->quotation_pt_icno . '</div>
+                        </div>
+                    ';
+
+                    return $html;
+                });
+
+                $table->addColumn('quotation_date', function ($row) {
+                    $date = Carbon::parse($row->quotation_date)->format('d M Y');
+                    return $date;
+                });
+
+                $table->addColumn('quotation_hospital', function ($row) {
+
+                    $hospital = Hospital::where('id', $row->hospital_id)->first();
+
+                    $html = '
+                        <div class="d-block mb-3 mt-3">
+                            <div>' . $hospital->hospital_code . '</div>
+                        </div>
+                    ';
+                    return $html;
+                });
+
+                $table->addColumn('quotation_file', function ($row) {
+                    $directory = '';
+                    if ($row->quotation_directory == null) {
+                        $directory =
+                            '
+                        <div class="d-block mb-3 mt-3">
+                           <p class="text-muted fst-italic">No Quotation File</p>
+                        </div>
+
+                    ';
+                        return $directory;
+                    }
+                    return $directory;
+                });
+
+
+                $table->addColumn('action', function ($row) {
+
+                    $button =
+                        '
+                        <a href="' . route('update-quotation-page', Crypt::encrypt($row->id)) . '" class="avtar avtar-xs btn-light-primary">
+                            <i class="ti ti-edit f-20"></i>
+                        </a>
+                        <a href="' . route('upload-document-area-page', Crypt::encrypt($row->id)) . '" class="avtar avtar-xs btn-light-info">
+                            <i class="ti ti-file-upload f-20"></i>
+                        </a>
+                    ';
+                    return $button;
+                });
+
+                $table->rawColumns(['quotation_pt', 'quotation_date', 'quotation_hospital', 'quotation_file', 'action']);
+
+                return $table->make(true);
+            }
             return view('crmd-system.quotation.manage-quotation', [
                 'title' => 'CRMD System | Manage Quotation',
+                'hospitals' => Hospital::all(),
+                'generators' => Generator::all(),
             ]);
         } catch (Exception $e) {
             dd($e->getMessage());
@@ -820,8 +914,18 @@ class RouteController extends Controller
     public function generateQuotation()
     {
         try {
+            $company = Company::all();
+            $generator = Generator::whereIn('id', function ($query) {
+                $query->select('generator_id')
+                    ->from('quote_generator_models')
+                    ->distinct();
+            })->get();
+            $hospital = Hospital::all();
             return view('crmd-system.quotation.generate-quotation', [
                 'title' => 'CRMD System | Generate Quotation',
+                'companies' => $company,
+                'generators' => $generator,
+                'hospitals' => $hospital,
             ]);
         } catch (Exception $e) {
             dd($e->getMessage());
@@ -829,6 +933,101 @@ class RouteController extends Controller
         }
     }
 
+
+    public function updateQuotation(Request $req, $id)
+    {
+        try {
+            $company = $req->input('template_id');
+            $generatorid = $req->input('generator_id');
+            $hospitalid = $req->input('hospital_id');
+            $refno = $req->input('refno');
+            $id = Crypt::decrypt($id);
+
+            return view('crmd-system.quotation.update-quotation', [
+                'title' => 'CRMD System | Update Quotation',
+                'company' => $company,
+                'generatorid' => $generatorid,
+                'hospitalid' => $hospitalid,
+                'refno' => $refno,
+                'quotationid' => $id
+
+            ]);
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return abort(500, $e->getMessage());
+        }
+    }
+
+    public function manageCompany(Request $req)
+    {
+        try {
+
+            if ($req->ajax()) {
+                $data = DB::table('companies')
+                    ->select(
+                        'id',
+                        'company_name',
+                        'company_code',
+                        'company_address',
+                        'company_phoneno',
+                        'company_fax',
+                        'company_website',
+                        'company_email',
+                        'company_ssm',
+                        'company_logo',
+
+                    );
+
+                $data = $data->get();
+
+                $table = DataTables::of($data)->addIndexColumn();
+
+                $table->addColumn('company_name', function ($row) {
+                    $logoPath = $row->company_logo;
+                    $logoUrl = Storage::url($logoPath);
+
+                    $html = '
+                        <div class="d-block mb-3 mt-3">
+                            <div>
+                                <img src="' . $logoUrl . '" alt="Logo" style="max-height: 50px;" class="mb-2">
+                            </div>
+                            <div>' . e($row->company_name) . '</div>
+                            <div class="text-muted">' . e($row->company_ssm) . '</div>
+                        </div>
+                    ';
+
+                    return $html;
+                });
+
+                $table->addColumn('action', function ($row) {
+
+                    $button =
+                        '
+                    <a href="javascript:void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
+                        data-bs-target="#updateCompanyModal-' . $row->id . '">
+                        <i class="ti ti-edit f-20"></i>
+                    </a>
+                    <a href="javascript:void(0)" class="avtar avtar-xs btn-light-danger" data-bs-toggle="modal"
+                        data-bs-target="#deleteCompanyModal-' . $row->id . '">
+                        <i class="ti ti-trash f-20"></i>
+                    </a>
+                    ';
+                    return $button;
+                });
+
+                $table->rawColumns(['company_name', 'action']);
+
+                return $table->make(true);
+            }
+            return view('crmd-system.quotation.manage-company', [
+                'title' => 'CRMD System | Manage Company',
+                'companies' => Company::all()
+            ]);
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return abort(500, $e->getMessage());
+        }
+    }
 
     // ASSIGN MODEL & GENERATOR - ROUTE
     public function assignGeneratorModel(Request $req)

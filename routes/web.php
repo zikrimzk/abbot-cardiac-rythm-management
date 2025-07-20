@@ -74,11 +74,20 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     //QUOTATION > MANAGE QUOTATION
     Route::get('/manage-quotation', [RouteController::class, 'manageQuotation'])->name('manage-quotation-page');
     Route::get('/generate-quotation', [RouteController::class, 'generateQuotation'])->name('generate-quotation-page');
+    Route::get('/get-model-list-{generatorid}', [QuotationController::class, 'getModelList'])->name('get-model-list');
+    Route::get('/quotation-document/{id}/{opt}', [QuotationController::class, 'generatePreviewDownloadQuotation'])->name('quotation-document-get');
+
+
     Route::get('/view-editable-quotation-document', [QuotationController::class, 'viewEditableQuotation'])->name('view-editable-quotation-document-get');
-    Route::get('/quotation-document', [QuotationController::class, 'generatePreviewDownloadQuotation'])->name('quotation-document-get');
-    Route::get('/update-quotation-{id}', [RouteController::class, 'updateQuotation'])->name('update-quotation-page');
     Route::post('/add-quotation', [QuotationController::class, 'addQuotation'])->name('add-quotation-post');
+    Route::get('/update-quotation-{id}', [RouteController::class, 'updateQuotation'])->name('update-quotation-page');
     Route::post('/update-quotation/{id}', [QuotationController::class, 'updateQuotation'])->name('update-quotation-post');
+
+    //QUOTATION > MANAGE COMPANY
+    Route::get('/manage-company', [RouteController::class, 'manageCompany'])->name('manage-company-page');
+    Route::post('/add-company', [QuotationController::class, 'addCompany'])->name('add-company-post');
+    Route::post('/update-company/{id}', [QuotationController::class, 'updateCompany'])->name('update-company-post');
+    Route::get('/delete-company/{id}', [QuotationController::class, 'deleteCompany'])->name('delete-company-get');
 
 
     //QUOTATION > ASSIGN GENERATOR AND MODEL

@@ -61,7 +61,10 @@
                          <li class="pc-item"><a class="pc-link" href="{{ route('manage-quotation-page') }}">Manage
                                  Quotation</a>
                          </li>
-                         <li class="pc-item"><a class="pc-link" href="{{ route('assign-generator-model-page') }}">Assign Generator
+                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-company-page') }}">Manage Company</a>
+                         </li>
+                         <li class="pc-item"><a class="pc-link" href="{{ route('assign-generator-model-page') }}">Assign
+                                 Generator
                                  & Model</a>
                          </li>
                      </ul>
