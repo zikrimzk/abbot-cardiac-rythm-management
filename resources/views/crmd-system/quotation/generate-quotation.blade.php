@@ -68,34 +68,18 @@
             <!-- [ Main Content ] start -->
             <div class="row">
 
-                <!-- [ Evaluation Student ] start -->
+                <!-- [ Generate Quotation ] start -->
                 <div class="col-sm-12">
                     <form action="{{ route('add-quotation-post') }}" method="POST">
                         @csrf
                         <div class="card p-3">
+                            <div class="card-header">
+                                <h5>Generate Quotation</h5>
+                            </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <h5>Quotation Details</h5>
 
-                                    <!-- Hospital Input -->
-                                    <div class="col-sm-6">
-                                        <div class="mb-3">
-                                            <label for="hospital_id" class="form-label">Company <span
-                                                    class="text-danger">*</span></label>
-                                            <select name="hospital_id" id="hospital_id"
-                                                class="form-select @error('hospital_id') is-invalid @enderror" required>
-                                                <option value="" selected>- Select Hospital -</option>
-                                                @foreach ($hospitals as $hosp)
-                                                    <option value="{{ $hosp->id }}">[{{ $hosp->hospital_code }}] - {{ $hosp->hospital_name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            @error('hospital_id')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
+                                    <h5>Sender Details</h5>
                                     <!-- Company Select -->
                                     <div class="col-sm-6">
                                         <div class="mb-3">
@@ -115,6 +99,84 @@
                                         </div>
                                     </div>
 
+                                    <!-- Sender Email Input -->
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <label for="sender_email" class="form-label">Sender Email</label>
+                                            <input type="email" name="sender_email" id="sender_email"
+                                                class="form-control @error('sender_email') is-invalid @enderror"
+                                                placeholder="Enter Sender Email" value="{{ old('sender_email') }}">
+                                            @error('sender_email')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <!-- Sender Tel Input -->
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <label for="sender_telno" class="form-label">Sender Phone No</label>
+                                            <input type="text" name="sender_telno" id="sender_telno"
+                                                class="form-control @error('sender_telno') is-invalid @enderror"
+                                                placeholder="Enter Sender Phone No" value="{{ old('sender_telno') }}">
+                                            @error('sender_telno')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <!-- Sender Fax Input -->
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <label for="sender_fax" class="form-label">Sender Fax</label>
+                                            <input type="text" name="sender_fax" id="sender_fax"
+                                                class="form-control @error('sender_fax') is-invalid @enderror"
+                                                placeholder="Enter Sender Fax" value="{{ old('sender_fax') }}">
+                                            @error('sender_fax')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <hr>
+
+                                    <h5>Receiver Details</h5>
+                                    <!-- Hospital Input -->
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <label for="hospital_id" class="form-label">Hospital <span
+                                                    class="text-danger">*</span></label>
+                                            <select name="hospital_id" id="hospital_id"
+                                                class="form-select @error('hospital_id') is-invalid @enderror" required>
+                                                <option value="" selected>- Select Hospital -</option>
+                                                @foreach ($hospitals as $hosp)
+                                                    <option value="{{ $hosp->id }}">[{{ $hosp->hospital_code }}] -
+                                                        {{ $hosp->hospital_name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @error('hospital_id')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <!-- Attn Name Input -->
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <label for="quotation_attn" class="form-label">Attn Name</label>
+                                            <input type="text" name="quotation_attn" id="quotation_attn"
+                                                class="form-control @error('quotation_attn') is-invalid @enderror"
+                                                placeholder="Enter Attn Name" value="{{ old('quotation_attn') }}">
+                                            @error('quotation_attn')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <hr>
+
+                                    <h5>Quotation Details</h5>
+
                                     <!-- Quotation Date Input -->
                                     <div class="col-sm-6">
                                         <div class="mb-3">
@@ -127,7 +189,6 @@
                                             @enderror
                                         </div>
                                     </div>
-
 
                                     <!-- Subject Input -->
                                     <div class="col-sm-12">
@@ -262,7 +323,7 @@
                         </div>
                     </form>
                 </div>
-                <!-- [ Evaluation Student ] end -->
+                <!-- [ Generate Quotation ] end -->
 
             </div>
             <!-- [ Main Content ] end -->
@@ -405,9 +466,6 @@
                 showToast('error', 'Please fill in all required fields.');
                 return;
             }
-
-            // Submit via AJAX or continue processing
-            showToast('success', 'Form is valid! Proceed...');
         });
     </script>
 @endsection

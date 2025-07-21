@@ -10,11 +10,13 @@ use App\Models\Hospital;
 use App\Models\Generator;
 use App\Models\Quotation;
 use App\Models\AbbottModel;
+use App\Models\Designation;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use App\Models\QuoteGeneratorModel;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -295,59 +297,25 @@ class QuotationController extends Controller
         }
     }
 
-    public function viewEditableQuotation(Request $req)
+    public function viewPreviewQuotation($id)
     {
         try {
-            $quotation = null;
-            $company = $req->input('company');
-            $generatorid = $req->input('generatorid');
-            $hospitalid = $req->input('hospitalid');
-            $refno = $req->input('refno');
+            $id = Crypt::decrypt($id);
 
+            $quotation = Quotation::findOrFail($id);
 
-            if ($req->has('quotationid')) {
-                $quotation = Quotation::where('id', $req->input('quotationid'))->first();
-                if ($quotation) {
-                    $metadata = json_decode($quotation->quotation_metadata, true) ?? [];
-
-                    // Override company and IDs from metadata if available
-                    $company = $quotation->quotation_template ?? $company;
-                    $generatorid = $metadata['generator_id'] ?? $generatorid;
-                    $hospitalid = $quotation->hospital_id ?? $hospitalid;
-                    $refno = $quotation->quotation_refno ?? $refno;
-                }
+            if (!$quotation) {
+                return abort(404, 'Quotation not found');
             }
 
-            // Ensure generatorid is present before querying
-            if (!$generatorid) {
-                return response()->json(['error' => 'Missing generator ID'], 400);
-            }
-
-            $generatorModel = DB::table('quote_generator_models as qgm')
-                ->join('abbott_models as am', 'qgm.model_id', '=', 'am.id')
-                ->where('qgm.generator_id', $generatorid)
-                ->select('am.*')
-                ->get();
-
-            $generator = Generator::find($generatorid);
-            $hospital = Hospital::find($hospitalid);
-
-            $html = view('crmd-system.quotation.quotation-editable-doc', [
-                'title' => 'Quotation-Document',
-                'company' => $company,
-                'generatorModel' => $generatorModel,
-                'generator' => $generator,
-                'hospital' => $hospital,
-                'hospitals' => Hospital::all(),
-                'generators' => Generator::all(),
-                'refno' => $refno,
+            return view('crmd-system.quotation.quotation-preview', [
+                'title' => 'Quotation Preview',
+                'id' => $id,
                 'quotation' => $quotation
-            ])->render();
 
-            return response()->json(['html' => $html]);
+            ]);
         } catch (Exception $e) {
-            report($e);
-            return response()->json(['error' => 'Failed to load editable quotation: ' . $e->getMessage()], 500);
+            return abort(500, $e->getMessage());
         }
     }
 
@@ -417,9 +385,11 @@ class QuotationController extends Controller
             $quotation->quotation_refno = $refno;
             $quotation->save();
 
+            $this->generatePreviewDownloadQuotation(Crypt::encrypt($quotation->id), 2);
+
             DB::commit();
 
-            return redirect()->route('manage-quotation-page')
+            return redirect()->route('view-quotation-get', ['id' => Crypt::encrypt($quotation->id)])
                 ->with('success', 'Successfully added quotation.');
         } catch (Exception $e) {
             DB::rollBack();
@@ -432,23 +402,19 @@ class QuotationController extends Controller
     {
         DB::beginTransaction();
 
-        $id = Crypt::decrypt($id);
-
         try {
-            // Find the existing quotation
-            $quotation = Quotation::where('id', $id)->firstOrFail();
+            $id = Crypt::decrypt($id);
+            $quotation = Quotation::findOrFail($id);
 
-            // Update standard fields
+            // Update main fields
             $quotation->quotation_date = Carbon::parse($req->quotation_date)->format('Y-m-d');
             $quotation->quotation_price = (float) $req->quotation_totalprice;
             $quotation->quotation_pt_name = $req->quotation_pt_name;
             $quotation->quotation_pt_icno = $req->quotation_pt_icno;
-            $quotation->quotation_template = $req->quotation_template;
-            $quotation->quotation_refno = $req->quotation_refno;
+            $quotation->company_id = $req->company_id;
             $quotation->hospital_id = $req->hospital_id;
-            $quotation->staff_id = $req->staff_id;
 
-            // Remove known fields and _token to capture metadata
+            // Remove known fields and _token to get metadata
             $excluded = [
                 '_token',
                 'quotation_date',
@@ -461,15 +427,43 @@ class QuotationController extends Controller
                 'staff_id',
             ];
 
-            // Extract remaining fields as metadata
             $metadata = collect($req->except($excluded));
             $quotation->quotation_metadata = $metadata;
 
+            // Regenerate quotation_refno
+            $company = Company::find($req->company_id);
+            $hospital = Hospital::find($req->hospital_id);
+            $generator = Generator::find($req->generator_id);
+            $year = date('Y');
+
+            if ($company && $hospital && $generator) {
+                $refPrefix = $company->company_code . '/' . $hospital->hospital_code . '/' . $generator->generator_code . '/' . $year;
+
+                $latest = DB::table('quotations')
+                    ->where('quotation_refno', 'LIKE', $refPrefix . '/%')
+                    ->where('id', '!=', $quotation->id) // exclude current
+                    ->orderBy('quotation_refno', 'desc')
+                    ->first();
+
+                if ($latest) {
+                    $parts = explode('/', $latest->quotation_refno);
+                    $lastSequence = intval(end($parts));
+                    $newSequence = str_pad($lastSequence + 1, 3, '0', STR_PAD_LEFT);
+                } else {
+                    $newSequence = '001';
+                }
+
+                $quotation->quotation_refno = $refPrefix . '/' . $newSequence;
+            }
+
             $quotation->save();
+
+            $this->generatePreviewDownloadQuotation(Crypt::encrypt($quotation->id), 2);
+
             DB::commit();
 
-            return redirect()->back()
-                ->with('success', 'Successfully updated quotation.');
+            return redirect()->route('view-quotation-get', ['id' => Crypt::encrypt($quotation->id)])
+                ->with('success', 'Quotation updated successfully.');
         } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()
@@ -477,79 +471,127 @@ class QuotationController extends Controller
         }
     }
 
-    // QUOTATION HANDLER - FUNCTION [WIP]
-    // NOTES : [1] -> VIEW [2] -> GENERATE [3] -> DOWNLOAD
-    public function generatePreviewDownloadQuoatation($id, $opt)
+    public function deleteQuotation($id)
     {
         try {
             $id = Crypt::decrypt($id);
+            $quotation = Quotation::findOrFail($id);
 
-            $quotation = Quotation::where('id', $id)->first();
-            $hospital = Hospital::where('id', $quotation->hospital_id)->first();
-            $company = Company::where('id', $hospital->company_id)->first();
-            $user = User::where('id', $quotation->staff_id)->first();
+            // Get the stored file path
+            $pdfPath = public_path('storage/' . $quotation->quotation_directory);
 
+            // Delete the file if it exists
+            if (File::exists($pdfPath)) {
+                File::delete($pdfPath);
+            }
+
+            // Delete the quotation record
+            $quotation->delete();
+
+            return redirect()->back()->with('success', 'Quotation and associated PDF deleted successfully.');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Failed to delete quotation: ' . $e->getMessage());
+        }
+    }
+
+    // QUOTATION HANDLER - FUNCTION [WIP]
+    // NOTES : [1] -> VIEW [2] -> GENERATE [3] -> DOWNLOAD
+    public function generatePreviewDownloadQuotation($id, $opt)
+    {
+        try {
+            // Decrypt and retrieve quotation
+            $id = Crypt::decrypt($id);
+            $quotation = Quotation::findOrFail($id);
+
+            // Retrieve related entities
+            $hospital = Hospital::findOrFail($quotation->hospital_id);
+            $company = Company::findOrFail($quotation->company_id);
+            $user = User::findOrFail($quotation->staff_id);
+            $designation = Designation::where('id', $user->designation_id)->first();
+
+            // Parse metadata JSON safely
             $metadata = json_decode($quotation->quotation_metadata);
-            $generator = Generator::where('id', $metadata->generator_id)->first();
+            if (!$metadata || !isset($metadata->generator_id)) {
+                return response()->json(['error' => 'Invalid quotation metadata']);
+            }
+
+            $generator = Generator::findOrFail($metadata->generator_id);
+
+            // Fetch generator models (multiple models per generator)
             $modellist = DB::table('quote_generator_models as qgm')
                 ->join('abbott_models as am', 'qgm.model_id', '=', 'am.id')
-                ->select('qgm.generator_id', 'am.model_code', 'am.model_name')
+                ->select('am.model_code', 'am.model_name')
                 ->where('qgm.generator_id', $generator->id)
                 ->get();
 
-
+            // Prepare data for template
             $formattedData = [
-                'quotation_date' => $quotation->quotation_date,
-                'quotation_totalprice' => $quotation->quotation_price,
-                'quotation_pt_name' => $quotation->quotation_pt_name,
-                'quotation_pt_icno' => $quotation->quotation_pt_icno,
-                'quotation_refno' => $quotation->quotation_refno,
-                'quotation_unitprice' => $metadata->quotation_unitprice,
-                'quotation_qty' => $metadata->quotation_qty,
-                'quotation_subject' => $metadata->quotation_subject,
-                'quotation_attn' => $metadata->quotation_attn,
-                'company_name' => $company->company_name,
-                'company_ssm' => $company->company_ssm,
-                'company_address' => $company->company_address,
-                'company_website' => $company->company_website,
-                'company_phoneno' => $company->company_phoneno,
-                'company_fax' => $company->company_fax,
-                'company_email' => $company->company_email,
-                'company_logo' => $company->company_logo,
-                'hospital_name' => $hospital->hospital_name,
-                'hospital_address' => $hospital->hospital_address,
-                'user_name' => $user->staff_name,
+                'quotation_date'       => $quotation->quotation_date ?? '-',
+                'quotation_totalprice' => $quotation->quotation_price ?? '-',
+                'quotation_pt_name'    => $quotation->quotation_pt_name ?? '-',
+                'quotation_pt_icno'    => $quotation->quotation_pt_icno ?? '-',
+                'quotation_refno'      => $quotation->quotation_refno ?? '-',
+                'quotation_unitprice'  => $metadata->quotation_unitprice ?? '-',
+                'quotation_qty'        => $metadata->quotation_qty ?? '-',
+                'quotation_subject'    => $metadata->quotation_subject ?? '-',
+                'quotation_attn'       => $metadata->quotation_attn ?? '-',
+                'company_name'         => $company->company_name ?? '-',
+                'company_ssm'          => $company->company_ssm ?? '-',
+                'company_address'      => $company->company_address ?? '-',
+                'company_website'      => $company->company_website ?? '-',
+                'company_phoneno'      => $company->company_phoneno ?? '-',
+                'company_fax'          => $company->company_fax ?? '-',
+                'company_email'        => $company->company_email ?? '-',
+                'company_logo'         => $company->company_logo ?? '-',
+                'sender_email'         => $metadata->sender_email ?? '-',
+                'sender_telno'         => $metadata->sender_telno ?? '-',
+                'sender_fax'           => $metadata->sender_fax ?? '-',
+                'hospital_name'        => $hospital->hospital_name ?? '-',
+                'hospital_address'     => $hospital->hospital_address ?? '-',
+                'generator_name'       => $generator->generator_name ?? '-',
+                'generator_code'       => $generator->generator_code ?? '-',
+                'generator_model'      => $modellist,
+                'user_name'            => $user->staff_name ?? '-',
+                'designation_name'     => $designation->designation_name ?? '-',
             ];
 
-            $title = $quotation->quotation_refno;
-
+            // Clean quotation refno for filename (remove slashes, spaces, symbols)
+            $sanitizedRefNo = preg_replace('/[^A-Za-z0-9]/', '', $formattedData['quotation_refno']);
 
             $pdf = Pdf::loadView('crmd-system.quotation.quotation-template-doc', [
-                'title' => $formattedData['quotation_refno'],
-                'data' => $formattedData,
+                'title' => $sanitizedRefNo,
+                'data'  => $formattedData,
             ])
                 ->setOption('isRemoteEnabled', true)
                 ->setOption('defaultPaperSize', 'a4')
                 ->setOption('isPhpEnabled', true)
-                ->setPaper('a4', 'landscape');
+                ->setPaper('a4', 'portrait');
 
-            if ($opt == 1) {
-                // VIEW PDF
-                return $pdf->stream($title . '.pdf');
-            } elseif ($opt == 2) {
-                // SAVE TO STORAGE
-                // $filePath = 'quotation/document/' . $formattedData['implant_pt_directory'] . '/' . $title . '.pdf';
+            switch ($opt) {
+                case 1:
+                    return $pdf->stream($sanitizedRefNo . '.pdf'); // View
+                    break;
+                case 2:
+                    $filePath = 'quotation/document/' . $sanitizedRefNo . '.pdf';
+                    $fullPath = public_path("storage/quotation/document");
 
+                    if (!File::exists($fullPath)) {
+                        File::makeDirectory($fullPath, 0755, true); // Create directory recursively
+                    }
 
-                // return $pdf->save(public_path("storage/{$filePath}"));
-            } elseif ($opt == 3) {
-                // DOWNLOAD
-                return $pdf->download($title . '.pdf');
-            } else {
-                return back()->with('error', 'Opps! Invalid option.');
+                    $pdf->save($fullPath . '/' . $sanitizedRefNo . '.pdf');
+
+                    $quotation->quotation_directory = 'quotation/document/' . $sanitizedRefNo . '.pdf';
+                    $quotation->save();
+                    break;
+                case 3:
+                    return $pdf->download($sanitizedRefNo . '.pdf'); // Download
+                    break;
+                default:
+                    return back()->with('error', 'Oops! Invalid option.');
             }
         } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
+            return response()->json(['error' => 'Failed to generate quotation. Please try again later.' . $e->getMessage()]);
         }
     }
 }

@@ -75,6 +75,40 @@
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body">
+
+                            <!-- [ Filter ] start -->
+                            <div class="row">
+
+                                <div class="col-sm-3 mb-3">
+                                    <input type="text" class="form-control mb-2" id="dateRangeFilter"
+                                        placeholder="Start Date to End Date" readonly />
+                                    <a href="javascript:void(0)" id="clearDateRangeFilter" class="link-primary">Clear</a>
+                                </div>
+
+                                <div class="col-sm-3 mb-3">
+                                    <select class="form-select mb-2" id="hospFilter">
+                                        <option value="">-- Select Hospital --</option>
+                                        @foreach ($hosp as $h)
+                                            <option value="{{ $h->id }}">({{ $h->hospital_code }}) -
+                                                {{ $h->hospital_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <a href="javascript:void(0)" id="clearHospFilter" class="link-primary">Clear</a>
+                                </div>
+
+                                <div class="col-sm-3 mb-3">
+                                    <select class="form-select mb-2" id="generatorFilter">
+                                        <option value="">-- Select Generator --</option>
+                                        @foreach ($gene as $gn)
+                                            <option value="{{ $gn->id }}">({{ $gn->generator_code }}) -
+                                                {{ $gn->generator_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <a href="javascript:void(0)" id="clearGeneratorFilter" class="link-primary">Clear</a>
+                                </div>
+
+                            </div>
+                            <!-- [ Filter ] end -->
                             <div class="dt-responsive table-responsive">
                                 <table class="table data-table table-hover nowrap">
                                     <thead>
@@ -93,84 +127,38 @@
                     </div>
                 </div>
 
-                <!-- [ Add Quotation Modal ] start -->
-                <form action="{{ route('generate-quotation-page') }}" method="POST">
-                    @csrf
-                    <div class="modal fade" id="addQuotationModal" tabindex="-1" aria-labelledby="addQuotationModal"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+
+
+                @foreach ($quotations as $quo)
+                    <!-- [ Delete Modal ] start -->
+                    <div class="modal fade" id="deleteQuotationModal-{{ $quo->id }}" data-bs-keyboard="false"
+                        tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-header bg-light">
-                                    <h5 class="modal-title" id="addModalLabel">Add Quotation</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
                                 <div class="modal-body">
                                     <div class="row">
-                                        <div class="col-sm-12 col-md-12 col-lg-12">
-                                            <div class="mb-3">
-                                                <label for="template_id" class="form-label">Quotation Template</label>
-                                                <select name="template_id" class="form-select" id="template_id" required>
-                                                    <option value="">-- Select Template --</option>
-                                                    <option value="1">DCH Auriga (Malaysia) Sdn Bhd</option>
-                                                    <option value="2">Tamasetia Resources Sdn Bhd</option>
-                                                    <option value="3">Medico Sdn Bhd</option>
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="hospital_id" class="form-label">Hospital</label>
-                                                <select name="hospital_id" class="form-select" id="hospital_id" required>
-                                                    <option value="">-- Select Hospital --</option>
-                                                    @foreach ($hospitals as $hs)
-                                                        @if ($hs->hospital_visibility == 1)
-                                                            <option value="{{ $hs->id }}">{{ $hs->hospital_name }}
-                                                            </option>
-                                                        @else
-                                                            <option value="{{ $hs->id }}" disabled
-                                                                class="bg-light-danger">
-                                                                {{ $hs->hospital_name }} [Inactive]</option>
-                                                        @endif
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="generator_id" class="form-label">Generator</label>
-                                                <select name="generator_id" class="form-select" id="generator_id" required>
-                                                    <option value="">-- Select Generator --</option>
-                                                    @foreach ($generators as $gene)
-                                                        @if ($gene->generator_status == 1)
-                                                            <option value="{{ $gene->id }}">
-                                                                [{{ $gene->generator_code }}]{{ $gene->generator_name }}
-                                                            </option>
-                                                        @else
-                                                            <option value="{{ $gene->id }}" disabled
-                                                                class="bg-light-danger">
-                                                                [{{ $gene->generator_code }}]{{ $gene->generator_name }}
-                                                                [Inactive]
-                                                            </option>
-                                                        @endif
-                                                    @endforeach
-                                                </select>
+                                        <div class="col-sm-12 mb-4">
+                                            <div class="d-flex justify-content-center align-items-center mb-3">
+                                                <i class="ti ti-trash text-danger" style="font-size: 100px"></i>
                                             </div>
 
-                                            <div class="mb-3">
-                                                <label for="refno" class="form-label">Quotation Ref No</label>
-                                                <input type="text" name="refno" id="refno"
-                                                    class="form-control">
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <h2>Are you sure ?</h2>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer bg-light justify-content-end">
-                                    <div class="flex-grow-1 text-end">
+                                        <div class="col-sm-12 mb-3">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <p class="fw-normal f-18 text-center">This action cannot be undone.</p>
+                                            </div>
+                                        </div>
                                         <div class="col-sm-12">
                                             <div class="d-flex justify-content-between gap-3 align-items-center">
-                                                <button type="reset"
-                                                    class="btn btn-outline-secondary btn-pc-default w-100"
+                                                <button type="reset" class="btn btn-light btn-pc-default w-50"
                                                     data-bs-dismiss="modal">Cancel</button>
-                                                <button type="submit" class="btn btn-primary w-100">
-                                                    Add Quotation
-                                                </button>
+                                                <a href="{{ route('delete-quotation-get', ['id' => Crypt::encrypt($quo->id)]) }}"
+                                                    class="btn btn-danger w-100">Delete Anyways</a>
                                             </div>
                                         </div>
                                     </div>
@@ -178,8 +166,8 @@
                             </div>
                         </div>
                     </div>
-                </form>
-                <!-- [ Add Quotation Modal ] end -->
+                    <!-- [ Delete Modal ] end -->
+                @endforeach
 
                 <!-- [ Manage Quotation ] end -->
             </div>
@@ -190,48 +178,96 @@
     <script type="text/javascript">
         $(document).ready(function() {
 
-            $(function() {
 
-                // DATATABLE : QUOTATION
-                var table = $('.data-table').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    responsive: true,
-                    ajax: {
-                        url: "{{ route('manage-quotation-page') }}",
+            // DATATABLE : QUOTATION
+            var table = $('.data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                ajax: {
+                    url: "{{ route('manage-quotation-page') }}",
+                    data: function(d) {
+                        d.date_range = $('#dateRangeFilter')
+                            .val();
+                        d.hospital = $('#hospFilter')
+                            .val();
+                        d.generator = $('#generatorFilter')
+                            .val();
+                    }
+                },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        searchable: false,
+                        className: "text-start"
                     },
-                    columns: [{
-                            data: 'DT_RowIndex',
-                            name: 'DT_RowIndex',
-                            searchable: false,
-                            className: "text-start"
-                        },
-                        {
-                            data: 'quotation_pt',
-                            name: 'quotation_pt'
-                        },
-                        {
-                            data: 'quotation_hospital',
-                            name: 'quotation_hospital'
-                        },
-                        {
-                            data: 'quotation_date',
-                            name: 'quotation_date'
-                        },
-                        {
-                            data: 'quotation_file',
-                            name: 'quotation_file'
-                        },
-                        {
-                            data: 'action',
-                            name: 'action',
-                            orderable: false,
-                            searchable: false
-                        }
-                    ]
+                    {
+                        data: 'quotation_pt',
+                        name: 'quotation_pt'
+                    },
+                    {
+                        data: 'quotation_hospital',
+                        name: 'quotation_hospital'
+                    },
+                    {
+                        data: 'quotation_date',
+                        name: 'quotation_date'
+                    },
+                    {
+                        data: 'quotation_file',
+                        name: 'quotation_file'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
 
-                });
+            });
 
+            /* Date Range Picker Filter */
+            let datePicker = flatpickr("#dateRangeFilter", {
+                mode: "range",
+                dateFormat: "d M Y",
+                allowInput: true,
+                locale: {
+                    rangeSeparator: " to "
+                },
+                onClose: function(selectedDates, dateStr, instance) {
+                    if (selectedDates.length === 2) {
+                        $('.data-table').DataTable().ajax
+                            .reload();
+                    }
+                }
+            });
+
+            $("#clearDateRangeFilter").click(function() {
+                datePicker.clear();
+                $('.data-table').DataTable().ajax.reload();
+            });
+
+            /* Hospital Filter */
+            $('#hospFilter').on('change', function() {
+                $('.data-table').DataTable().ajax
+                    .reload();
+            });
+
+            $("#clearHospFilter").click(function() {
+                $('#hospFilter').val("");
+                $('.data-table').DataTable().ajax.reload();
+            });
+
+            /* Generator Filter */
+            $('#generatorFilter').on('change', function() {
+                $('.data-table').DataTable().ajax
+                    .reload();
+            });
+
+            $("#clearGeneratorFilter").click(function() {
+                $('#generatorFilter').val("");
+                $('.data-table').DataTable().ajax.reload();
             });
 
         });

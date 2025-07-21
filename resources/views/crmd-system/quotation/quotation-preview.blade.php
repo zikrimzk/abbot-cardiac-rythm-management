@@ -22,7 +22,7 @@
                                 <li class="breadcrumb-item"><a href="javascript: void(0)">Quotation</a></li>
                                 <li class="breadcrumb-item"><a href="{{ route('manage-quotation-page') }}">Manage
                                         Quotation</a></li>
-                                <li class="breadcrumb-item" aria-current="page">Code</li>
+                                <li class="breadcrumb-item" aria-current="page">{{ $quotation->quotation_refno }}</li>
                             </ul>
                         </div>
                         <div class="col-md-12">
@@ -77,8 +77,27 @@
 
                 <!-- [ Quotation Preview ] start -->
                 <div class="col-sm-12">
-                    <!-- Iframe Preview -->
-                    <iframe id="documentContainer" src="" class="mt-3 document-frame" frameborder="0"></iframe>
+
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <h5>Quotation Preview</h5>
+                            <a href="{{ route('update-quotation-page', ['id' => Crypt::encrypt($id)]) }}"
+                                class="link-primary">
+                                <i class="ti ti-pencil"></i>
+                                Update Quotation
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <!-- Iframe Preview -->
+                                    <iframe id="documentContainer"
+                                        src="{{ route('quotation-document-get', ['id' => Crypt::encrypt($id), 'opt' => 1]) }}"
+                                        class="mt-3 document-frame" frameborder="0"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!-- [ Quotation Preview ] end -->
 

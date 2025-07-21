@@ -511,7 +511,6 @@
                     <!-- [ Delete Modal ] end -->
                 @endforeach
 
-
                 <!-- [ Assign Generator & Model ] end -->
             </div>
             <!-- [ Main Content ] end -->

@@ -76,12 +76,12 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::get('/generate-quotation', [RouteController::class, 'generateQuotation'])->name('generate-quotation-page');
     Route::get('/get-model-list-{generatorid}', [QuotationController::class, 'getModelList'])->name('get-model-list');
     Route::get('/quotation-document/{id}/{opt}', [QuotationController::class, 'generatePreviewDownloadQuotation'])->name('quotation-document-get');
-
-
-    Route::get('/view-editable-quotation-document', [QuotationController::class, 'viewEditableQuotation'])->name('view-editable-quotation-document-get');
+    Route::get('/preview-quotation-{id}', [QuotationController::class, 'viewPreviewQuotation'])->name('view-quotation-get');
     Route::post('/add-quotation', [QuotationController::class, 'addQuotation'])->name('add-quotation-post');
     Route::get('/update-quotation-{id}', [RouteController::class, 'updateQuotation'])->name('update-quotation-page');
     Route::post('/update-quotation/{id}', [QuotationController::class, 'updateQuotation'])->name('update-quotation-post');
+    Route::get('/delete-quotation/{id}', [QuotationController::class, 'deleteQuotation'])->name('delete-quotation-get');
+
 
     //QUOTATION > MANAGE COMPANY
     Route::get('/manage-company', [RouteController::class, 'manageCompany'])->name('manage-company-page');

@@ -12,6 +12,7 @@ use App\Models\Implant;
 use App\Models\Document;
 use App\Models\Hospital;
 use App\Models\Generator;
+use App\Models\Quotation;
 use App\Models\AbbottModel;
 use App\Models\Designation;
 use Illuminate\Support\Str;
@@ -832,6 +833,10 @@ class RouteController extends Controller
                     $data->where('hospital_id', $req->input('hospital'));
                 }
 
+                if ($req->has('generator') && !empty($req->input('generator'))) {
+                    $data->whereRaw("JSON_EXTRACT(quotation_metadata, '$.generator_id') = ?", [$req->input('generator')]);
+                }
+
                 $data = $data->get();
 
                 $table = DataTables::of($data)->addIndexColumn();
@@ -866,7 +871,6 @@ class RouteController extends Controller
                 });
 
                 $table->addColumn('quotation_file', function ($row) {
-                    $directory = '';
                     if ($row->quotation_directory == null) {
                         $directory =
                             '
@@ -877,9 +881,17 @@ class RouteController extends Controller
                     ';
                         return $directory;
                     }
+                    $directory =
+                        '
+                    <div class="d-block mb-3 mt-3">
+                        <a href="' . route('quotation-document-get', ['id' => Crypt::encrypt($row->id), 'opt' => 1]) . '" target="_blank" class="link-dark">
+                            <i class="fas fa-file-pdf f-20 text-danger me-2"></i>
+                                 Generated Quotation
+                        </a>
+                    </div>
+                ';
                     return $directory;
                 });
-
 
                 $table->addColumn('action', function ($row) {
 
@@ -888,8 +900,9 @@ class RouteController extends Controller
                         <a href="' . route('update-quotation-page', Crypt::encrypt($row->id)) . '" class="avtar avtar-xs btn-light-primary">
                             <i class="ti ti-edit f-20"></i>
                         </a>
-                        <a href="' . route('upload-document-area-page', Crypt::encrypt($row->id)) . '" class="avtar avtar-xs btn-light-info">
-                            <i class="ti ti-file-upload f-20"></i>
+                        <a href="javascript:void(0)" class="avtar avtar-xs btn-light-danger" data-bs-toggle="modal"
+                            data-bs-target="#deleteQuotationModal-' . $row->id . '">
+                            <i class="ti ti-trash f-20"></i>
                         </a>
                     ';
                     return $button;
@@ -901,8 +914,10 @@ class RouteController extends Controller
             }
             return view('crmd-system.quotation.manage-quotation', [
                 'title' => 'CRMD System | Manage Quotation',
-                'hospitals' => Hospital::all(),
-                'generators' => Generator::all(),
+                'quotations' => Quotation::all(),
+                'hosp' => Hospital::all(),
+                'gene' => Generator::all(),
+                'region' => Region::all(),
             ]);
         } catch (Exception $e) {
             dd($e->getMessage());
@@ -934,22 +949,27 @@ class RouteController extends Controller
     }
 
 
-    public function updateQuotation(Request $req, $id)
+    public function updateQuotation($id)
     {
         try {
-            $company = $req->input('template_id');
-            $generatorid = $req->input('generator_id');
-            $hospitalid = $req->input('hospital_id');
-            $refno = $req->input('refno');
             $id = Crypt::decrypt($id);
+
+            $company = Company::all();
+            $generator = Generator::whereIn('id', function ($query) {
+                $query->select('generator_id')
+                    ->from('quote_generator_models')
+                    ->distinct();
+            })->get();
+            $hospital = Hospital::all();
+
+            $quotation = Quotation::where('id', $id)->first();
 
             return view('crmd-system.quotation.update-quotation', [
                 'title' => 'CRMD System | Update Quotation',
-                'company' => $company,
-                'generatorid' => $generatorid,
-                'hospitalid' => $hospitalid,
-                'refno' => $refno,
-                'quotationid' => $id
+                'companies' => $company,
+                'generators' => $generator,
+                'hospitals' => $hospital,
+                'quotation' => $quotation
 
             ]);
         } catch (Exception $e) {
