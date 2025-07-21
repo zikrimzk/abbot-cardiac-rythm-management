@@ -24,6 +24,8 @@ use League\CommonMark\Extension\SmartPunct\Quote;
 
 class QuotationController extends Controller
 {
+
+    // ADD ASSIGN GENERATOR MODEL - FUNCTION
     public function addAssignGeneratorModel(Request $req)
     {
 
@@ -71,6 +73,7 @@ class QuotationController extends Controller
         }
     }
 
+    // UPDATE ASSIGNMENT GENERATOR MODEL - FUNCTION
     public function updateAssignGeneratorModel(Request $req, $generator_id)
     {
         $generator_id = Crypt::decrypt($generator_id);
@@ -119,6 +122,7 @@ class QuotationController extends Controller
         }
     }
 
+    // DELETE ASSIGNMENT GENERATOR MODEL - FUNCTION
     public function deleteAssignGeneratorModel($generator_id)
     {
         $generator_id = Crypt::decrypt($generator_id);
@@ -140,9 +144,9 @@ class QuotationController extends Controller
         }
     }
 
+    // ADD COMPANY - FUNCTION
     public function addCompany(Request $req)
     {
-        // 1. Validate inputs
         $validator = Validator::make($req->all(), [
             'company_name'     => 'required|string',
             'company_code'     => 'required|string|unique:companies,company_code',
@@ -175,17 +179,15 @@ class QuotationController extends Controller
         try {
             $validated = $validator->validated();
 
-            // 2. Handle logo upload
+            /**** 01 - Handle Logo Upload ****/
             if ($req->hasFile('company_logo')) {
                 $file = $req->file('company_logo');
                 $filename = Str::lower($validated['company_code']) . '.' . $file->getClientOriginalExtension();
                 $path = $file->storeAs('public/quotation/company', $filename);
-
                 $validated['company_logo'] = $path;
             }
 
-
-            // 3. Save to database
+            /**** 02 - Insert Data Into Company ****/
             Company::create($validated);
 
             return back()->with('success', 'Successfully added company.');
@@ -194,13 +196,17 @@ class QuotationController extends Controller
         }
     }
 
+    // UPDATE COMPANY - FUNCTION
     public function updateCompany(Request $req, $id)
     {
+
+        /**** 01 - Decrypt ID & Get Company ****/
         $id = Crypt::decrypt($id);
-
         $company = Company::findOrFail($id);
+        if (!$company) {
+            return abort(404, 'Company not found');
+        }
 
-        // Validation
         $validator = Validator::make($req->all(), [
             'company_name_up'     => 'required|string',
             'company_code_up'     => 'required|string|unique:companies,company_code,' . $id,
@@ -233,16 +239,15 @@ class QuotationController extends Controller
         try {
             $validated = $validator->validated();
 
-            // Handle logo upload if present
+            /**** 02 - Handle Logo Upload ****/
             if ($req->hasFile('company_logo_up')) {
                 $file = $req->file('company_logo_up');
                 $filename = Str::lower($validated['company_code_up']) . '.' . $file->getClientOriginalExtension();
                 $path = $file->storeAs('public/quotation/company', $filename);
-
                 $company->company_logo = $path;
             }
 
-            // Update company details
+            /**** 03 - Assign Company Data ****/
             $company->company_name     = $validated['company_name_up'];
             $company->company_code     = $validated['company_code_up'];
             $company->company_ssm      = $validated['company_ssm_up'];
@@ -252,6 +257,7 @@ class QuotationController extends Controller
             $company->company_website  = $validated['company_website_up'] ?? null;
             $company->company_email    = $validated['company_email_up'] ?? null;
 
+            /**** 04 - Update Company Data ****/
             $company->save();
 
             return back()->with('success', 'Successfully updated company.');
@@ -260,17 +266,23 @@ class QuotationController extends Controller
         }
     }
 
+    // DELETE COMPANY - FUNCTION
     public function deleteCompany($id)
     {
         try {
+            /**** 01 - Decrypt ID & Get Company ****/
             $id = Crypt::decrypt($id);
-
             $company = Company::findOrFail($id);
+            if (!$company) {
+                return abort(404, 'Company not found');
+            }
 
+            /**** 02 - Delete Company Logo ****/
             if ($company->company_logo && Storage::exists($company->company_logo)) {
                 Storage::delete($company->company_logo);
             }
 
+            /**** 03 - Delete Company Data ****/
             $company->delete();
 
             return redirect()->back()->with('success', 'Company deleted successfully.');
@@ -279,52 +291,14 @@ class QuotationController extends Controller
         }
     }
 
-    public function getModelList($generatorid)
-    {
-        try {
-            $data = DB::table('quote_generator_models as qgm')
-                ->join('abbott_models as am', 'qgm.model_id', '=', 'am.id')
-                ->select('qgm.generator_id', 'am.*')
-                ->where('qgm.generator_id', $generatorid)
-                ->get();
-
-            return response()->json([
-                'success' => true,
-                'data' => $data
-            ], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => 'Error getting model list:' . $e->getMessage()], 500);
-        }
-    }
-
-    public function viewPreviewQuotation($id)
-    {
-        try {
-            $id = Crypt::decrypt($id);
-
-            $quotation = Quotation::findOrFail($id);
-
-            if (!$quotation) {
-                return abort(404, 'Quotation not found');
-            }
-
-            return view('crmd-system.quotation.quotation-preview', [
-                'title' => 'Quotation Preview',
-                'id' => $id,
-                'quotation' => $quotation
-
-            ]);
-        } catch (Exception $e) {
-            return abort(500, $e->getMessage());
-        }
-    }
-
+    // ADD QUOTATION - FUNCTION
     public function addQuotation(Request $req)
     {
         DB::beginTransaction();
 
         try {
-            // Extract main fields
+
+            /**** 01 - Assign Data ****/
             $quotation = new Quotation();
             $quotation->quotation_date = Carbon::parse($req->quotation_date)->format('Y-m-d');
             $quotation->quotation_price = (float) $req->quotation_totalprice;
@@ -334,7 +308,6 @@ class QuotationController extends Controller
             $quotation->hospital_id = $req->hospital_id;
             $quotation->staff_id = auth()->user()->id;
 
-            // Remove known fields and _token to get the rest for JSON
             $excluded = [
                 '_token',
                 'quotation_date',
@@ -351,6 +324,7 @@ class QuotationController extends Controller
             $quotation->quotation_metadata = $metadata;
 
 
+            /**** 02 - Handle Quotation Refno ****/
             $company = Company::where('id', $req->company_id)->first();
             $hospital = Hospital::where('id', $req->hospital_id)->first();
             $generator = Generator::where('id', $req->generator_id)->first();
@@ -359,18 +333,15 @@ class QuotationController extends Controller
             $refno = null;
 
             if ($company && $hospital && $generator) {
-                // 1. Build prefix
+
                 $refPrefix = $company->company_code . '/' . $hospital->hospital_code . '/' . $generator->generator_code . '/' . $year;
 
-                // 2. Query for the latest refno with that prefix
                 $latest = DB::table('quotations')
                     ->where('quotation_refno', 'LIKE', $refPrefix . '/%')
                     ->orderBy('quotation_refno', 'desc')
                     ->first();
 
-                // 3. Extract sequence number
                 if ($latest) {
-                    // Extract last 3 digits from the refno (sequence)
                     $parts = explode('/', $latest->quotation_refno);
                     $lastSequence = intval(end($parts));
                     $newSequence = str_pad($lastSequence + 1, 3, '0', STR_PAD_LEFT);
@@ -378,13 +349,15 @@ class QuotationController extends Controller
                     $newSequence = '001';
                 }
 
-                // 4. Final refno
                 $refno = $refPrefix . '/' . $newSequence;
             }
 
             $quotation->quotation_refno = $refno;
+
+            /**** 03 - Insert Data Into Quotation ****/
             $quotation->save();
 
+            /**** 04 - Save Generated Quotation ****/
             $this->generatePreviewDownloadQuotation(Crypt::encrypt($quotation->id), 2);
 
             DB::commit();
@@ -398,15 +371,22 @@ class QuotationController extends Controller
         }
     }
 
+    // UPDATE QUOTATION - FUNCTION
     public function updateQuotation(Request $req, $id)
     {
         DB::beginTransaction();
 
         try {
+
+            /**** 01 - Decrypt ID & Get Quotation ****/
             $id = Crypt::decrypt($id);
             $quotation = Quotation::findOrFail($id);
 
-            // Update main fields
+            if (!$quotation) {
+                return abort(404, 'Quotation not found');
+            }
+
+            /**** 02 - Assign Data ****/
             $quotation->quotation_date = Carbon::parse($req->quotation_date)->format('Y-m-d');
             $quotation->quotation_price = (float) $req->quotation_totalprice;
             $quotation->quotation_pt_name = $req->quotation_pt_name;
@@ -414,7 +394,6 @@ class QuotationController extends Controller
             $quotation->company_id = $req->company_id;
             $quotation->hospital_id = $req->hospital_id;
 
-            // Remove known fields and _token to get metadata
             $excluded = [
                 '_token',
                 'quotation_date',
@@ -430,7 +409,7 @@ class QuotationController extends Controller
             $metadata = collect($req->except($excluded));
             $quotation->quotation_metadata = $metadata;
 
-            // Regenerate quotation_refno
+            /**** 03 - Handle Quotation Refno ****/
             $company = Company::find($req->company_id);
             $hospital = Hospital::find($req->hospital_id);
             $generator = Generator::find($req->generator_id);
@@ -452,12 +431,13 @@ class QuotationController extends Controller
                 } else {
                     $newSequence = '001';
                 }
-
                 $quotation->quotation_refno = $refPrefix . '/' . $newSequence;
             }
 
+            /**** 04 - Insert Data Into Quotation ****/
             $quotation->save();
 
+            /**** 05 - Save Generated Quotation ****/
             $this->generatePreviewDownloadQuotation(Crypt::encrypt($quotation->id), 2);
 
             DB::commit();
@@ -471,21 +451,25 @@ class QuotationController extends Controller
         }
     }
 
+    // DELETE QUOTATION - FUNCTION
     public function deleteQuotation($id)
     {
         try {
+            /**** 01 - Decrypt ID & Get Quotation ****/
             $id = Crypt::decrypt($id);
             $quotation = Quotation::findOrFail($id);
+            if (!$quotation) {
+                return abort(404, 'Quotation not found');
+            }
 
-            // Get the stored file path
+            /**** 02 - Find and Delete Quotation File ****/
             $pdfPath = public_path('storage/' . $quotation->quotation_directory);
 
-            // Delete the file if it exists
             if (File::exists($pdfPath)) {
                 File::delete($pdfPath);
             }
 
-            // Delete the quotation record
+            /**** 03 - Delete Quotation ****/
             $quotation->delete();
 
             return redirect()->back()->with('success', 'Quotation and associated PDF deleted successfully.');
@@ -494,22 +478,92 @@ class QuotationController extends Controller
         }
     }
 
+    // GET MODEL LIST - AJAX
+    public function getModelList($generatorid)
+    {
+        try {
+            /**** 01 - Get Model List ****/
+            $data = DB::table('quote_generator_models as qgm')
+                ->join('abbott_models as am', 'qgm.model_id', '=', 'am.id')
+                ->select('qgm.generator_id', 'am.*')
+                ->where('qgm.generator_id', $generatorid)
+                ->get();
+
+            /**** 02 - Return Model List ****/
+            return response()->json([
+                'success' => true,
+                'data' => $data
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Error getting model list:' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // PREVIEW QUOTATION - FUNCTION
+    public function viewPreviewQuotation($id)
+    {
+        try {
+            /**** 01 - Decrypt ID & Get Quotation ****/
+            $id = Crypt::decrypt($id);
+            $quotation = Quotation::findOrFail($id);
+
+            if (!$quotation) {
+                return abort(404, 'Quotation not found');
+            }
+
+            /**** 02 - Return Template ****/
+            return view('crmd-system.quotation.quotation-preview', [
+                'title' => 'Quotation Preview',
+                'id' => $id,
+                'quotation' => $quotation
+
+            ]);
+        } catch (Exception $e) {
+            return abort(500, $e->getMessage());
+        }
+    }
+
     // QUOTATION HANDLER - FUNCTION [WIP]
     // NOTES : [1] -> VIEW [2] -> GENERATE [3] -> DOWNLOAD
     public function generatePreviewDownloadQuotation($id, $opt)
     {
         try {
-            // Decrypt and retrieve quotation
+            /**** 01 - Decrypt ID & Get Quotation ****/
             $id = Crypt::decrypt($id);
             $quotation = Quotation::findOrFail($id);
 
-            // Retrieve related entities
+            if (!$quotation) {
+                return abort(404, 'Quotation not found');
+            }
+
+            /**** 02 - Retrieve All Model ****/
             $hospital = Hospital::findOrFail($quotation->hospital_id);
+
+            if (!$hospital) {
+                return abort(404, 'Hospital not found');
+            }
+
             $company = Company::findOrFail($quotation->company_id);
+
+            if (!$company) {
+                return abort(404, 'Company not found');
+            }
+
             $user = User::findOrFail($quotation->staff_id);
+
+            if (!$user) {
+                return abort(404, 'Staff not found');
+            }
+
             $designation = Designation::where('id', $user->designation_id)->first();
 
-            // Parse metadata JSON safely
+            if (!$designation) {
+                return abort(404, 'Designation not found');
+            }
+
+            /**** 03 - Decode JSON Format ****/
             $metadata = json_decode($quotation->quotation_metadata);
             if (!$metadata || !isset($metadata->generator_id)) {
                 return response()->json(['error' => 'Invalid quotation metadata']);
@@ -517,14 +571,14 @@ class QuotationController extends Controller
 
             $generator = Generator::findOrFail($metadata->generator_id);
 
-            // Fetch generator models (multiple models per generator)
+            /**** 04 -Retrieve Model List ****/
             $modellist = DB::table('quote_generator_models as qgm')
                 ->join('abbott_models as am', 'qgm.model_id', '=', 'am.id')
                 ->select('am.model_code', 'am.model_name')
                 ->where('qgm.generator_id', $generator->id)
                 ->get();
 
-            // Prepare data for template
+            /**** 05 - Group All In Array ****/
             $formattedData = [
                 'quotation_date'       => $quotation->quotation_date ?? '-',
                 'quotation_totalprice' => $quotation->quotation_price ?? '-',
@@ -555,7 +609,7 @@ class QuotationController extends Controller
                 'designation_name'     => $designation->designation_name ?? '-',
             ];
 
-            // Clean quotation refno for filename (remove slashes, spaces, symbols)
+            /**** 06 - Prepare Quotation Title ****/
             $sanitizedRefNo = preg_replace('/[^A-Za-z0-9]/', '', $formattedData['quotation_refno']);
 
             $pdf = Pdf::loadView('crmd-system.quotation.quotation-template-doc', [
@@ -566,6 +620,8 @@ class QuotationController extends Controller
                 ->setOption('defaultPaperSize', 'a4')
                 ->setOption('isPhpEnabled', true)
                 ->setPaper('a4', 'portrait');
+
+            /**** 07 - Option ****/
 
             switch ($opt) {
                 case 1:

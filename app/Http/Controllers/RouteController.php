@@ -978,6 +978,7 @@ class RouteController extends Controller
         }
     }
 
+    // MANAGE COMPANY - ROUTE
     public function manageCompany(Request $req)
     {
         try {
@@ -995,7 +996,6 @@ class RouteController extends Controller
                         'company_email',
                         'company_ssm',
                         'company_logo',
-
                     );
 
                 $data = $data->get();
@@ -1021,16 +1021,22 @@ class RouteController extends Controller
 
                 $table->addColumn('action', function ($row) {
 
+                    $used = DB::table('quotations')
+                        ->where('company_id', $row->id)
+                        ->exists();
+
+                    $deleteClass = $used ? 'disabled-a' : '';
+
                     $button =
                         '
-                    <a href="javascript:void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
-                        data-bs-target="#updateCompanyModal-' . $row->id . '">
-                        <i class="ti ti-edit f-20"></i>
-                    </a>
-                    <a href="javascript:void(0)" class="avtar avtar-xs btn-light-danger" data-bs-toggle="modal"
-                        data-bs-target="#deleteCompanyModal-' . $row->id . '">
-                        <i class="ti ti-trash f-20"></i>
-                    </a>
+                        <a href="javascript:void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
+                            data-bs-target="#updateCompanyModal-' . $row->id . '">
+                            <i class="ti ti-edit f-20"></i>
+                        </a>
+                        <a href="javascript:void(0)" class="avtar avtar-xs btn-light-danger ' . $deleteClass . '" data-bs-toggle="modal"
+                            data-bs-target="#deleteCompanyModal-' . $row->id . '">
+                            <i class="ti ti-trash f-20"></i>
+                        </a>
                     ';
                     return $button;
                 });
@@ -1044,7 +1050,6 @@ class RouteController extends Controller
                 'companies' => Company::all()
             ]);
         } catch (Exception $e) {
-            dd($e->getMessage());
             return abort(500, $e->getMessage());
         }
     }
@@ -1054,7 +1059,7 @@ class RouteController extends Controller
     {
         try {
             if ($req->ajax()) {
-                // Get the generator and its models grouped together
+
                 $data = DB::table('quote_generator_models as qgm')
                     ->join('generators as g', 'qgm.generator_id', '=', 'g.id')
                     ->join('abbott_models as am', 'qgm.model_id', '=', 'am.id')
@@ -1070,12 +1075,10 @@ class RouteController extends Controller
 
                 $table = DataTables::of($data)->addIndexColumn();
 
-                // generator_name column already selected
                 $table->addColumn('generator_name', function ($row) {
                     return '<div>' . e($row->generator_name) . '</div>';
                 });
 
-                // model_name column - already grouped
                 $table->addColumn('model_name', function ($row) {
                     $models = explode(',', $row->model_names);
                     $html = '';
@@ -1090,17 +1093,22 @@ class RouteController extends Controller
                 });
 
                 $table->addColumn('action', function ($row) {
-                    // Use generator_id only since all models are grouped under it
+                    $used = DB::table('quotations')
+                        ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(quotation_metadata, '$.generator_id')) = ?", [$row->generator_id])
+                        ->exists();
+
+                    $deleteClass = $used ? 'disabled-a' : '';
+
                     return '
-                    <a href="javascript:void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
-                        data-bs-target="#updateGeneratorModelModal-' . $row->generator_id . '">
-                        <i class="ti ti-edit f-20"></i>
-                    </a>
-                    <a href="javascript:void(0)" class="avtar avtar-xs btn-light-danger" data-bs-toggle="modal"
-                        data-bs-target="#deleteGeneratorModelModal-' . $row->generator_id . '">
-                        <i class="ti ti-trash f-20"></i>
-                    </a>
-                ';
+                        <a href="javascript:void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
+                            data-bs-target="#updateGeneratorModelModal-' . $row->generator_id . '">
+                            <i class="ti ti-edit f-20"></i>
+                        </a>
+                        <a href="javascript:void(0)" class="avtar avtar-xs btn-light-danger ' . $deleteClass . '" data-bs-toggle="modal"
+                            data-bs-target="#deleteGeneratorModelModal-' . $row->generator_id . '">
+                            <i class="ti ti-trash f-20"></i>
+                        </a>
+                    ';
                 });
 
                 $table->rawColumns(['generator_name', 'model_name', 'updated_at', 'action']);
@@ -1116,7 +1124,6 @@ class RouteController extends Controller
                 ->groupBy('qgm.generator_id')
                 ->get()
                 ->map(function ($item) {
-                    // Convert CSV string to array
                     $item->model_ids = array_filter(explode(',', $item->model_ids));
                     return $item;
                 });
@@ -1137,7 +1144,6 @@ class RouteController extends Controller
                 'qgmtwo' => $qgmtwo
             ]);
         } catch (Exception $e) {
-            dd($e->getMessage());
             return abort(500, $e->getMessage());
         }
     }
