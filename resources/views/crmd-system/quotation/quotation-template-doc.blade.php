@@ -27,8 +27,8 @@
             border: 1px solid #ddd;
         }
         .items-table th {
-            background-color: #2c3e50;
-            color: white;
+            /* background-color: #2c3e50;
+            color: white; */
             font-weight: bold;
             font-size: 9pt;
         }
@@ -75,8 +75,6 @@
             font-weight: bold;
             margin: 15px 0;
             font-size: 10pt;
-            /* text-align: center; */
-            /* color: #2c3e50; */
         }
         .compact { margin: 8px 0; }
         .smaller { font-size: 8.5pt; }
@@ -130,7 +128,7 @@
                     </div>
                     <div class="box-sender">
                         <strong>Supplier Information</strong><br>
-                        SSM: {{ $data['company_ssm'] }}<br>
+                        No. Pendaftaran Syarikat (SSM): {{ $data['company_ssm'] }}<br>
                         Email: {{ $data['sender_email'] }}<br>
                         Tel: {{ $data['sender_telno'] }}<br>
                         Fax: {{ $data['sender_fax'] }}

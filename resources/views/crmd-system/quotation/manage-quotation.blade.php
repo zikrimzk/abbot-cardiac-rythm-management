@@ -86,6 +86,17 @@
                                 </div>
 
                                 <div class="col-sm-3 mb-3">
+                                    <select class="form-select mb-2" id="compFilter">
+                                        <option value="">-- Select Company --</option>
+                                        @foreach ($comps as $comp)
+                                            <option value="{{ $comp->id }}">({{ $comp->company_code }}) -
+                                                {{ $comp->company_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <a href="javascript:void(0)" id="clearCompFilter" class="link-primary">Clear</a>
+                                </div>
+
+                                <div class="col-sm-3 mb-3">
                                     <select class="form-select mb-2" id="hospFilter">
                                         <option value="">-- Select Hospital --</option>
                                         @foreach ($hosp as $h)
@@ -114,9 +125,10 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Patient Name</th>
-                                            <th scope="col">Hospital</th>
                                             <th scope="col">Date</th>
+                                            <th scope="col">Company</th>
+                                            <th scope="col">Hospital</th>
+                                            <th scope="col">Patient</th>
                                             <th scope="col">Quotation</th>
                                             <th scope="col">Action</th>
                                         </tr>
@@ -189,6 +201,8 @@
                     data: function(d) {
                         d.date_range = $('#dateRangeFilter')
                             .val();
+                        d.company = $('#compFilter')
+                            .val();
                         d.hospital = $('#hospFilter')
                             .val();
                         d.generator = $('#generatorFilter')
@@ -202,16 +216,21 @@
                         className: "text-start"
                     },
                     {
-                        data: 'quotation_pt',
-                        name: 'quotation_pt'
+                        data: 'quotation_date',
+                        name: 'quotation_date'
+                    },
+
+                    {
+                        data: 'quotation_company',
+                        name: 'quotation_company'
                     },
                     {
                         data: 'quotation_hospital',
                         name: 'quotation_hospital'
                     },
                     {
-                        data: 'quotation_date',
-                        name: 'quotation_date'
+                        data: 'quotation_pt',
+                        name: 'quotation_pt'
                     },
                     {
                         data: 'quotation_file',
@@ -245,6 +264,17 @@
 
             $("#clearDateRangeFilter").click(function() {
                 datePicker.clear();
+                $('.data-table').DataTable().ajax.reload();
+            });
+
+            /* Company Filter */
+            $('#compFilter').on('change', function() {
+                $('.data-table').DataTable().ajax
+                    .reload();
+            });
+
+            $("#clearCompFilter").click(function() {
+                $('#compFilter').val("");
                 $('.data-table').DataTable().ajax.reload();
             });
 

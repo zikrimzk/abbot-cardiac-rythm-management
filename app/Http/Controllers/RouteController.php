@@ -820,6 +820,7 @@ class RouteController extends Controller
                         'quotation_price',
                         'quotation_directory',
                         'hospital_id',
+                        'company_id'
                     );
 
                 if ($req->has('date_range') && !empty($req->input('date_range'))) {
@@ -829,7 +830,11 @@ class RouteController extends Controller
                     $data->whereBetween('quotation_date', [$startdate, $enddate]);
                 }
 
-                if ($req->has('hospital') && !empty($req->input('hospital'))) {
+                if ($req->has('company') && !empty($req->input('company'))) {
+                    $data->where('company_id', $req->input('company'));
+                }
+
+                 if ($req->has('hospital') && !empty($req->input('hospital'))) {
                     $data->where('hospital_id', $req->input('hospital'));
                 }
 
@@ -856,6 +861,18 @@ class RouteController extends Controller
                 $table->addColumn('quotation_date', function ($row) {
                     $date = Carbon::parse($row->quotation_date)->format('d M Y');
                     return $date;
+                });
+
+                $table->addColumn('quotation_company', function ($row) {
+
+                    $company = Company::where('id', $row->company_id)->first();
+
+                    $html = '
+                        <div class="d-block mb-3 mt-3">
+                            <div>' . $company->company_code . '</div>
+                        </div>
+                    ';
+                    return $html;
                 });
 
                 $table->addColumn('quotation_hospital', function ($row) {
@@ -908,7 +925,7 @@ class RouteController extends Controller
                     return $button;
                 });
 
-                $table->rawColumns(['quotation_pt', 'quotation_date', 'quotation_hospital', 'quotation_file', 'action']);
+                $table->rawColumns(['quotation_pt', 'quotation_date', 'quotation_company', 'quotation_hospital', 'quotation_file', 'action']);
 
                 return $table->make(true);
             }
@@ -917,10 +934,9 @@ class RouteController extends Controller
                 'quotations' => Quotation::all(),
                 'hosp' => Hospital::all(),
                 'gene' => Generator::all(),
-                'region' => Region::all(),
+                'comps' => Company::all(),
             ]);
         } catch (Exception $e) {
-            dd($e->getMessage());
             return abort(500, $e->getMessage());
         }
     }
