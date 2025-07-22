@@ -494,6 +494,13 @@ class ImplantController extends Controller
                     'implant_backup_form' => $path
                 ]);
 
+                ImplantLog::create([
+                    'log_activity' => 'Backup implant registration form uploaded by ' . auth()->user()->staff_name . ' — Patient: ' . $implant->implant_pt_name . ' (IC: ' . $implant->implant_pt_icno . ', Ref No: ' . $implant->implant_refno . ')',
+                    'log_datetime' => now(),
+                    'staff_id' => auth()->user()->id,
+                    'implant_id' => $implant->id,
+                ]);
+
                 return back()->with('success', 'File uploaded successfully!');
             }
         } catch (Exception $e) {
@@ -696,6 +703,13 @@ class ImplantController extends Controller
                 return back()->with('error', 'ZIP file is empty or corrupt.');
             }
 
+            ImplantLog::create([
+                'log_activity' => 'Patient folder directory downloaded as ZIP by ' . auth()->user()->staff_name . ' — Patient: ' . $implant->implant_pt_name . ' (IC: ' . $implant->implant_pt_icno . ', Ref No: ' . $implant->implant_refno . ')',
+                'log_datetime' => now(),
+                'staff_id' => auth()->user()->id,
+                'implant_id' => $implant->id,
+            ]);
+
             return response()->download($zipFile)->deleteFileAfterSend(true);
         } catch (Exception $e) {
             return back()->with('error', 'Error downloading implant directory: ' . $e->getMessage());
@@ -744,6 +758,13 @@ class ImplantController extends Controller
                     $relativePath = $implant->implant_pt_directory . '/' . $file->getFilename();
                     $zip->addFile($file->getPathname(), $relativePath);
                 }
+
+                ImplantLog::create([
+                    'log_activity' => 'Patient folder directory downloaded as ZIP by ' . auth()->user()->staff_name . ' — Patient: ' . $implant->implant_pt_name . ' (IC: ' . $implant->implant_pt_icno . ', Ref No: ' . $implant->implant_refno . ')',
+                    'log_datetime' => now(),
+                    'staff_id' => auth()->user()->id,
+                    'implant_id' => $implant->id,
+                ]);
             }
 
             $zip->close();
@@ -913,7 +934,6 @@ class ImplantController extends Controller
             return back()->with('error', 'Oops! Something went wrong. Please try again.' . $e->getMessage());
         }
     }
-
 
     // UPDATE IMPLANT - FUNCTION [NOT IN USE]
     // public function updateImplant(Request $req, $id)

@@ -411,6 +411,12 @@ class RouteController extends Controller
                 return back();
             } elseif ($option == 2) // Show PDF
             {
+                ImplantLog::create([
+                    'log_activity' => 'Implant registration form viewed by ' . auth()->user()->staff_name . ' — Patient: ' . $implant->implant_pt_name . ' (IC: ' . $implant->implant_pt_icno . ', Ref No: ' . $implant->implant_refno . ')',
+                    'log_datetime' => now(),
+                    'staff_id' => auth()->user()->id,
+                    'implant_id' => $implant->id,
+                ]);
                 return $pdf->stream($title . '.pdf');
             } elseif ($option == 3) // Download PDF
             {

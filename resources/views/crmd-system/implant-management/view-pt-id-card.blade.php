@@ -77,11 +77,11 @@
             <!-- [ Header ] start -->
             <table width="100%" class=" @if ($opt == 1) header-non-mri @else header-mri @endif">
                 <tr>
-                    <td style="padding: 10px; padding-left: 15px;">
+                    <td style="padding: 8px; padding-left: 15px;">
                         <img src="{{ public_path('assets/images/logo/abbott-logo-white.png') }}" width="60"
                             alt="Abbott Logo">
                     </td>
-                    <td style="text-align: right;padding: 10px;padding-right: 15px;  font-weight:700; ">
+                    <td style="text-align: right;padding: 8px;padding-right: 15px;  font-weight:700; font-size: 8px;">
                         Patient Identification Card
                     </td>
                 </tr>
@@ -89,7 +89,7 @@
             <!-- [ Header ] end -->
 
             <!-- [ Patient details ] start -->
-            <table width="100%" style="color: rgb(0, 0, 0); font-size: 5pt;">
+            <table width="100%" style="color: rgb(0, 0, 0); font-size: 4.5pt;">
                 <tr>
                     <th style="padding-left: 15px; padding-top: 10px; padding-bottom: 2px; font-weight:700; width:30%;">
                         PATIENT
@@ -110,7 +110,7 @@
             <!-- [ Patient details ] end -->
 
             <!-- [ Pacemake & Model details ] start -->
-            <table width="100%" style="color: rgb(0, 0, 0); font-size: 5pt;">
+            <table width="100%" style="color: rgb(0, 0, 0); font-size: 4.5pt;">
                 <tr>
                     <th style="padding-left: 15px; padding-top: 5px; padding-bottom: 2px; font-weight:700; width:30%;">
                     </th>
@@ -164,7 +164,7 @@
             <!-- [ Pacemake & Model details ] end -->
 
             <!-- [ Physician details ] start -->
-            <table width="100%" style="color: rgb(0, 0, 0); font-size: 5pt;">
+            <table width="100%" style="color: rgb(0, 0, 0); font-size: 4.5pt;">
                 <tr>
                     <th style="padding-left: 15px; padding-top: 5px; padding-bottom: 2px; font-weight:700; width:30%;">
                         PHYSICIAN

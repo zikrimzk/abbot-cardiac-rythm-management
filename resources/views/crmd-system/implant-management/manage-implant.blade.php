@@ -210,39 +210,92 @@
         <!-- [ View Implant Log Modal ] start -->
         <div class="modal fade" id="viewImplantLogModal-{{ $im->id }}" tabindex="-1"
             aria-labelledby="implantLogModalLabel-{{ $im->id }}" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg modal-fullscreen-sm-down">
                 <div class="modal-content border-0 shadow-lg">
 
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="implantLogModalLabel-{{ $im->id }}">
-                            Implant Log <span class="fw-normal">({{ $im->implant_refno }})</span>
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-header bg-light border-bottom">
+                        <div class="w-100">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5 class="modal-title mb-1" id="implantLogModalLabel-{{ $im->id }}">
+                                        <i class="fas fa-history me-2"></i>
+                                        <span class="d-none d-sm-inline">Implant Activity Log</span>
+                                        <span class="d-sm-none">Activity Log</span>
+                                    </h5>
+                                    <div class="text-muted small">
+                                        Ref: <strong>{{ $im->implant_refno }}</strong>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="modal-body p-4">
-                        @forelse($implogs->where('implant_id', $im->id)->sortByDesc('log_datetime') as $implog)
-                            <div class="card mb-4 shadow-sm">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <h6 class="mb-0 fw-semibold">
-                                            {{ $implog->staff_name }}
-                                        </h6>
-                                        <small class="text-muted">
-                                            {{ \Carbon\Carbon::parse($implog->log_datetime)->format('d M Y, h:i A') }}
-                                        </small>
+                    <div class="modal-body p-0">
+                        @forelse($implogs->where('implant_id', $im->id)->sortByDesc('log_datetime') as $index => $implog)
+                            <div class="border-bottom {{ $index === 0 ? 'bg-light' : '' }}">
+                                <div class="p-3 p-md-4">
+                                    <div class="row align-items-start">
+                                        <div class="col-12">
+                                            <div class="d-flex align-items-start mb-2">
+                                                <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-2 me-md-3 flex-shrink-0"
+                                                    style="width: 28px; height: 28px; min-width: 28px;">
+                                                    <i class="fas fa-user text-white" style="font-size: 10px;"></i>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <div
+                                                        class="d-flex flex-column flex-sm-row justify-content-between align-items-start">
+                                                        <div class="mb-1 mb-sm-0">
+                                                            <h6 class="mb-0 fw-semibold text-dark">
+                                                                {{ $implog->staff_name }}</h6>
+                                                            <small class="text-muted">{{ $implog->email }}</small>
+                                                        </div>
+                                                        <div class="text-muted text-end">
+                                                            <div class="small fw-medium">
+                                                                {{ \Carbon\Carbon::parse($implog->log_datetime)->format('d M Y') }}
+                                                            </div>
+                                                            <div class="small">
+                                                                {{ \Carbon\Carbon::parse($implog->log_datetime)->format('h:i A') }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="log-content">
-                                        <p class="mb-0 text-dark">{!! $implog->log_activity !!}</p>
+
+                                    <div class="ms-4 ms-md-5 ps-1 ps-md-2">
+                                        <div class="card bg-white border rounded">
+                                            <div class="card-body">
+                                                <p class="mb-0 text-dark lh-base">{!! $implog->log_activity !!}</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         @empty
-                            <div class="alert alert-danger text-center">
-                                No implant log available for this record.
+                            <div class="text-center py-5">
+                                <div class="mb-3">
+                                    <i class="fas fa-inbox text-muted" style="font-size: 3rem;"></i>
+                                </div>
+                                <h6 class="text-muted mb-2">No Activity Logs</h6>
+                                <p class="text-muted small mb-0">No activity logs have been recorded for this implant yet.
+                                </p>
                             </div>
                         @endforelse
                     </div>
+
+                    @if ($implogs->where('implant_id', $im->id)->count() > 0)
+                        <div class="modal-footer bg-light border-top">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Showing {{ $implogs->where('implant_id', $im->id)->count() }} activity log(s)
+                                • Most recent first
+                            </small>
+                        </div>
+                    @endif
+
                 </div>
             </div>
         </div>

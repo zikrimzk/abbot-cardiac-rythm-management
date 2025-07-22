@@ -6,6 +6,9 @@ use Exception;
 use Carbon\Carbon;
 use App\Models\Implant;
 use App\Models\Document;
+use App\Models\Generator;
+use App\Models\ImplantLog;
+use App\Models\AbbottModel;
 use Illuminate\Support\Str;
 use App\Models\ApprovalType;
 use App\Models\ImplantModel;
@@ -23,6 +26,8 @@ class SalesBillingController extends Controller
     public function confirmICFData(Request $req, $id)
     {
         $id = Crypt::decrypt($id);
+
+        /**** 01 - Validate Incoming Request ****/
         $validator = Validator::make($req->all(), [
             'implant_pt_address' => 'nullable|string',
             'implant_generator_sn' => 'required|string',
@@ -37,36 +42,57 @@ class SalesBillingController extends Controller
             'model_price' => 'nullable|array',
             'model_qty' => 'nullable|array',
             'stock_location_ids' => 'nullable|array',
-        ], [], [
-            'implant_pt_address' => 'patient address',
-            'implant_generator_sn' => 'generator serial number',
-            'implant_generator_itemPrice' => 'generator price',
-            'implant_generator_qty' => 'generator quantity',
-            'implant_sales_total_price' => 'implant sales',
-            'generator_id' => 'generator',
-            'stock_location_id' => 'stock location',
-            'approval_type_id' => 'payment method / approval type',
-            'model_ids' => 'model',
-            'model_sns' => 'model serial number',
-            'model_price' => 'model price',
-            'model_qty' => 'model quantity',
-            'stock_location_ids' => 'model stock location',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
         try {
             DB::beginTransaction();
 
             $validated = $validator->validated();
+            $implant = Implant::findOrFail($id);
+            $changes = [];
+            $modelChanges = [];
 
-            /**** 01 - Update Implant Details ****/
-            $implant = Implant::whereId($id)->first();
+            /**** 02 - Load Old & New Relations for Comparison Logging ****/
+            $oldGenerator = Generator::find($implant->generator_id);
+            $newGenerator = Generator::find($validated['generator_id']);
 
+            $oldStockLocation = StockLocation::find($implant->stock_location_id);
+            $newStockLocation = StockLocation::find($validated['stock_location_id']);
+
+            $oldApprovalType = ApprovalType::find($implant->approval_type_id);
+            $newApprovalType = ApprovalType::find($validated['approval_type_id']);
+
+            /**** 03 - Compare & Collect Changes for Logging (Implant Fields) ****/
+            if ($implant->generator_id != $validated['generator_id']) {
+                $changes[] = "Generator changed from \"{$oldGenerator?->generator_code}\" to \"{$newGenerator?->generator_code}\"";
+            }
+            if ($implant->stock_location_id != $validated['stock_location_id']) {
+                $changes[] = "Stock Location changed from \"{$oldStockLocation?->stock_location_name}\" to \"{$newStockLocation?->stock_location_name}\"";
+            }
+            if ($implant->approval_type_id != $validated['approval_type_id']) {
+                $changes[] = "Approval Type changed from \"{$oldApprovalType?->approval_type_name}\" to \"{$newApprovalType?->approval_type_name}\"";
+            }
+            if ($implant->implant_generator_sn != $validated['implant_generator_sn']) {
+                $changes[] = "Generator SN changed from \"{$implant->implant_generator_sn}\" to \"{$validated['implant_generator_sn']}\"";
+            }
+            if ($implant->implant_generator_itemPrice != $validated['implant_generator_itemPrice']) {
+                $changes[] = "Generator Price changed from \"{$implant->implant_generator_itemPrice}\" to \"{$validated['implant_generator_itemPrice']}\"";
+            }
+            if ($implant->implant_generator_qty != $validated['implant_generator_qty']) {
+                $changes[] = "Generator Quantity changed from \"{$implant->implant_generator_qty}\" to \"{$validated['implant_generator_qty']}\"";
+            }
+            if ($implant->implant_sales_total_price != $validated['implant_sales_total_price']) {
+                $changes[] = "Sales Total Price changed from \"{$implant->implant_sales_total_price}\" to \"{$validated['implant_sales_total_price']}\"";
+            }
+            if ($implant->implant_pt_address != $validated['implant_pt_address']) {
+                $changes[] = "Patient Address changed from \"{$implant->implant_pt_address}\" to \"{$validated['implant_pt_address']}\"";
+            }
+
+            /**** 04 - Update Implant Details ****/
             $implant->update([
                 'implant_pt_address' => $validated['implant_pt_address'],
                 'implant_generator_sn' => $validated['implant_generator_sn'],
@@ -78,56 +104,97 @@ class SalesBillingController extends Controller
                 'approval_type_id' => $validated['approval_type_id']
             ]);
 
-            /**** 02 - Update / Add Implant Models ****/
-            if (isset($validated['model_ids'], $validated['model_sns'],  $validated['model_price'], $validated['model_qty'], $validated['stock_location_ids'])) {
+            /**** 05 - Handle Associated Implant Models ****/
+            $existingModels = ImplantModel::where('implant_id', $id)->get()->keyBy('model_id');
+            $processedModels = [];
+
+            if (!empty($validated['model_ids'])) {
                 foreach ($validated['model_ids'] as $index => $modelID) {
-                    if (isset($validated['model_sns'][$index], $validated['model_price'][$index], $validated['model_qty'][$index], $validated['stock_location_ids'][$index])) {
-                        $modelSN = $validated['model_sns'][$index];
-                        $stockLocationID = $validated['stock_location_ids'][$index];
-                        $modelPrice = $validated['model_price'][$index];
-                        $modelQty = $validated['model_qty'][$index];
+                    $sn = $validated['model_sns'][$index] ?? '';
+                    if (!$sn) continue;
 
-                        $existingIM = ImplantModel::where('implant_id', $id)->where('model_id', $modelID)->first();
+                    $qty = $validated['model_qty'][$index] ?? 1;
+                    $price = $validated['model_price'][$index] ?? 0;
+                    $stockLocID = $validated['stock_location_ids'][$index] ?? null;
 
-                        if ($existingIM) {
-                            $existingIM->update([
-                                'implant_model_sn' => $modelSN,
-                                'stock_location_id' => $stockLocationID,
-                                'implant_model_itemPrice' => $modelPrice,
-                                'implant_model_qty' => $modelQty
-                            ]);
-                        } else {
-                            ImplantModel::create([
-                                'implant_id' => $id,
-                                'model_id' => $modelID,
-                                'implant_model_sn' => $modelSN,
-                                'stock_location_id' => $stockLocationID,
-                                'implant_model_itemPrice' => $modelPrice,
-                                'implant_model_qty' => $modelQty
-                            ]);
+                    $model = AbbottModel::find($modelID);
+                    $modelCode = $model?->model_code ?? "Model-$modelID";
+                    $stockLocName = StockLocation::find($stockLocID)?->stock_location_name;
+
+                    $data = [
+                        'implant_model_sn' => $sn,
+                        'implant_model_qty' => $qty,
+                        'implant_model_itemPrice' => $price,
+                        'stock_location_id' => $stockLocID,
+                    ];
+
+                    if (isset($existingModels[$modelID])) {
+                        // Update existing model and log changes
+                        $existing = $existingModels[$modelID];
+
+                        if ($existing->implant_model_sn != $sn) {
+                            $modelChanges[] = "$modelCode: SN changed from \"{$existing->implant_model_sn}\" to \"$sn\"";
                         }
+                        if ($existing->implant_model_qty != $qty) {
+                            $modelChanges[] = "$modelCode: Qty changed from \"{$existing->implant_model_qty}\" to \"$qty\"";
+                        }
+                        if ($existing->implant_model_itemPrice != $price) {
+                            $modelChanges[] = "$modelCode: Price changed from \"{$existing->implant_model_itemPrice}\" to \"$price\"";
+                        }
+                        if ($existing->stock_location_id != $stockLocID) {
+                            $oldLoc = StockLocation::find($existing->stock_location_id)?->stock_location_name;
+                            $modelChanges[] = "$modelCode: Stock Location changed from \"$oldLoc\" to \"$stockLocName\"";
+                        }
+
+                        $existing->update($data);
+                    } else {
+                        // Add new model
+                        ImplantModel::create([
+                            'implant_id' => $implant->id,
+                            'model_id' => $modelID,
+                            ...$data
+                        ]);
+                        $modelChanges[] = "$modelCode: model added";
                     }
+
+                    $processedModels[] = $modelID;
                 }
             }
 
-            $updatedModelIDs = isset($validated['model_ids'])
-                ? array_filter($validated['model_ids'], fn($id) => !is_null($id))
-                : [];
-
-            ImplantModel::where('implant_id', $id)->whereNotIn('model_id', $updatedModelIDs)->delete();
+            /**** 06 - Handle Removed Models ****/
+            foreach ($existingModels as $mid => $mdata) {
+                if (!in_array($mid, $processedModels)) {
+                    $modelCode = AbbottModel::find($mid)?->model_code ?? "Model-$mid";
+                    $modelChanges[] = "$modelCode: model removed";
+                    $mdata->delete();
+                }
+            }
 
             DB::commit();
 
-            /**** 03 - Implants Registration Form Generation ****/
-            $imc = new ImplantController();
-            $imc->generateIRF(Crypt::encrypt($implant->id));
-
-            /**** 04 - Inventory Consumption Form Generation ****/
+            /**** 07 - Regenerate ICF Documents ****/
+            (new ImplantController())->generateIRF(Crypt::encrypt($implant->id));
             $this->generatePreviewDownloadICF(Crypt::encrypt($implant->id), 2);
+
+            /**** 08 - Record Implant Update Log ****/
+            ImplantLog::create([
+                'user_id' => auth()->user()->id,
+                'staff_id' => auth()->user()->id,
+                'implant_id' => $implant->id,
+                'log_datetime' => Carbon::now(),
+                'log_activity' =>
+                "Implant record updated by " . auth()->user()->staff_name .
+                    " — Patient: {$implant->implant_pt_name} (IC: {$implant->implant_pt_icno}, Ref No: {$implant->implant_refno})<br><br>" .
+                    "<strong>Changes:</strong><br>" . (count($changes) ? implode('<br>', $changes) : 'No implant field changes.') . "<br><br>" .
+                    "<strong>Model Changes:</strong><br>" . (count($modelChanges) ? implode('<br>', $modelChanges) : 'No implant model changes.')
+            ]);
 
             return back()->with('success', 'Inventory Consumption Form updated successfully.');
         } catch (Exception $e) {
-            return back()->with('error', 'Opps!, Error updating ICF: ' . $e->getMessage());
+            DB::rollBack();
+
+            /**** 09 - Handle Exceptions ****/
+            return back()->with('error', 'Failed to update ICF: ' . $e->getMessage());
         }
     }
 
@@ -291,14 +358,21 @@ class SalesBillingController extends Controller
                 ->setOption('isPhpEnabled', true)
                 ->setPaper('a4', 'landscape');
 
+            $implant = Implant::where('id', $id)->first();
+
             if ($opt == 1) {
                 // VIEW PDF
+                ImplantLog::create([
+                    'log_activity' => 'Inventory consumption form viewed by ' . auth()->user()->staff_name . ' — Patient: ' . $implant->implant_pt_name . ' (IC: ' . $implant->implant_pt_icno . ', Ref No: ' . $implant->implant_refno . ')',
+                    'log_datetime' => now(),
+                    'staff_id' => auth()->user()->id,
+                    'implant_id' => $implant->id,
+                ]);
                 return $pdf->stream($title . '.pdf');
             } elseif ($opt == 2) {
                 // SAVE TO STORAGE
                 $filePath = 'implants/' . $formattedData['implant_pt_directory'] . '/' . $title . '.pdf';
 
-                $implant = Implant::where('id', $id)->first();
                 $implant->implant_pt_icf = $filePath;
                 $implant->save();
 
@@ -418,6 +492,24 @@ class SalesBillingController extends Controller
                 ]
             );
 
+            foreach ($fileLabelMap as $field => $label) {
+                if ($req->hasFile($field)) {
+
+                    $file = $req->file($field);
+                    $extension = $file->getClientOriginalExtension();
+                    $fileName = "{$hospitalCode}_{$generatorCode}_{$implantDate}_{$patientName}_{$label}.{$extension}";
+
+                    ImplantLog::create([
+                        'log_activity' => 'File uploaded (' . $fileName . ') by ' . auth()->user()->staff_name .
+                            ' — Patient: ' . $implant->implant_pt_name .
+                            ' (IC: ' . $implant->implant_pt_icno . ', Ref No: ' . $implant->implant_refno . ')',
+                        'log_datetime' => now(),
+                        'staff_id' => auth()->user()->id,
+                        'implant_id' => $id,
+                    ]);
+                }
+            }
+
             return response()->json(['success' => true, 'message' => 'Documents uploaded and saved successfully.']);
         } catch (Exception $e) {
             return response()->json(['success' => false, 'message' => 'Error uploading documents: ' . $e->getMessage()]);
@@ -434,6 +526,21 @@ class SalesBillingController extends Controller
             $doc = Document::whereId($docId)->first();
 
             if (!empty($doc->$field) && Storage::exists($doc->$field)) {
+                $deletedFileName = basename($doc->$field);
+
+                $implant = Implant::find($doc->implant_id);
+
+                if ($implant) {
+                    ImplantLog::create([
+                        'log_activity' => 'File deleted (' . $deletedFileName . ') by ' . auth()->user()->staff_name .
+                            ' — Patient: ' . $implant->implant_pt_name .
+                            ' (IC: ' . $implant->implant_pt_icno . ', Ref No: ' . $implant->implant_refno . ')',
+                        'log_datetime' => now(),
+                        'staff_id' => auth()->user()->id,
+                        'implant_id' => $implant->id,
+                    ]);
+                }
+
                 Storage::delete($doc->$field);
             }
 
@@ -462,4 +569,117 @@ class SalesBillingController extends Controller
             return back()->with('error', 'Oops! Error loading documents: ' . $e->getMessage());
         }
     }
+
+
+    // CONFIRM & UPDATE ICF - FUNCTION [NOT IN USE]
+    // public function confirmICFData(Request $req, $id)
+    // {
+    //     $id = Crypt::decrypt($id);
+    //     $validator = Validator::make($req->all(), [
+    //         'implant_pt_address' => 'nullable|string',
+    //         'implant_generator_sn' => 'required|string',
+    //         'implant_generator_itemPrice' => 'nullable|decimal:0,2',
+    //         'implant_generator_qty' => 'nullable|integer|min:1',
+    //         'implant_sales_total_price' => 'nullable|decimal:0,2',
+    //         'generator_id' => 'required|integer',
+    //         'stock_location_id' => 'required|integer',
+    //         'approval_type_id' => 'required|integer',
+    //         'model_ids' => 'nullable|array',
+    //         'model_sns' => 'nullable|array',
+    //         'model_price' => 'nullable|array',
+    //         'model_qty' => 'nullable|array',
+    //         'stock_location_ids' => 'nullable|array',
+    //     ], [], [
+    //         'implant_pt_address' => 'patient address',
+    //         'implant_generator_sn' => 'generator serial number',
+    //         'implant_generator_itemPrice' => 'generator price',
+    //         'implant_generator_qty' => 'generator quantity',
+    //         'implant_sales_total_price' => 'implant sales',
+    //         'generator_id' => 'generator',
+    //         'stock_location_id' => 'stock location',
+    //         'approval_type_id' => 'payment method / approval type',
+    //         'model_ids' => 'model',
+    //         'model_sns' => 'model serial number',
+    //         'model_price' => 'model price',
+    //         'model_qty' => 'model quantity',
+    //         'stock_location_ids' => 'model stock location',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return redirect()->back()
+    //             ->withErrors($validator)
+    //             ->withInput();
+    //     }
+
+    //     try {
+    //         DB::beginTransaction();
+
+    //         $validated = $validator->validated();
+
+    //         /**** 01 - Update Implant Details ****/
+    //         $implant = Implant::whereId($id)->first();
+
+    //         $implant->update([
+    //             'implant_pt_address' => $validated['implant_pt_address'],
+    //             'implant_generator_sn' => $validated['implant_generator_sn'],
+    //             'implant_generator_itemPrice' => $validated['implant_generator_itemPrice'],
+    //             'implant_generator_qty' => $validated['implant_generator_qty'],
+    //             'implant_sales_total_price' => $validated['implant_sales_total_price'],
+    //             'generator_id' => $validated['generator_id'],
+    //             'stock_location_id' => $validated['stock_location_id'],
+    //             'approval_type_id' => $validated['approval_type_id']
+    //         ]);
+
+    //         /**** 02 - Update / Add Implant Models ****/
+    //         if (isset($validated['model_ids'], $validated['model_sns'],  $validated['model_price'], $validated['model_qty'], $validated['stock_location_ids'])) {
+    //             foreach ($validated['model_ids'] as $index => $modelID) {
+    //                 if (isset($validated['model_sns'][$index], $validated['model_price'][$index], $validated['model_qty'][$index], $validated['stock_location_ids'][$index])) {
+    //                     $modelSN = $validated['model_sns'][$index];
+    //                     $stockLocationID = $validated['stock_location_ids'][$index];
+    //                     $modelPrice = $validated['model_price'][$index];
+    //                     $modelQty = $validated['model_qty'][$index];
+
+    //                     $existingIM = ImplantModel::where('implant_id', $id)->where('model_id', $modelID)->first();
+
+    //                     if ($existingIM) {
+    //                         $existingIM->update([
+    //                             'implant_model_sn' => $modelSN,
+    //                             'stock_location_id' => $stockLocationID,
+    //                             'implant_model_itemPrice' => $modelPrice,
+    //                             'implant_model_qty' => $modelQty
+    //                         ]);
+    //                     } else {
+    //                         ImplantModel::create([
+    //                             'implant_id' => $id,
+    //                             'model_id' => $modelID,
+    //                             'implant_model_sn' => $modelSN,
+    //                             'stock_location_id' => $stockLocationID,
+    //                             'implant_model_itemPrice' => $modelPrice,
+    //                             'implant_model_qty' => $modelQty
+    //                         ]);
+    //                     }
+    //                 }
+    //             }
+    //         }
+
+    //         $updatedModelIDs = isset($validated['model_ids'])
+    //             ? array_filter($validated['model_ids'], fn($id) => !is_null($id))
+    //             : [];
+
+    //         ImplantModel::where('implant_id', $id)->whereNotIn('model_id', $updatedModelIDs)->delete();
+
+    //         DB::commit();
+
+    //         /**** 03 - Implants Registration Form Generation ****/
+    //         $imc = new ImplantController();
+    //         $imc->generateIRF(Crypt::encrypt($implant->id));
+
+    //         /**** 04 - Inventory Consumption Form Generation ****/
+    //         $this->generatePreviewDownloadICF(Crypt::encrypt($implant->id), 2);
+
+    //         return back()->with('success', 'Inventory Consumption Form updated successfully.');
+    //     } catch (Exception $e) {
+    //         return back()->with('error', 'Opps!, Error updating ICF: ' . $e->getMessage());
+    //     }
+    // }
 }
