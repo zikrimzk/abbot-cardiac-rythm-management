@@ -13,6 +13,7 @@ use App\Models\Document;
 use App\Models\Hospital;
 use App\Models\Generator;
 use App\Models\Quotation;
+use App\Models\ImplantLog;
 use App\Models\AbbottModel;
 use App\Models\Designation;
 use Illuminate\Support\Str;
@@ -174,7 +175,7 @@ class RouteController extends Controller
                         <a href="' . route('update-implant-page', Crypt::encrypt($row->id)) . '" class="avtar avtar-xs btn-light-primary">
                             <i class="ti ti-edit f-20"></i>
                         </a>
-                         <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-info" data-bs-toggle="modal"
+                        <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-info" data-bs-toggle="modal"
                             data-bs-target="#uploadBackupFormModal-' . $row->id . '">
                             <i class="ti ti-file-upload f-20"></i>
                         </a>
@@ -184,8 +185,12 @@ class RouteController extends Controller
                         <a href="' . route('generate-patient-id-card-page', Crypt::encrypt($row->id)) . '" class="avtar avtar-xs  btn-light-success">
                             <i class="ti ti-id f-20"></i>
                         </a>
-                         <a href="' . route('view-patient-id-card-page', ['id' => $row->id, 'opt' => 1, 'type' => '1']) . '" class="avtar avtar-xs  btn-light-danger d-none">
+                        <a href="' . route('view-patient-id-card-page', ['id' => $row->id, 'opt' => 1, 'type' => '1']) . '" class="avtar avtar-xs  btn-light-danger d-none">
                             <i class="ti ti-id f-20"></i>
+                        </a>
+                         <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-primary" data-bs-toggle="modal"
+                            data-bs-target="#viewImplantLogModal-' . $row->id . '">
+                            <i class="ti ti-history f-20"></i>
                         </a>
                     ';
                     return $button;
@@ -195,14 +200,21 @@ class RouteController extends Controller
 
                 return $table->make(true);
             }
+
+            $implantlog = DB::table('implant_logs')
+                ->join('users', 'implant_logs.staff_id', '=', 'users.id')
+                ->get();
+
             return view('crmd-system.implant-management.manage-implant', [
                 'title' => 'CRMD System | Manage Implant',
                 'ims' => Implant::all(),
                 'hosp' => Hospital::all(),
                 'gene' => Generator::all(),
                 'region' => Region::all(),
+                'implogs' => $implantlog
             ]);
         } catch (Exception $e) {
+            dd($e->getMessage());
             return abort(500, $e->getMessage());
         }
     }
@@ -835,7 +847,7 @@ class RouteController extends Controller
                     $data->where('company_id', $req->input('company'));
                 }
 
-                 if ($req->has('hospital') && !empty($req->input('hospital'))) {
+                if ($req->has('hospital') && !empty($req->input('hospital'))) {
                     $data->where('hospital_id', $req->input('hospital'));
                 }
 

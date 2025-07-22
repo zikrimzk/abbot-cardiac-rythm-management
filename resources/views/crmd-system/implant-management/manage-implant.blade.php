@@ -150,7 +150,7 @@
                                     </thead>
                                 </table>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -206,6 +206,47 @@
             </div>
         </form>
         <!-- [ Upload Implant Form Modal ] end -->
+
+        <!-- [ View Implant Log Modal ] start -->
+        <div class="modal fade" id="viewImplantLogModal-{{ $im->id }}" tabindex="-1"
+            aria-labelledby="implantLogModalLabel-{{ $im->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                <div class="modal-content border-0 shadow-lg">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="implantLogModalLabel-{{ $im->id }}">
+                            Implant Log <span class="fw-normal">({{ $im->implant_refno }})</span>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body p-4">
+                        @forelse($implogs->where('implant_id', $im->id)->sortByDesc('log_datetime') as $implog)
+                            <div class="card mb-4 shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="mb-0 fw-semibold">
+                                            {{ $implog->staff_name }}
+                                        </h6>
+                                        <small class="text-muted">
+                                            {{ \Carbon\Carbon::parse($implog->log_datetime)->format('d M Y, h:i A') }}
+                                        </small>
+                                    </div>
+                                    <div class="log-content">
+                                        <p class="mb-0 text-dark">{!! $implog->log_activity !!}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="alert alert-danger text-center">
+                                No implant log available for this record.
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ View Implant Log Modal ] end -->
     @endforeach
 
     <script type="text/javascript">
