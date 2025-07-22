@@ -58,18 +58,24 @@
             <!-- [ Main Content ] start -->
             <div class="row">
                 <!-- [ Assign Generator & Model ] start -->
+
+                <!-- [ Option ] start -->
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-2"
-                                    data-bs-toggle="modal" data-bs-target="#addCompanyModal"><i class="ti ti-plus f-18"></i>
-                                    Add Company
+                            <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+                                <button type="button" id="addCompanyBtn" data-bs-toggle="modal"
+                                    data-bs-target="#addCompanyModal"
+                                    class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Add Company">
+                                    <i class="ti ti-plus f-18"></i>
+                                    <span class="d-none d-md-inline">Add Company</span>
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
+                <!-- [ Option ] end -->
 
                 <div class="col-sm-12">
                     <div class="card">
@@ -641,13 +647,13 @@
 
             $('.uppercase-no-symbols').on('input', function() {
                 let val = $(this).val();
-                val = val.toUpperCase().replace(/[^A-Z0-9]/g, ''); 
+                val = val.toUpperCase().replace(/[^A-Z0-9]/g, '');
                 $(this).val(val);
             });
 
             $('.uppercase').on('input', function() {
                 let val = $(this).val();
-                val = val.toUpperCase(); 
+                val = val.toUpperCase();
                 $(this).val(val);
             });
 

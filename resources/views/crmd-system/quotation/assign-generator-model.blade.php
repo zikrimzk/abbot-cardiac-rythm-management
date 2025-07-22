@@ -58,19 +58,23 @@
             <!-- [ Main Content ] start -->
             <div class="row">
                 <!-- [ Assign Generator & Model ] start -->
+
+                <!-- [ Option ] start -->
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-2"
-                                    data-bs-toggle="modal" data-bs-target="#addAssignmentModal"><i
-                                        class="ti ti-plus f-18"></i>
-                                    Assign Generator & Model
+                            <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+                                <button type="button" id="addAssignmentBtn"  data-bs-toggle="modal" data-bs-target="#addAssignmentModal"
+                                    class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Assign Generator & Model">
+                                    <i class="ti ti-plus f-18"></i>
+                                    <span class="d-none d-md-inline">Assign Generator & Model</span>
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
+                <!-- [ Option ] end -->
 
                 <div class="col-sm-12">
                     <div class="card">

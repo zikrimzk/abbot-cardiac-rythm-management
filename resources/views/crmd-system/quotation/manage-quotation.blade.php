@@ -58,19 +58,23 @@
             <!-- [ Main Content ] start -->
             <div class="row">
                 <!-- [ Manage Quotation ] start -->
+
+                <!-- [ Option ] start -->
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="d-flex gap-2">
+                            <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
                                 <a href="{{ route('generate-quotation-page') }}"
-                                    class="btn btn-primary d-inline-flex align-items-center gap-2"><i
-                                        class="ti ti-plus f-18"></i>
-                                    Generate Quotation
+                                    class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Generate Quotation">
+                                    <i class="ti ti-plus f-18"></i>
+                                    <span class="d-none d-md-inline">Generate Quotation</span>
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
+                <!-- [ Option ] end -->
 
                 <div class="col-sm-12">
                     <div class="card">
@@ -120,6 +124,7 @@
 
                             </div>
                             <!-- [ Filter ] end -->
+                            
                             <div class="dt-responsive table-responsive">
                                 <table class="table data-table table-hover nowrap">
                                     <thead>
