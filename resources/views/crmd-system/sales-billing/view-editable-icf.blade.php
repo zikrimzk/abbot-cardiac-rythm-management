@@ -85,11 +85,6 @@
             background-color: #d1e7ff;
         }
 
-        .btn-submit {
-            padding: 10px 30px;
-            font-weight: 500;
-        }
-
         @media (max-width: 768px) {
             .form-container {
                 padding: 15px;
@@ -483,8 +478,8 @@
 
                             <!-- Submit Button -->
                             <div class="d-flex justify-content-end mt-4">
-                                <button type="submit" class="btn btn-primary btn-submit" id="generate-icf-btn">
-                                    <i class="fas fa-check-circle me-2"></i> Update ICF
+                                <button type="submit" class="btn btn-primary btn-submit d-flex align-items-center" id="generate-icf-btn">
+                                    <i class="ti ti-circle-check me-2"></i> Update ICF
                                 </button>
                             </div>
                         </form>

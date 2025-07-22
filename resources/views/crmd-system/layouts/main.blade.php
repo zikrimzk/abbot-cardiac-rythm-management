@@ -54,6 +54,13 @@
             opacity: 0.6;
             text-decoration: none;
         }
+        
+        .avoid-long-column {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
     </style>
 
 </head>

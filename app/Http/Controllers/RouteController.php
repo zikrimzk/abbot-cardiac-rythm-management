@@ -819,6 +819,7 @@ class RouteController extends Controller
                         'quotation_pt_icno',
                         'quotation_price',
                         'quotation_directory',
+                        'quotation_refno',
                         'hospital_id',
                         'company_id'
                     );
@@ -903,7 +904,7 @@ class RouteController extends Controller
                     <div class="d-block mb-3 mt-3">
                         <a href="' . route('quotation-document-get', ['id' => Crypt::encrypt($row->id), 'opt' => 1]) . '" target="_blank" class="link-dark">
                             <i class="fas fa-file-pdf f-20 text-danger me-2"></i>
-                                 Generated Quotation
+                                 <span class="text-primary">' . $row->quotation_refno . '</span>
                         </a>
                     </div>
                 ';

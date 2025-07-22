@@ -117,8 +117,7 @@
                                                     id="company_code" placeholder="Enter Company Code"
                                                     value="{{ old('company_code') }}" required>
                                                 @error('company_code')
-                                                    <span class="invalid-feedback"
-                                                        role="alert">{{ $message }}</span>
+                                                    <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -133,8 +132,7 @@
                                                     id="company_name" placeholder="Enter Company Name"
                                                     value="{{ old('company_name') }}" required>
                                                 @error('company_name')
-                                                    <span class="invalid-feedback"
-                                                        role="alert">{{ $message }}</span>
+                                                    <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -149,8 +147,7 @@
                                                     id="company_ssm" placeholder="Enter Company Registration No"
                                                     value="{{ old('company_ssm') }}" required>
                                                 @error('company_ssm')
-                                                    <span class="invalid-feedback"
-                                                        role="alert">{{ $message }}</span>
+                                                    <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -165,8 +162,7 @@
                                                     class="form-control @error('company_address') is-invalid @enderror" cols="30" rows="4"
                                                     placeholder="Enter Company Address" required>{{ old('company_address') }}</textarea>
                                                 @error('company_address')
-                                                    <span class="invalid-feedback"
-                                                        role="alert">{{ $message }}</span>
+                                                    <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -180,8 +176,7 @@
                                                     id="company_website" placeholder="Enter Company Website"
                                                     value="{{ old('company_website') }}">
                                                 @error('company_website')
-                                                    <span class="invalid-feedback"
-                                                        role="alert">{{ $message }}</span>
+                                                    <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -195,8 +190,7 @@
                                                     id="company_email" placeholder="Enter Company Email"
                                                     value="{{ old('company_email') }}">
                                                 @error('company_email')
-                                                    <span class="invalid-feedback"
-                                                        role="alert">{{ $message }}</span>
+                                                    <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -206,12 +200,11 @@
                                             <div class="mb-3">
                                                 <label for="company_phoneno" class="form-label">Company Phone No</label>
                                                 <input type="text" name="company_phoneno"
-                                                    class="form-control @error('company_phoneno') is-invalid @enderror"
+                                                    class="form-control input-phone @error('company_phoneno') is-invalid @enderror"
                                                     id="company_phoneno" placeholder="Enter Company Phone No"
                                                     value="{{ old('company_phoneno') }}">
                                                 @error('company_phoneno')
-                                                    <span class="invalid-feedback"
-                                                        role="alert">{{ $message }}</span>
+                                                    <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -221,12 +214,11 @@
                                             <div class="mb-3">
                                                 <label for="company_fax" class="form-label">Company Fax</label>
                                                 <input type="text" name="company_fax"
-                                                    class="form-control @error('company_fax') is-invalid @enderror"
+                                                    class="form-control input-phone @error('company_fax') is-invalid @enderror"
                                                     id="company_fax" placeholder="Enter Company Fax"
                                                     value="{{ old('company_fax') }}">
                                                 @error('company_fax')
-                                                    <span class="invalid-feedback"
-                                                        role="alert">{{ $message }}</span>
+                                                    <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -244,8 +236,7 @@
                                                     style="display:none; margin-top:10px; max-height:150px;" />
 
                                                 @error('company_logo')
-                                                    <span class="invalid-feedback"
-                                                        role="alert">{{ $message }}</span>
+                                                    <span class="invalid-feedback" role="alert">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -400,7 +391,7 @@
                                                         class="form-label">Company Phone No</label>
                                                     <input type="text" name="company_phoneno_up"
                                                         id="company_phoneno_up_{{ $comp->id }}"
-                                                        class="form-control @error('company_phoneno_up') is-invalid @enderror"
+                                                        class="form-control input-phone @error('company_phoneno_up') is-invalid @enderror"
                                                         placeholder="Enter Company Phone No"
                                                         value="{{ $comp->company_phoneno }}">
                                                     @error('company_phoneno_up')
@@ -417,7 +408,7 @@
                                                         class="form-label">Company Fax</label>
                                                     <input type="text" name="company_fax_up"
                                                         id="company_fax_up_{{ $comp->id }}"
-                                                        class="form-control @error('company_fax_up') is-invalid @enderror"
+                                                        class="form-control input-phone @error('company_fax_up') is-invalid @enderror"
                                                         placeholder="Enter Company Fax" value="{{ $comp->company_fax }}">
                                                     @error('company_fax_up')
                                                         <span class="invalid-feedback" role="alert">
@@ -594,16 +585,69 @@
                 }
             });
 
-            //FORMAT:INPUT
+
+            /*********************************************************/
+            /********************INPUT FORMATTING*********************/
+            /*********************************************************/
+
+            function formatMalaysiaNumber(input) {
+                let numbers = input.replace(/\D/g, '');
+
+                if (numbers.startsWith('60')) {
+                    numbers = '+' + numbers;
+                } else if (numbers.startsWith('0')) {
+                    numbers = '+60' + numbers.substring(1);
+                } else if (/^1/.test(numbers)) {
+                    numbers = '+60' + numbers;
+                } else if (numbers.length > 0) {
+                    numbers = '+60' + numbers;
+                }
+
+                if (numbers.startsWith('+60') && numbers.length > 3) {
+                    const digits = numbers.substring(3);
+                    if (digits.length >= 2 && digits.length <= 3) {
+                        numbers = '+60 ' + digits;
+                    } else if (digits.length >= 4 && digits.length <= 7) {
+                        numbers = '+60 ' + digits.substring(0, 2) + '-' + digits.substring(2);
+                    } else if (digits.length >= 8) {
+                        numbers = '+60 ' + digits.substring(0, 2) + '-' + digits.substring(2, 5) + ' ' + digits
+                            .substring(5,
+                                10);
+                    }
+                }
+
+                return numbers;
+            }
+
+            $('.input-phone').on('input', function() {
+                const input = $(this);
+                const cursorPos = input[0].selectionStart;
+                const originalLength = input.val().length;
+
+                const formatted = formatMalaysiaNumber(input.val());
+                input.val(formatted);
+                const newLength = formatted.length;
+                const cursorOffset = newLength - originalLength;
+                input[0].setSelectionRange(cursorPos + cursorOffset, cursorPos + cursorOffset);
+            });
+
+            $('.input-phone').on('blur', function() {
+                const input = $(this);
+                let value = input.val().trim();
+
+                value = value.replace(/\s+$/, '');
+                input.val(value);
+            });
+
             $('.uppercase-no-symbols').on('input', function() {
                 let val = $(this).val();
-                val = val.toUpperCase().replace(/[^A-Z0-9]/g, ''); // Keep only letters and numbers
+                val = val.toUpperCase().replace(/[^A-Z0-9]/g, ''); 
                 $(this).val(val);
             });
 
-             $('.uppercase').on('input', function() {
+            $('.uppercase').on('input', function() {
                 let val = $(this).val();
-                val = val.toUpperCase(); // Keep only letters and numbers
+                val = val.toUpperCase(); 
                 $(this).val(val);
             });
 

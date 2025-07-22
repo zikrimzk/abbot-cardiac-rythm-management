@@ -363,7 +363,7 @@ class QuotationController extends Controller
             DB::commit();
 
             return redirect()->route('view-quotation-get', ['id' => Crypt::encrypt($quotation->id)])
-                ->with('success', 'Successfully added quotation.');
+                ->with('success', 'Successfully saved quotation details. Please review the quotation.');
         } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()
@@ -409,30 +409,30 @@ class QuotationController extends Controller
             $metadata = collect($req->except($excluded));
             $quotation->quotation_metadata = $metadata;
 
-            /**** 03 - Handle Quotation Refno ****/
-            $company = Company::find($req->company_id);
-            $hospital = Hospital::find($req->hospital_id);
-            $generator = Generator::find($req->generator_id);
-            $year = date('Y');
+            /**** 03 - Handle Quotation Refno [NOT IN USE] ****/
+            // $company = Company::find($req->company_id);
+            // $hospital = Hospital::find($req->hospital_id);
+            // $generator = Generator::find($req->generator_id);
+            // $year = date('Y');
 
-            if ($company && $hospital && $generator) {
-                $refPrefix = $company->company_code . '/' . $hospital->hospital_code . '/' . $generator->generator_code . '/' . $year;
+            // if ($company && $hospital && $generator) {
+            //     $refPrefix = $company->company_code . '/' . $hospital->hospital_code . '/' . $generator->generator_code . '/' . $year;
 
-                $latest = DB::table('quotations')
-                    ->where('quotation_refno', 'LIKE', $refPrefix . '/%')
-                    ->where('id', '!=', $quotation->id) // exclude current
-                    ->orderBy('quotation_refno', 'desc')
-                    ->first();
+            //     $latest = DB::table('quotations')
+            //         ->where('quotation_refno', 'LIKE', $refPrefix . '/%')
+            //         ->where('id', '!=', $quotation->id) // exclude current
+            //         ->orderBy('quotation_refno', 'desc')
+            //         ->first();
 
-                if ($latest) {
-                    $parts = explode('/', $latest->quotation_refno);
-                    $lastSequence = intval(end($parts));
-                    $newSequence = str_pad($lastSequence + 1, 3, '0', STR_PAD_LEFT);
-                } else {
-                    $newSequence = '001';
-                }
-                $quotation->quotation_refno = $refPrefix . '/' . $newSequence;
-            }
+            //     if ($latest) {
+            //         $parts = explode('/', $latest->quotation_refno);
+            //         $lastSequence = intval(end($parts));
+            //         $newSequence = str_pad($lastSequence + 1, 3, '0', STR_PAD_LEFT);
+            //     } else {
+            //         $newSequence = '001';
+            //     }
+            //     $quotation->quotation_refno = $refPrefix . '/' . $newSequence;
+            // }
 
             /**** 04 - Insert Data Into Quotation ****/
             $quotation->save();
@@ -443,7 +443,7 @@ class QuotationController extends Controller
             DB::commit();
 
             return redirect()->route('view-quotation-get', ['id' => Crypt::encrypt($quotation->id)])
-                ->with('success', 'Quotation updated successfully.');
+                ->with('success', 'Quotation details updated successfully. Please review the quotation.');
         } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()

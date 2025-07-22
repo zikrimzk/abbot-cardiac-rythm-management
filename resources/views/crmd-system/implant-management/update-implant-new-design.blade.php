@@ -857,9 +857,8 @@
                                 </div>
                             </div>
                             <div class="card-footer d-flex align-items-center justify-content-end">
-                                <button type="submit" class="btn btn-primary btn-submit d-flex align-items-center"
-                                    id="update-implant-btn">
-                                    <i class="ti ti-edit me-2"></i> Update Implant
+                                 <button type="submit" class="btn btn-primary btn-submit d-flex align-items-center" id="update-implant-btn">
+                                    <i class="ti ti-circle-check me-2"></i> Update Implant
                                 </button>
                             </div>
                         </div>

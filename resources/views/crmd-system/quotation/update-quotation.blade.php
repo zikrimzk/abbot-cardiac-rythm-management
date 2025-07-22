@@ -7,6 +7,23 @@
 
 <!-- [ Main Content ] start -->
 @section('content')
+    <style>
+        .section-header {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+            margin-top: 1rem;
+        }
+
+        .form-label {
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .bg-light-primary {
+            background-color: #e8f4ff;
+        }
+    </style>
+
     <div class="pc-container">
         <div class="pc-content">
 
@@ -72,283 +89,337 @@
             <!-- [ Main Content ] start -->
             <div class="row">
 
-                <!-- [ Generate Quotation ] start -->
+                <!-- [ Update Quotation ] start -->
                 <div class="col-sm-12">
-                    <form action="{{ route('update-quotation-post', ['id' => Crypt::encrypt($quotation->id)]) }}" method="POST">
+                    <form action="{{ route('update-quotation-post', ['id' => Crypt::encrypt($quotation->id)]) }}"
+                        method="POST">
                         @csrf
-                        <div class="card p-3">
-                            <div class="card-header">
-                                <h5>Update Quotation</h5>
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header border-bottom py-3">
+                                <h5 class="mb-0">Update Quotation Details</h5>
                             </div>
                             <div class="card-body">
-                                <div class="row">
+                                <!-- Required fields note -->
+                                <div class="alert alert-light border mb-4">
+                                    <div class="text-muted"><i class="fas fa-info-circle me-2"></i>Fields marked with
+                                        <span class="text-danger">*</span> are required
+                                    </div>
+                                </div>
 
-                                    <h5>Sender Details</h5>
-                                    <!-- Company Select -->
-                                    <div class="col-sm-6">
+                                <div class="row">
+                                    <!-- Sender Details -->
+                                    <div class="col-sm-12">
+                                        <div class="section-header mb-3">
+                                            <h6 class="fw-semibold mb-0 text-primary">
+                                                <i class="fas fa-user-md me-2"></i>Sender Details
+                                            </h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="company_id" class="form-label">Company <span
+                                            <label for="company_id" class="form-label fw-medium">Company <span
                                                     class="text-danger">*</span></label>
                                             <select name="company_id" id="company_id"
                                                 class="form-select @error('company_id') is-invalid @enderror" required>
-                                                <option value="">- Select Company -</option>
+                                                <option value="" disabled>- Select Company -</option>
                                                 @foreach ($companies as $company)
                                                     @if ($company->id == $quotation->company_id)
                                                         <option value="{{ $company->id }}" selected>
-                                                            {{ $company->company_name }}
-                                                        </option>
+                                                            {{ $company->company_name }}</option>
                                                     @else
-                                                        <option value="{{ $company->id }}">{{ $company->company_name }}
+                                                        <option value="{{ $company->id }}" disabled>{{ $company->company_name }}
                                                         </option>
                                                     @endif
                                                 @endforeach
                                             </select>
                                             @error('company_id')
-                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
 
-                                    <!-- Sender Email Input -->
-                                    <div class="col-sm-6">
+                                    <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="sender_email" class="form-label">Sender Email</label>
-                                            <input type="email" name="sender_email" id="sender_email"
-                                                class="form-control @error('sender_email') is-invalid @enderror"
-                                                placeholder="Enter Sender Email" value="{{ $metadata->sender_email }}">
+                                            <label for="sender_email" class="form-label fw-medium">Email</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="far fa-envelope"></i></span>
+                                                <input type="email" name="sender_email" id="sender_email"
+                                                    class="form-control @error('sender_email') is-invalid @enderror"
+                                                    placeholder="email@company.com" value="{{ $metadata->sender_email }}">
+                                            </div>
                                             @error('sender_email')
-                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
 
-                                    <!-- Sender Tel Input -->
-                                    <div class="col-sm-6">
+                                    <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="sender_telno" class="form-label">Sender Phone No</label>
-                                            <input type="text" name="sender_telno" id="sender_telno"
-                                                class="form-control @error('sender_telno') is-invalid @enderror"
-                                                placeholder="Enter Sender Phone No" value="{{ $metadata->sender_telno }}">
+                                            <label for="sender_telno" class="form-label fw-medium">Phone</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                                <input type="text" name="sender_telno" id="sender_telno"
+                                                    class="form-control @error('sender_telno') is-invalid @enderror"
+                                                    placeholder="+60 12-3456789" value="{{ $metadata->sender_telno }}">
+                                            </div>
                                             @error('sender_telno')
-                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
 
-                                    <!-- Sender Fax Input -->
-                                    <div class="col-sm-6">
+                                    <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="sender_fax" class="form-label">Sender Fax</label>
-                                            <input type="text" name="sender_fax" id="sender_fax"
-                                                class="form-control @error('sender_fax') is-invalid @enderror"
-                                                placeholder="Enter Sender Fax" value="{{ $metadata->sender_fax }}">
+                                            <label for="sender_fax" class="form-label fw-medium">Fax</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fas fa-fax"></i></span>
+                                                <input type="text" name="sender_fax" id="sender_fax"
+                                                    class="form-control @error('sender_fax') is-invalid @enderror"
+                                                    placeholder="+60 3-12345678" value="{{ $metadata->sender_fax }}">
+                                            </div>
                                             @error('sender_fax')
-                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
-                                    <hr>
 
-                                    <h5>Receiver Details</h5>
-                                    <!-- Hospital Input -->
-                                    <div class="col-sm-6">
+                                    <!-- Receiver Details -->
+                                    <div class="col-sm-12">
+                                        <div class="section-header mb-3 mt-4">
+                                            <h6 class="fw-semibold mb-0 text-primary">
+                                                <i class="fas fa-hospital me-2"></i>Receiver Details
+                                            </h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="hospital_id" class="form-label">Hospital <span
+                                            <label for="hospital_id" class="form-label fw-medium">Hospital <span
                                                     class="text-danger">*</span></label>
                                             <select name="hospital_id" id="hospital_id"
                                                 class="form-select @error('hospital_id') is-invalid @enderror" required>
-                                                <option value="">- Select Hospital -</option>
+                                                <option value="" disabled>- Select Hospital -</option>
                                                 @foreach ($hospitals as $hosp)
                                                     @if ($hosp->id == $quotation->hospital_id)
                                                         <option value="{{ $hosp->id }}" selected>
-                                                            [{{ $hosp->hospital_code }}] -
-                                                            {{ $hosp->hospital_name }}
+                                                            [{{ $hosp->hospital_code }}] - {{ $hosp->hospital_name }}
                                                         </option>
                                                     @else
-                                                        <option value="{{ $hosp->id }}">[{{ $hosp->hospital_code }}]
-                                                            -
-                                                            {{ $hosp->hospital_name }}
-                                                        </option>
+                                                        <option value="{{ $hosp->id }}" disabled>[{{ $hosp->hospital_code }}]
+                                                            - {{ $hosp->hospital_name }}</option>
                                                     @endif
                                                 @endforeach
                                             </select>
                                             @error('hospital_id')
-                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
 
-                                    <!-- Attn Name Input -->
-                                    <div class="col-sm-6">
+                                    <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="quotation_attn" class="form-label">Attn Name</label>
-                                            <input type="text" name="quotation_attn" id="quotation_attn"
-                                                class="form-control @error('quotation_attn') is-invalid @enderror"
-                                                placeholder="Enter Attn Name" value="{{ $metadata->quotation_attn }}">
+                                            <label for="quotation_attn" class="form-label fw-medium">Attention
+                                                Name</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                                                <input type="text" name="quotation_attn" id="quotation_attn"
+                                                    class="form-control @error('quotation_attn') is-invalid @enderror"
+                                                    placeholder="Dr. John Smith" value="{{ $metadata->quotation_attn }}">
+                                            </div>
                                             @error('quotation_attn')
-                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
 
-                                    <hr>
-
-                                    <h5>Quotation Details</h5>
-
-                                    <!-- Quotation Date Input -->
-                                    <div class="col-sm-6">
-                                        <div class="mb-3">
-                                            <label for="company_id" class="form-label">Quotation Date</label>
-                                            <input type="date" name="quotation_date" id="quotation_date"
-                                                class="form-control @error('quotation_date') is-invalid @enderror"
-                                                value="{{ date('Y-m-d', strtotime($quotation->quotation_date)) }}"
-                                                readonly>
-                                            @error('quotation_date')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <!-- Subject Input -->
+                                    <!-- Quotation Details -->
                                     <div class="col-sm-12">
+                                        <div class="section-header mb-3 mt-4">
+                                            <h6 class="fw-semibold mb-0 text-primary">
+                                                <i class="fas fa-file-contract me-2"></i>Quotation Details
+                                            </h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="quotation_subject" class="form-label">Subject <span
+                                            <label for="quotation_date" class="form-label fw-medium">Quotation
+                                                Date</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="far fa-calendar"></i></span>
+                                                <input type="date" name="quotation_date" id="quotation_date"
+                                                    class="form-control @error('quotation_date') is-invalid @enderror"
+                                                    value="{{ date('Y-m-d', strtotime($quotation->quotation_date)) }}"
+                                                    readonly>
+                                            </div>
+                                            @error('quotation_date')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="mb-3">
+                                            <label for="quotation_subject" class="form-label fw-medium">Subject <span
                                                     class="text-danger">*</span></label>
                                             <input type="text" name="quotation_subject" id="quotation_subject"
                                                 class="form-control @error('quotation_subject') is-invalid @enderror"
-                                                placeholder="Enter Subject" value="{{ $metadata->quotation_subject }}"
-                                                required>
+                                                placeholder="Cardiac Device Quotation Details"
+                                                value="{{ $metadata->quotation_subject }}" required>
                                             @error('quotation_subject')
-                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
 
-                                    <hr />
+                                    <!-- Generator Details -->
+                                    <div class="col-sm-12">
+                                        <div class="section-header mb-3 mt-4">
+                                            <h6 class="fw-semibold mb-0 text-primary">
+                                                <i class="fas fa-heartbeat me-2"></i>Generator Details
+                                            </h6>
+                                        </div>
+                                    </div>
 
-                                    <h5>Generator Details</h5>
-                                    <!-- Generator Select -->
-                                    <div class="col-sm-6">
+                                    <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="generator_id" class="form-label">Generator <span
+                                            <label for="generator_id" class="form-label fw-medium">Generator <span
                                                     class="text-danger">*</span></label>
                                             <select name="generator_id" id="generator_id"
                                                 class="form-select @error('generator_id') is-invalid @enderror" required>
-                                                <option value="">- Select Generator -</option>
+                                                <option value="" disabled>- Select Generator -</option>
                                                 @foreach ($generators as $gene)
                                                     @if ($gene->id == $metadata->generator_id)
                                                         <option value="{{ $gene->id }}" selected>
-                                                            [{{ $gene->generator_code }}] -
-                                                            {{ $gene->generator_name }}</option>
+                                                            [{{ $gene->generator_code }}] - {{ $gene->generator_name }}
+                                                        </option>
                                                     @else
-                                                        <option value="{{ $gene->id }}">
-                                                            [{{ $gene->generator_code }}] -
-                                                            {{ $gene->generator_name }}</option>
+                                                        <option value="{{ $gene->id }}" disabled>[{{ $gene->generator_code }}]
+                                                            - {{ $gene->generator_name }}</option>
                                                     @endif
                                                 @endforeach
                                             </select>
                                             @error('generator_id')
-                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
 
-                                    <!-- Model Textarea -->
-                                    <div class="col-sm-12">
+                                    <div class="col-12">
                                         <div class="mb-3">
-                                            <label for="model" class="form-label">Model</label>
-                                            <textarea id="model" cols="10" rows="6" class="form-control" readonly></textarea>
+                                            <label for="model" class="form-label fw-medium">Generator Models</label>
+                                            <textarea id="model" cols="10" rows="4" class="form-control bg-light" readonly
+                                                placeholder="Select generator to view assigned models"></textarea>
                                         </div>
                                     </div>
 
-                                    <!-- Unit Price Input -->
-                                    <div class="col-sm-5">
+                                    <div class="col-md-5">
                                         <div class="mb-3">
-                                            <label for="quotation_unitprice" class="form-label">Unit Price (RM) <span
-                                                    class="text-danger">*</span></label>
-                                            <input type="text" name="quotation_unitprice" id="quotation_unitprice"
-                                                class="form-control @error('quotation_unitprice') is-invalid @enderror"
-                                                placeholder="Enter Unit Price (RM)"
-                                                value="{{ $metadata->quotation_unitprice }}" required>
+                                            <label for="quotation_unitprice" class="form-label fw-medium">Unit Price (RM)
+                                                <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">RM</span>
+                                                <input type="text" name="quotation_unitprice" id="quotation_unitprice"
+                                                    class="form-control text-end @error('quotation_unitprice') is-invalid @enderror"
+                                                    placeholder="0.00" value="{{ $metadata->quotation_unitprice }}"
+                                                    required>
+                                            </div>
                                             @error('quotation_unitprice')
-                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
 
-                                    <!-- Qty Input -->
-                                    <div class="col-sm-2">
+                                    <div class="col-md-2">
                                         <div class="mb-3">
-                                            <label for="quotation_qty" class="form-label">Qty <span
+                                            <label for="quotation_qty" class="form-label fw-medium">Quantity <span
                                                     class="text-danger">*</span></label>
                                             <input type="text" name="quotation_qty" id="quotation_qty"
-                                                class="form-control @error('quotation_qty') is-invalid @enderror"
-                                                placeholder="0" value="{{ $metadata->quotation_qty }}" required>
+                                                class="form-control text-center @error('quotation_qty') is-invalid @enderror"
+                                                placeholder="1" value="{{ $metadata->quotation_qty }}" required>
                                             @error('quotation_qty')
-                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
 
-                                    <!-- Total Price Input -->
-                                    <div class="col-sm-5">
+                                    <div class="col-md-5">
                                         <div class="mb-3">
-                                            <label for="quotation_totalprice" class="form-label">Total Price (RM) <span
-                                                    class="text-danger">*</span></label>
-                                            <input type="text" name="quotation_totalprice" id="quotation_totalprice"
-                                                class="form-control @error('quotation_totalprice') is-invalid @enderror"
-                                                placeholder="Enter Total Price (RM)"
-                                                value="{{ $quotation->quotation_price }}" readonly>
+                                            <label for="quotation_totalprice" class="form-label fw-medium">Total Price
+                                                (RM) <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">RM</span>
+                                                <input type="text" name="quotation_totalprice"
+                                                    id="quotation_totalprice"
+                                                    class="form-control text-end bg-light @error('quotation_totalprice') is-invalid @enderror"
+                                                    placeholder="0.00" value="{{ $quotation->quotation_price }}"
+                                                    readonly>
+                                            </div>
                                             @error('quotation_totalprice')
-                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
 
-                                    <hr />
+                                    <!-- Patient Details -->
+                                    <div class="col-sm-12">
+                                        <div class="section-header mb-3 mt-4">
+                                            <h6 class="fw-semibold mb-0 text-primary">
+                                                <i class="fas fa-user-injured me-2"></i>Patient Details
+                                            </h6>
+                                        </div>
+                                    </div>
 
-                                    <h5>Patient Details</h5>
-
-                                    <!-- Patient Name Input -->
-                                    <div class="col-sm-6">
+                                    <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="quotation_pt_name" class="form-label">Patient Name <span
+                                            <label for="quotation_pt_name" class="form-label fw-medium">Patient Name <span
                                                     class="text-danger">*</span></label>
-                                            <input type="text" name="quotation_pt_name" id="quotation_pt_name"
-                                                class="form-control @error('quotation_pt_name') is-invalid @enderror"
-                                                placeholder="Enter Patient Name" value="{{ $quotation->quotation_pt_name }}"
-                                                required>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                                <input type="text" name="quotation_pt_name" id="quotation_pt_name"
+                                                    class="form-control @error('quotation_pt_name') is-invalid @enderror"
+                                                    placeholder="Patient Full Name"
+                                                    value="{{ $quotation->quotation_pt_name }}" required>
+                                            </div>
                                             @error('quotation_pt_name')
-                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
 
-                                    <!-- Patient IC/Passport Input -->
-                                    <div class="col-sm-6">
+                                    <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="quotation_pt_icno" class="form-label">Patient IC / Passport
-                                                No <span class="text-danger">*</span></label>
-                                            <input type="text" name="quotation_pt_icno" id="quotation_pt_icno"
-                                                class="form-control @error('quotation_pt_icno') is-invalid @enderror"
-                                                placeholder="Enter Patient IC / Passport No"
-                                                value="{{ $quotation->quotation_pt_icno }}" required>
+                                            <label for="quotation_pt_icno" class="form-label fw-medium">Patient ID <span
+                                                    class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                                <input type="text" name="quotation_pt_icno" id="quotation_pt_icno"
+                                                    class="form-control @error('quotation_pt_icno') is-invalid @enderror"
+                                                    placeholder="IC or Passport Number"
+                                                    value="{{ $quotation->quotation_pt_icno }}" required>
+                                            </div>
+                                            <small class="form-text text-muted">Format: 123456-78-9012 or A1234567</small>
                                             @error('quotation_pt_icno')
-                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
-                            <div class="card-footer d-grid gap-2 d-md-flex justify-content-md-end">
-                                <button type="reset" class="btn btn-light-danger">Reset</button>
-                                <button type="submit" id= "submitBtn" class="btn btn-primary">Update Quotation</button>
+                            <div class="card-footer py-3 d-grid gap-2 d-md-flex justify-content-md-end border-top">
+                                <button type="reset"
+                                    class="btn btn-light btn-outline-secondary d-flex align-items-center justify-content-center">
+                                    <i class="ti ti-rotate-clockwise me-2"></i>Reset
+                                </button>
+                                <button type="submit" id="submitBtn" class="btn btn-primary d-flex align-items-center justify-content-center">
+                                    <i class="ti ti-circle-check me-2"></i> Update Quotation
+                                </button>
                             </div>
                         </div>
                     </form>
                 </div>
-                <!-- [ Generate Quotation ] end -->
+                <!-- [ Update Quotation ] end -->
 
             </div>
             <!-- [ Main Content ] end -->
@@ -423,9 +494,8 @@
 
         $('#generator_id').trigger('change');
 
-
         /*********************************************************/
-        /**********************GETTERS FUNCTION*******************/
+        /*****************CALCULATE FUNCTION**********************/
         /*********************************************************/
 
         function calculateTotal() {
@@ -441,18 +511,15 @@
             $('#quotation_totalprice').val(total.toFixed(2));
         }
 
-        // Trigger calculation when unit price or qty changes
         $('#quotation_unitprice, #quotation_qty').on('input', calculateTotal);
 
         $('#quotation_pt_icno').on('input', function() {
             let input = $(this).val();
 
-            // If it starts with a letter, treat it as passport — allow as-is
             if (/^[a-zA-Z]/.test(input)) {
                 return;
             }
 
-            // Format numeric-only input into IC format
             let numbersOnly = input.replace(/[^0-9]/g, '');
             let formatted = '';
 
@@ -471,18 +538,93 @@
         });
 
 
+        /*********************************************************/
+        /********************PHONE/FORMATTING*********************/
+        /*********************************************************/
+
+        function formatMalaysiaNumber(input) {
+            let numbers = input.replace(/\D/g, '');
+
+            if (numbers.startsWith('60')) {
+                numbers = '+' + numbers;
+            } else if (numbers.startsWith('0')) {
+                numbers = '+60' + numbers.substring(1);
+            } else if (/^1/.test(numbers)) {
+                numbers = '+60' + numbers;
+            } else if (numbers.length > 0) {
+                numbers = '+60' + numbers;
+            }
+
+            if (numbers.startsWith('+60') && numbers.length > 3) {
+                const digits = numbers.substring(3);
+                if (digits.length >= 2 && digits.length <= 3) {
+                    numbers = '+60 ' + digits;
+                } else if (digits.length >= 4 && digits.length <= 7) {
+                    numbers = '+60 ' + digits.substring(0, 2) + '-' + digits.substring(2);
+                } else if (digits.length >= 8) {
+                    numbers = '+60 ' + digits.substring(0, 2) + '-' + digits.substring(2, 5) + ' ' + digits.substring(5,
+                        10);
+                }
+            }
+
+            return numbers;
+        }
+
+        $('#sender_telno, #sender_fax').on('input', function() {
+            const input = $(this);
+            const cursorPos = input[0].selectionStart;
+            const originalLength = input.val().length;
+
+            const formatted = formatMalaysiaNumber(input.val());
+            input.val(formatted);
+            const newLength = formatted.length;
+            const cursorOffset = newLength - originalLength;
+            input[0].setSelectionRange(cursorPos + cursorOffset, cursorPos + cursorOffset);
+        });
+
+        $('#sender_telno, #sender_fax').on('blur', function() {
+            const input = $(this);
+            let value = input.val().trim();
+
+            value = value.replace(/\s+$/, '');
+            input.val(value);
+        });
 
         /*********************************************************/
-        /******************FORM SUBMIT FUNCTION*******************/
+        /******************VALIDATION FUNCTION*******************/
         /*********************************************************/
 
         $('#submitBtn').on('click', function() {
             let isValid = true;
 
+            // Validate input fields
             $('input[required]').each(function() {
-                if ($(this).val().trim() === '') {
+                const value = $(this).val();
+                if (!value || value.trim() === '') {
                     isValid = false;
-                    $(this).css('border-color', 'red'); // Optional: add visual cue
+                    $(this).css('border-color', 'red');
+                } else {
+                    $(this).css('border-color', '#ccc');
+                }
+            });
+
+            // Validate textarea fields
+            $('textarea[required]').each(function() {
+                const value = $(this).val();
+                if (!value || value.trim() === '') {
+                    isValid = false;
+                    $(this).css('border-color', 'red');
+                } else {
+                    $(this).css('border-color', '#ccc');
+                }
+            });
+
+            // Validate select fields
+            $('select[required]').each(function() {
+                const value = $(this).val();
+                if (!value || value === '') {
+                    isValid = false;
+                    $(this).css('border-color', 'red');
                 } else {
                     $(this).css('border-color', '#ccc');
                 }

@@ -65,7 +65,7 @@
                                 <a href="{{ route('generate-quotation-page') }}"
                                     class="btn btn-primary d-inline-flex align-items-center gap-2"><i
                                         class="ti ti-plus f-18"></i>
-                                    Add Quotation
+                                    Generate Quotation
                                 </a>
                             </div>
                         </div>
@@ -230,7 +230,8 @@
                     },
                     {
                         data: 'quotation_pt',
-                        name: 'quotation_pt'
+                        name: 'quotation_pt',
+                        className: 'avoid-long-column'
                     },
                     {
                         data: 'quotation_file',
