@@ -3,6 +3,12 @@
 
 <!-- [ Main Content ] start -->
 @section('content')
+    <style>
+        button,
+        .btn {
+            border-radius: 6px !important;
+        }
+    </style>
     <div class="pc-container">
         <div class="pc-content">
             <!-- [ breadcrumb ] start -->
@@ -58,21 +64,24 @@
             <!-- [ Main Content ] start -->
             <div class="row">
                 <!-- [ Manage Product Group ] start -->
+
                 <div class="col-sm-12">
+                    <!-- [ Option ] start -->
                     <div class="card">
                         <div class="card-body">
-                            <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-2"
-                                    data-bs-toggle="modal" data-bs-target="#addProductGroupModal"><i
-                                        class="ti ti-plus f-18"></i>
-                                    Add Product Group
+                            <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#addProductGroupModal"
+                                    class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Add Product Group">
+                                    <i class="ti ti-plus f-18"></i>
+                                    <span class="d-none d-md-inline">Add Product Group</span>
                                 </button>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <!-- [ Option ] end -->
 
-                <div class="col-sm-12">
+
                     <div class="card">
                         <div class="card-body">
                             <div class="dt-responsive table-responsive">
@@ -113,7 +122,7 @@
                                                 <label for="product_group_name" class="form-label">Product Group Name
                                                     <span class="text-danger">*</span></label>
                                                 <input type="text"
-                                                    class="form-control @error('product_group_name') is-invalid @enderror"
+                                                    class="form-control input-code @error('product_group_name') is-invalid @enderror"
                                                     id="product_group_name" name="product_group_name"
                                                     placeholder="Enter Product Group Name"
                                                     value="{{ old('product_group_name') }}" required>
@@ -193,7 +202,7 @@
                                                     <label for="product_group_name" class="form-label">Product Group Name
                                                         <span class="text-danger">*</span></label>
                                                     <input type="text"
-                                                        class="form-control @error('product_group_name') is-invalid @enderror"
+                                                        class="form-control input-code @error('product_group_name') is-invalid @enderror"
                                                         id="product_group_name" name="product_group_name"
                                                         placeholder="Enter Product Group Name"
                                                         value="{{ $pg->product_group_name }}" required>
@@ -252,35 +261,27 @@
 
                     <!-- [ Delete Modal ] start -->
                     <div class="modal fade" id="deleteModal-{{ $pg->id }}" data-bs-keyboard="false"
-                        tabindex="-1" aria-hidden="true">
+                        tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
                         <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-sm-12 mb-4">
-                                            <div class="d-flex justify-content-center align-items-center mb-3">
-                                                <i class="ti ti-trash text-danger" style="font-size: 100px"></i>
-                                            </div>
+                            <div class="modal-content border-0 shadow-lg rounded-3">
+                                <div class="modal-body p-5">
+                                    <div class="text-center mb-4">
+                                        <i class="ti ti-trash text-danger" style="font-size: 80px;"></i>
+                                    </div>
+                                    <div class="text-center mb-2">
+                                        <h4 class="fw-bold text-dark">Are you sure?</h4>
+                                        <p class="text-muted mb-0">This action cannot be undone.</p>
+                                    </div>
 
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                <h2>Are you sure ?</h2>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 mb-3">
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                <p class="fw-normal f-18 text-center">This action cannot be undone.</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <div class="d-flex justify-content-between gap-3 align-items-center">
-                                                <button type="reset" class="btn btn-light btn-pc-default w-50"
-                                                    data-bs-dismiss="modal">Cancel</button>
-                                                <a href="{{ route('delete-product-group-get', $pg->id) }}"
-                                                    class="btn btn-danger w-100">Delete Anyways</a>
-                                            </div>
-                                        </div>
+                                    <div class="d-flex justify-content-center gap-3 mt-4">
+                                        <button type="button" class="btn btn-outline-secondary w-50"
+                                            data-bs-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                        <a href="{{ route('delete-product-group-get', $pg->id) }}"
+                                            class="btn btn-danger w-50">
+                                            Delete Anyways
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -310,40 +311,44 @@
 
         $(document).ready(function() {
 
-            $(function() {
-
-                // DATATABLE : PRODUCT GROUP
-                var table = $('.data-table').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    responsive: true,
-                    ajax: {
-                        url: "{{ route('manage-product-group-page') }}",
+            // DATATABLE : PRODUCT GROUP
+            var table = $('.data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                ajax: {
+                    url: "{{ route('manage-product-group-page') }}",
+                },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        searchable: false,
+                        className: "text-start"
                     },
-                    columns: [{
-                            data: 'DT_RowIndex',
-                            name: 'DT_RowIndex',
-                            searchable: false,
-                            className: "text-start"
-                        },
-                        {
-                            data: 'product_group_name',
-                            name: 'product_group_name'
-                        },
-                        {
-                            data: 'product_group_visibility',
-                            name: 'product_group_visibility'
-                        },
-                        {
-                            data: 'action',
-                            name: 'action',
-                            orderable: false,
-                            searchable: false
-                        }
-                    ]
+                    {
+                        data: 'product_group_name',
+                        name: 'product_group_name'
+                    },
+                    {
+                        data: 'product_group_visibility',
+                        name: 'product_group_visibility'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
 
-                });
+            });
 
+            /*********************************************************/
+            /********************INPUT FORMATTING*********************/
+            /*********************************************************/
+
+            $('.input-code').on('input', function() {
+                this.value = this.value.toUpperCase();
             });
 
         });

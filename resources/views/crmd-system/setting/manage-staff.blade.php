@@ -3,6 +3,12 @@
 
 <!-- [ Main Content ] start -->
 @section('content')
+    <style>
+        button,
+        .btn {
+            border-radius: 6px !important;
+        }
+    </style>
     <div class="pc-container">
         <div class="pc-content">
             <!-- [ breadcrumb ] start -->
@@ -58,19 +64,68 @@
             <!-- [ Main Content ] start -->
             <div class="row">
                 <!-- [ Manage Staff ] start -->
+
                 <div class="col-sm-12">
+
+                    <!-- [ Option ] start -->
                     <div class="card">
                         <div class="card-body">
-                            <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-2"
-                                    data-bs-toggle="modal" data-bs-target="#addStaffModal"><i class="ti ti-plus f-18"></i>
-                                    Add Staff</button>
+                            <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#addStaffModal"
+                                    class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Add Staff">
+                                    <i class="ti ti-plus f-18"></i>
+                                    <span class="d-none d-md-inline">Add Staff</span>
+                                </button>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <!-- [ Option ] end -->
 
-                <div class="col-sm-12">
+
+                    <!-- [ Filter ] start -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-4">
+                                    <select class="form-select" id="designationFilter">
+                                        <option value="">-- Select Designation --</option>
+                                        @foreach ($des as $dep)
+                                            <option value="{{ $dep->id }}">{{ $dep->designation_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <small>
+                                        <a href="javascript:void(0)" id="clearDesignationFilter"
+                                            class="link-primary">Clear</a>
+                                    </small>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <select class="form-select" id="roleFilter">
+                                        <option value="">-- Select Role --</option>
+                                        <option value="1">Administrator</option>
+                                        <option value="2">Staff</option>
+                                    </select>
+                                    <small>
+                                        <a href="javascript:void(0)" id="clearRoleFilter" class="link-primary">Clear</a>
+                                    </small>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <select class="form-select" id="statusFilter">
+                                        <option value="">-- Select Status --</option>
+                                        <option value="1">Active</option>
+                                        <option value="2">Inactive</option>
+                                    </select>
+                                    <small>
+                                        <a href="javascript:void(0)" id="clearStatusFilter" class="link-primary">Clear</a>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ Filter ] end -->
+
                     <div class="card">
                         <div class="card-body">
                             <div class="dt-responsive table-responsive">
@@ -115,8 +170,8 @@
                                                         class="text-danger">*</span></label>
                                                 <input type="text" id="staffName"
                                                     class="form-control @error('staff_name') is-invalid @enderror"
-                                                    name="staff_name" placeholder="Fullname" value="{{ old('staff_name') }}"
-                                                    required>
+                                                    name="staff_name" placeholder="Fullname"
+                                                    value="{{ old('staff_name') }}" required>
                                                 @error('staff_name')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -125,11 +180,12 @@
 
                                         <div class="col-sm-12">
                                             <div class="mb-3">
-                                                <label for="staffIdno" class="form-label">ID Number</label>
+                                                <label for="staffIdno" class="form-label">ID Number <span
+                                                        class="text-danger">*</span></label>
                                                 <input type="text" id="staffIdno"
                                                     class="form-control @error('staff_idno') is-invalid @enderror"
                                                     name="staff_idno" placeholder="ID Number"
-                                                    value="{{ old('staff_idno') }}">
+                                                    value="{{ old('staff_idno') }}" required>
                                                 @error('staff_idno')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -280,11 +336,12 @@
 
                                             <div class="col-sm-12">
                                                 <div class="mb-3">
-                                                    <label for="staffIdno" class="form-label">ID Number</label>
+                                                    <label for="staffIdno" class="form-label">ID Number <span
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" id="staffIdno"
                                                         class="form-control @error('staff_idno') is-invalid @enderror"
                                                         name="staff_idno" placeholder="ID Number"
-                                                        value="{{ $st->staff_idno }}">
+                                                        value="{{ $st->staff_idno }}" required>
                                                     @error('staff_idno')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -313,7 +370,7 @@
                                                         class="form-select @error('designation_id') is-invalid @enderror"
                                                         required>
                                                         @foreach ($des as $dep)
-                                                            @if ($st->desination_id == $dep->id)
+                                                            @if ($st->designation_id == $dep->id)
                                                                 <option value="{{ $dep->id }}" selected>
                                                                     {{ $dep->designation_name }}</option>
                                                             @else
@@ -394,40 +451,41 @@
 
                     <!-- [ Delete Modal ] start -->
                     <div class="modal fade" id="deleteModal-{{ $st->id }}" data-bs-keyboard="false"
-                        tabindex="-1" aria-hidden="true">
+                        tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
                         <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-sm-12 mb-4">
-                                            <div class="d-flex justify-content-center align-items-center mb-3">
-                                                <i class="ti ti-trash text-danger" style="font-size: 100px"></i>
-                                            </div>
+                            <div class="modal-content border-0 shadow-lg rounded-3">
+                                <div class="modal-body p-5">
+                                    <!-- Icon -->
+                                    <div class="text-center mb-4">
+                                        <i class="ti ti-user-off text-danger" style="font-size: 80px;"></i>
+                                    </div>
 
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                <h2>Account Deletion</h2>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 mb-3">
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                <p class="fw-normal f-18 text-center">
-                                                    This action will not permanently delete the user. You can always change
-                                                    the
-                                                    status back to active if needed. Are you sure you want to inactive
-                                                    {{ $st->staff_name }} account?
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <div class="d-flex justify-content-center gap-3 align-items-center">
-                                                <button type="reset" class="btn btn-light btn-pc-default w-50"
-                                                    data-bs-dismiss="modal">Cancel</button>
-                                                <a href="{{ route('delete-staff-get', $st->id) }}"
-                                                    class="btn btn-danger w-100">Inactive</a>
-                                            </div>
-                                        </div>
+                                    <!-- Title -->
+                                    <div class="text-center mb-3">
+                                        <h4 class="fw-bold text-dark">Account Inactivation</h4>
+                                        <p class="text-muted mb-0">
+                                            This won't permanently delete the account. You can always set it back to active
+                                            later.
+                                        </p>
+                                    </div>
+
+                                    <!-- User Info -->
+                                    <div class="text-center mt-3 mb-3">
+                                        <p class="fw-normal text-dark">
+                                            Are you sure you want to inactivate <strong>{{ $st->staff_name }}</strong>'s
+                                            account?
+                                        </p>
+                                    </div>
+
+                                    <!-- Action Buttons -->
+                                    <div class="d-flex justify-content-center gap-3 mt-4">
+                                        <button type="button" class="btn btn-outline-secondary w-50"
+                                            data-bs-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                        <a href="{{ route('delete-staff-get', $st->id) }}" class="btn btn-danger w-50">
+                                            Inactivate
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -456,55 +514,92 @@
 
         $(document).ready(function() {
 
-            $(function() {
-
-                // DATATABLE : STAFF
-                var table = $('.data-table').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    responsive: true,
-                    ajax: {
-                        url: "{{ route('manage-staff-page') }}",
+            // DATATABLE : STAFF
+            var table = $('.data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                ajax: {
+                    url: "{{ route('manage-staff-page') }}",
+                    data: function(d) {
+                        d.designation = $('#designationFilter')
+                            .val();
+                        d.role = $('#roleFilter')
+                            .val();
+                        d.status = $('#statusFilter')
+                            .val();
+                    }
+                },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        searchable: false,
+                        className: "text-start"
                     },
-                    columns: [{
-                            data: 'DT_RowIndex',
-                            name: 'DT_RowIndex',
-                            searchable: false,
-                            className: "text-start"
-                        },
-                        {
-                            data: 'staff_name',
-                            name: 'staff_name',
-                            className: "avoid-long-column"
-                        },
-                        {
-                            data: 'email',
-                            name: 'email',
-                            className: "avoid-long-column"
+                    {
+                        data: 'staff_name',
+                        name: 'staff_name',
+                        className: "avoid-long-column"
+                    },
+                    {
+                        data: 'email',
+                        name: 'email',
+                        className: "avoid-long-column"
 
-                        },
-                        {
-                            data: 'designation',
-                            name: 'designation'
-                        },
-                        {
-                            data: 'role',
-                            name: 'role'
-                        },
-                        {
-                            data: 'status',
-                            name: 'status'
-                        },
-                        {
-                            data: 'action',
-                            name: 'action',
-                            orderable: false,
-                            searchable: false
-                        }
-                    ]
+                    },
+                    {
+                        data: 'designation',
+                        name: 'designation'
+                    },
+                    {
+                        data: 'role',
+                        name: 'role'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
 
-                });
+            });
 
+            /* Region Filter */
+            $('#designationFilter').on('change', function() {
+                $('.data-table').DataTable().ajax
+                    .reload();
+            });
+
+            $("#clearDesignationFilter").click(function() {
+                $('#designationFilter').val("");
+                $('.data-table').DataTable().ajax.reload();
+            });
+
+            /* Hospital Filter */
+            $('#roleFilter').on('change', function() {
+                $('.data-table').DataTable().ajax
+                    .reload();
+            });
+
+            $("#clearRoleFilter").click(function() {
+                $('#roleFilter').val("");
+                $('.data-table').DataTable().ajax.reload();
+            });
+
+            /* Generator Filter */
+            $('#statusFilter').on('change', function() {
+                $('.data-table').DataTable().ajax
+                    .reload();
+            });
+
+            $("#clearStatusFilter").click(function() {
+                $('#statusFilter').val("");
+                $('.data-table').DataTable().ajax.reload();
             });
 
         });

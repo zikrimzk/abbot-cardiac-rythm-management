@@ -1183,7 +1183,7 @@ class RouteController extends Controller
         }
     }
 
-    // Manage Designation Route
+    // MANAGE DESIGNATION - ROUTE
     public function manageDesignation(Request $req)
     {
         if ($req->ajax()) {
@@ -1238,14 +1238,24 @@ class RouteController extends Controller
         ]);
     }
 
-    // Manage Staff Route
+    // MANAGE STAFF - ROUTE
     public function manageStaff(Request $req)
     {
         if ($req->ajax()) {
 
             $data = DB::table('users')
-                ->select('id', 'staff_name', 'staff_idno', 'staff_role', 'staff_status', 'email', 'designation_id')
-                ->get();
+                ->select('id', 'staff_name', 'staff_idno', 'staff_role', 'staff_status', 'email', 'designation_id');
+
+            if ($req->has('designation') && !empty($req->input('designation'))) {
+                $data->where('designation_id', $req->input('designation'));
+            }
+            if ($req->has('status') && !empty($req->input('status'))) {
+                $data->where('staff_status', $req->input('status'));
+            }
+            if ($req->has('role') && !empty($req->input('role'))) {
+                $data->where('staff_role', $req->input('role'));
+            }
+            $data = $data->get();
 
             $table = DataTables::of($data)->addIndexColumn();
 
@@ -1297,7 +1307,7 @@ class RouteController extends Controller
                         </a>
                          <a href="javascript: void(0)" class="avtar avtar-xs  btn-light-danger" data-bs-toggle="modal"
                             data-bs-target="#deleteModal-' . $row->id . '">
-                            <i class="ti ti-trash f-20"></i>
+                            <i class="ti ti-user-off f-20"></i>
                         </a>
                     ';
                 }
@@ -1317,7 +1327,7 @@ class RouteController extends Controller
         ]);
     }
 
-    //Manage Hospital Route
+    // MANAGE HOSPITAL - ROUTE
     public function manageHospital(Request $req)
     {
         if ($req->ajax()) {
@@ -1349,7 +1359,8 @@ class RouteController extends Controller
             });
 
             $table->addColumn('action', function ($row) {
-                $isReferenced = DB::table('implants')->where('hospital_id', $row->id)->exists();
+                $isReferenced = DB::table('implants')->where('hospital_id', $row->id)->exists() ||
+                    DB::table('quotations')->where('hospital_id', $row->id)->exists();
                 $buttonEdit =
                     '
                         <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
@@ -1389,7 +1400,7 @@ class RouteController extends Controller
         ]);
     }
 
-    //Manage Doctor Route
+    // MANAGE DOCTOR - ROUTE
     public function manageDoctor(Request $req)
     {
         if ($req->ajax()) {
@@ -1459,7 +1470,7 @@ class RouteController extends Controller
         ]);
     }
 
-    //Manage Model Category Route
+    // MANAGE MODEL CATEGORY - ROUTE
     public function manageModelCategory(Request $req)
     {
         if ($req->ajax()) {
@@ -1530,7 +1541,7 @@ class RouteController extends Controller
         ]);
     }
 
-    //Manage Model Route
+    // MANAGE MODEL - ROUTE
     public function manageModel(Request $req)
     {
         if ($req->ajax()) {
@@ -1554,7 +1565,8 @@ class RouteController extends Controller
 
             $table->addColumn('action', function ($row) {
                 $isReferenced = false;
-                // $isReferenced = DB::table('implants')->where('model_id', $row->id)->exists();
+                $isReferenced = DB::table('implant_models')->where('model_id', $row->id)->exists() ||
+                    DB::table('quote_generator_models')->where('model_id', $row->id)->exists();
                 $buttonEdit =
                     '
                         <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
@@ -1594,7 +1606,7 @@ class RouteController extends Controller
         ]);
     }
 
-    //Manage Generator Route
+    // MANAGE GENERATOR - ROUTE
     public function manageGenerator(Request $req)
     {
         if ($req->ajax()) {
@@ -1617,7 +1629,7 @@ class RouteController extends Controller
 
             $table->addColumn('action', function ($row) {
                 $isReferenced = false;
-                // $isReferenced = DB::table('implants')->where('model_id', $row->id)->exists();
+                $isReferenced = DB::table('implants')->where('generator_id', $row->id)->exists();
                 $buttonEdit =
                     '
                         <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
@@ -1656,7 +1668,7 @@ class RouteController extends Controller
         ]);
     }
 
-    //Manage Region Route
+    // MANAGE REGION - ROUTE
     public function manageRegion(Request $req)
     {
         if ($req->ajax()) {
@@ -1669,7 +1681,7 @@ class RouteController extends Controller
 
             $table->addColumn('action', function ($row) {
                 $isReferenced = false;
-                // $isReferenced = DB::table('implants')->where('region_id', $row->id)->exists();
+                $isReferenced = DB::table('implants')->where('region_id', $row->id)->exists();
                 $buttonEdit =
                     '
                         <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"
@@ -1708,7 +1720,7 @@ class RouteController extends Controller
         ]);
     }
 
-    //Manage Product Group Route
+    // MANAGE PRODUCT GROUP - ROUTE
     public function manageProductGroup(Request $req)
     {
         if ($req->ajax()) {
@@ -1731,7 +1743,7 @@ class RouteController extends Controller
 
             $table->addColumn('action', function ($row) {
                 $isReferenced = false;
-                // $isReferenced = DB::table('product_group_lists')->where('product_group_id', $row->id)->exists();
+                $isReferenced = DB::table('product_group_lists')->where('product_group_id', $row->id)->exists();
                 $buttonEdit =
                     '
                          <a href="javascript: void(0)" class="avtar avtar-xs btn-light-primary" data-bs-toggle="modal"

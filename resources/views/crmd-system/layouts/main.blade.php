@@ -6,8 +6,10 @@
     <title>{{ $title }}</title>
     <!-- [Meta] -->
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=0.9, user-scalable=0, minimal-ui" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=0.9, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="description" content="Abbott - Cardiac Rythm Management Division System" />
     <meta name="keywords" content="abbott, crmd, cardiac, rythm, management, division, system" />
     <meta name="author" content="Muhammad Zikri Kashim | Zeeke Software Solution" />
@@ -54,12 +56,16 @@
             opacity: 0.6;
             text-decoration: none;
         }
-        
+
         .avoid-long-column {
             max-width: 200px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+        }
+
+        table.dataTable thead th {
+            background: #e2e8f0 !important;
         }
     </style>
 
@@ -100,6 +106,33 @@
     <script src="../assets/js/fonts/custom-font.js"></script>
     <script src="../assets/js/pcoded.js"></script>
     <script src="../assets/js/plugins/feather.min.js"></script>
+
+    <script>
+        // Prevent pinch-to-zoom
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
+
+        // Prevent double-tap zoom
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            let now = new Date().getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            $('[title]').tooltip({
+                placement: 'bottom',
+                trigger: 'hover'
+            });
+        });
+    </script>
 
     <script>
         layout_change('light');

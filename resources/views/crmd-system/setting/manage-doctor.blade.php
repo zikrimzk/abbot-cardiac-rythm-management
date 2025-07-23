@@ -3,6 +3,12 @@
 
 <!-- [ Main Content ] start -->
 @section('content')
+    <style>
+        button,
+        .btn {
+            border-radius: 6px !important;
+        }
+    </style>
     <div class="pc-container">
         <div class="pc-content">
             <!-- [ breadcrumb ] start -->
@@ -25,8 +31,8 @@
             </div>
             <!-- [ breadcrumb ] end -->
 
-             <!-- [ Alert ] start -->
-             <div>
+            <!-- [ Alert ] start -->
+            <div>
                 @if (session()->has('success'))
                     <div class="alert alert-success alert-dismissible" role="alert">
                         <div class="d-flex justify-content-between align-items-center">
@@ -57,20 +63,24 @@
             <!-- [ Main Content ] start -->
             <div class="row">
                 <!-- [ Manage Doctor ] start -->
+
                 <div class="col-sm-12">
+
+                    <!-- [ Option ] start -->
                     <div class="card">
                         <div class="card-body">
-                            <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-2"
-                                    data-bs-toggle="modal" data-bs-target="#addDoctorModal"><i class="ti ti-plus f-18"></i>
-                                    Add Doctor
+                            <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#addDoctorModal"
+                                    class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Add Doctor">
+                                    <i class="ti ti-plus f-18"></i>
+                                    <span class="d-none d-md-inline">Add Doctor</span>
                                 </button>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <!-- [ Option ] end -->
 
-                <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body">
                             <div class="dt-responsive table-responsive">
@@ -125,7 +135,7 @@
                                             <div class="mb-3">
                                                 <label for="doctor_phoneno" class="form-label">Phone Number</label>
                                                 <input type="text" id="doctor_phoneno"
-                                                    class="form-control @error('doctor_phoneno') is-invalid @enderror"
+                                                    class="form-control input-phone @error('doctor_phoneno') is-invalid @enderror"
                                                     name="doctor_phoneno" placeholder="Enter Phone Number"
                                                     value="{{ old('doctor_phoneno') }}">
                                                 @error('doctor_phoneno')
@@ -216,7 +226,7 @@
                                                 <div class="mb-3">
                                                     <label for="doctor_phoneno" class="form-label">Phone Number</label>
                                                     <input type="text" id="doctor_phoneno"
-                                                        class="form-control @error('doctor_phoneno') is-invalid @enderror"
+                                                        class="form-control input-phone @error('doctor_phoneno') is-invalid @enderror"
                                                         name="doctor_phoneno" placeholder="Enter Phone Number"
                                                         value="{{ $doc->doctor_phoneno }}">
                                                     @error('doctor_phoneno')
@@ -273,35 +283,27 @@
 
                     <!-- [ Delete Modal ] start -->
                     <div class="modal fade" id="deleteModal-{{ $doc->id }}" data-bs-keyboard="false"
-                        tabindex="-1" aria-hidden="true">
+                        tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
                         <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-sm-12 mb-4">
-                                            <div class="d-flex justify-content-center align-items-center mb-3">
-                                                <i class="ti ti-trash text-danger" style="font-size: 100px"></i>
-                                            </div>
+                            <div class="modal-content border-0 shadow-lg rounded-3">
+                                <div class="modal-body p-5">
+                                    <div class="text-center mb-4">
+                                        <i class="ti ti-trash text-danger" style="font-size: 80px;"></i>
+                                    </div>
+                                    <div class="text-center mb-2">
+                                        <h4 class="fw-bold text-dark">Are you sure?</h4>
+                                        <p class="text-muted mb-0">This action cannot be undone.</p>
+                                    </div>
 
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                <h2>Are you sure ?</h2>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 mb-3">
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                <p class="fw-normal f-18 text-center">This action cannot be undone.</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <div class="d-flex justify-content-between gap-3 align-items-center">
-                                                <button type="reset" class="btn btn-light btn-pc-default w-50"
-                                                    data-bs-dismiss="modal">Cancel</button>
-                                                <a href="{{ route('delete-doctor-get', $doc->id) }}"
-                                                    class="btn btn-danger w-100">Delete Anyways</a>
-                                            </div>
-                                        </div>
+                                    <div class="d-flex justify-content-center gap-3 mt-4">
+                                        <button type="button" class="btn btn-outline-secondary w-50"
+                                            data-bs-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                        <a href="{{ route('delete-doctor-get', $doc->id) }}"
+                                            class="btn btn-danger w-50">
+                                            Delete Anyways
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -330,47 +332,97 @@
 
         $(document).ready(function() {
 
-            $(function() {
-
-                // DATATABLE : DOCTOR
-                var table = $('.data-table').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    responsive: true,
-                    ajax: {
-                        url: "{{ route('manage-doctor-page') }}",
+            // DATATABLE : DOCTOR
+            var table = $('.data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                ajax: {
+                    url: "{{ route('manage-doctor-page') }}",
+                },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        searchable: false,
+                        className: "text-start"
                     },
-                    columns: [{
-                            data: 'DT_RowIndex',
-                            name: 'DT_RowIndex',
-                            searchable: false,
-                            className: "text-start"
-                        },
-                        {
-                            data: 'doctor_name',
-                            name: 'doctor_name',
-                            className: "avoid-long-column"
+                    {
+                        data: 'doctor_name',
+                        name: 'doctor_name',
+                        className: "avoid-long-column"
 
-                        },
-                        {
-                            data: 'doctor_phoneno',
-                            name: 'doctor_phoneno'
+                    },
+                    {
+                        data: 'doctor_phoneno',
+                        name: 'doctor_phoneno'
 
-                        },
-                        {
-                            data: 'doctor_status',
-                            name: 'doctor_status'
-                        },
-                        {
-                            data: 'action',
-                            name: 'action',
-                            orderable: false,
-                            searchable: false
-                        }
-                    ]
+                    },
+                    {
+                        data: 'doctor_status',
+                        name: 'doctor_status'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
 
-                });
+            });
 
+
+            /*********************************************************/
+            /********************INPUT FORMATTING*********************/
+            /*********************************************************/
+
+            function formatMalaysiaNumber(input) {
+                let numbers = input.replace(/\D/g, '');
+
+                if (numbers.startsWith('60')) {
+                    numbers = '+' + numbers;
+                } else if (numbers.startsWith('0')) {
+                    numbers = '+60' + numbers.substring(1);
+                } else if (/^1/.test(numbers)) {
+                    numbers = '+60' + numbers;
+                } else if (numbers.length > 0) {
+                    numbers = '+60' + numbers;
+                }
+
+                if (numbers.startsWith('+60') && numbers.length > 3) {
+                    const digits = numbers.substring(3);
+                    if (digits.length >= 2 && digits.length <= 3) {
+                        numbers = '+60 ' + digits;
+                    } else if (digits.length >= 4 && digits.length <= 7) {
+                        numbers = '+60 ' + digits.substring(0, 2) + '-' + digits.substring(2);
+                    } else if (digits.length >= 8) {
+                        numbers = '+60 ' + digits.substring(0, 2) + '-' + digits.substring(2, 5) + ' ' + digits
+                            .substring(5,
+                                10);
+                    }
+                }
+
+                return numbers;
+            }
+
+            $('.input-phone').on('input', function() {
+                const input = $(this);
+                const cursorPos = input[0].selectionStart;
+                const originalLength = input.val().length;
+
+                const formatted = formatMalaysiaNumber(input.val());
+                input.val(formatted);
+                const newLength = formatted.length;
+                const cursorOffset = newLength - originalLength;
+                input[0].setSelectionRange(cursorPos + cursorOffset, cursorPos + cursorOffset);
+            });
+
+            $('.input-phone').on('blur', function() {
+                const input = $(this);
+                let value = input.val().trim();
+
+                value = value.replace(/\s+$/, '');
+                input.val(value);
             });
 
         });

@@ -3,6 +3,12 @@
 
 <!-- [ Main Content ] start -->
 @section('content')
+    <style>
+        button,
+        .btn {
+            border-radius: 6px !important;
+        }
+    </style>
     <div class="pc-container">
         <div class="pc-content">
             <!-- [ breadcrumb ] start -->
@@ -58,21 +64,24 @@
             <!-- [ Main Content ] start -->
             <div class="row">
                 <!-- [ Manage Designation ] start -->
+
                 <div class="col-sm-12">
+
+                    <!-- [ Option ] start -->
                     <div class="card">
                         <div class="card-body">
-                            <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-2"
-                                    data-bs-toggle="modal" data-bs-target="#addDesignationModal"><i
-                                        class="ti ti-plus f-18"></i>
-                                    Add Designation
+                            <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#addDesignationModal"
+                                    class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Add Designation">
+                                    <i class="ti ti-plus f-18"></i>
+                                    <span class="d-none d-md-inline">Add Designation</span>
                                 </button>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <!-- [ Option ] end -->
 
-                <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body">
                             <div class="dt-responsive table-responsive">
@@ -88,6 +97,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <!-- [ Add Designation Modal ] start -->
@@ -159,8 +169,9 @@
                                                     class="text-danger">*</span></label>
                                             <input type="text"
                                                 class="form-control @error('designation_name') is-invalid @enderror"
-                                                id="designationName" name="designation_name" placeholder="Designation Name"
-                                                value="{{ $dep->designation_name }}" required>
+                                                id="designationName" name="designation_name"
+                                                placeholder="Designation Name" value="{{ $dep->designation_name }}"
+                                                required>
                                             @error('designation_name')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -188,35 +199,27 @@
 
                     <!-- [ Delete Modal ] start -->
                     <div class="modal fade" id="deleteModal-{{ $dep->id }}" data-bs-keyboard="false" tabindex="-1"
-                        aria-hidden="true">
+                        aria-hidden="true" data-bs-backdrop="static">
                         <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-sm-12 mb-4">
-                                            <div class="d-flex justify-content-center align-items-center mb-3">
-                                                <i class="ti ti-trash text-danger" style="font-size: 100px"></i>
-                                            </div>
+                            <div class="modal-content border-0 shadow-lg rounded-3">
+                                <div class="modal-body p-5">
+                                    <div class="text-center mb-4">
+                                        <i class="ti ti-trash text-danger" style="font-size: 80px;"></i>
+                                    </div>
+                                    <div class="text-center mb-2">
+                                        <h4 class="fw-bold text-dark">Are you sure?</h4>
+                                        <p class="text-muted mb-0">This action cannot be undone.</p>
+                                    </div>
 
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                <h2>Are you sure ?</h2>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 mb-3">
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                <p class="fw-normal f-18 text-center">This action cannot be undone.</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <div class="d-flex justify-content-between gap-3 align-items-center">
-                                                <button type="reset" class="btn btn-light btn-pc-default w-50"
-                                                    data-bs-dismiss="modal">Cancel</button>
-                                                <a href="{{ route('delete-designation-get', $dep->id) }}"
-                                                    class="btn btn-danger w-100">Delete Anyways</a>
-                                            </div>
-                                        </div>
+                                    <div class="d-flex justify-content-center gap-3 mt-4">
+                                        <button type="button" class="btn btn-outline-secondary w-50"
+                                            data-bs-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                        <a href="{{ route('delete-designation-get', $dep->id) }}"
+                                            class="btn btn-danger w-50">
+                                            Delete Anyways
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -233,7 +236,7 @@
 
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {
-            var modalToShow = "{{ session('modal') }}"; // Ambil modal yang perlu dibuka dari session
+            var modalToShow = "{{ session('modal') }}";
             if (modalToShow) {
                 var modalElement = document.getElementById(modalToShow);
                 if (modalElement) {
@@ -245,35 +248,31 @@
 
         $(document).ready(function() {
 
-            $(function() {
-
-                // DATATABLE : DESIGNATION
-                var table = $('.data-table').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    responsive: true,
-                    ajax: {
-                        url: "{{ route('manage-designation-page') }}",
+            // DATATABLE : DESIGNATION
+            var table = $('.data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                ajax: {
+                    url: "{{ route('manage-designation-page') }}",
+                },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        searchable: false,
+                        className: "text-start"
                     },
-                    columns: [{
-                            data: 'DT_RowIndex',
-                            name: 'DT_RowIndex',
-                            searchable: false,
-                            className: "text-start"
-                        },
-                        {
-                            data: 'designation_name',
-                            name: 'designation_name'
-                        },
-                        {
-                            data: 'action',
-                            name: 'action',
-                            orderable: false,
-                            searchable: false
-                        }
-                    ]
-
-                });
+                    {
+                        data: 'designation_name',
+                        name: 'designation_name'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
 
             });
 

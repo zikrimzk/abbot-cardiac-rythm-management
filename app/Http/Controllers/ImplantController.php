@@ -36,7 +36,7 @@ class ImplantController extends Controller
     // ADD IMPLANT - FUNCTION
     public function addImplant(Request $req)
     {
-        // dd($req->all());
+        /**** 01 - Validation ****/
         $validator = Validator::make($req->all(), [
             'implant_refno' => 'nullable|string',
             'implant_date' => 'required|date',

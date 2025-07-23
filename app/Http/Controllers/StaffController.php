@@ -14,11 +14,12 @@ use Illuminate\Support\Facades\Validator;
 
 class StaffController extends Controller
 {
-    // Manage Designation Functions
+    // ADD DESIGNATION - FUNCTION
     public function addDesignation(Request $req)
     {
+        /**** 01 - Validation ****/
         $validator = Validator::make($req->all(), [
-            'designation_name' => 'required|string',
+            'designation_name' => 'required|string|unique:designations,designation_name',
         ], [], [
             'designation_name' => 'designation name',
         ]);
@@ -27,23 +28,27 @@ class StaffController extends Controller
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput()
-                ->with('modal', 'addDesignationModal'); // Pastikan modal yang betul dipaparkan
+                ->with('modal', 'addDesignationModal');
         }
 
+        /**** 02 - Store Designation ****/
         try {
             Designation::create($validator->validated());
+
             return back()->with('success', 'Designation added successfully.');
         } catch (Exception $e) {
             return redirect()->back()
-                ->with('error', 'Something went wrong. Please try again.')
+                ->with('error', 'Something went wrong. Please try again. ' . $e->getMessage())
                 ->with('modal', 'addDesignationModal');
         }
     }
 
+    // UPDATE DESIGNATION - FUNCTION
     public function updateDesignation(Request $req, $id)
     {
+        /**** 01 - Validation ****/
         $validator = Validator::make($req->all(), [
-            'designation_name' => 'required|string',
+            'designation_name' => 'required|string|unique:designations,designation_name,' . $id,
         ], [], [
             'designation_name' => 'designation name',
         ]);
@@ -55,25 +60,47 @@ class StaffController extends Controller
                 ->with('modal', 'updateDesignationModal-' . $id);
         }
 
+        /**** 02 - Update Designation ****/
         try {
-            Designation::find($id)->update($validator->validated());
+            $designation = Designation::find($id);
+
+            if (!$designation) {
+                return redirect()->back()
+                    ->with('error', 'Designation not found.')
+                    ->with('modal', 'updateDesignationModal-' . $id);
+            }
+
+            $designation->update($validator->validated());
+
             return back()->with('success', 'Designation updated successfully.');
         } catch (Exception $e) {
             return redirect()->back()
-                ->with('error', 'Something went wrong. Please try again.')
+                ->with('error', 'Something went wrong. Please try again. ' . $e->getMessage())
                 ->with('modal', 'updateDesignationModal-' . $id);
         }
     }
 
+    // DELETE DESIGNATION - FUNCTION
     public function deleteDesignation($id)
     {
-        Designation::find($id)->delete();
-        return back()->with('success', 'Designation deleted successfully.');
+        /**** 01 - Delete Process ****/
+        try {
+            $designation = Designation::find($id);
+
+            if (!$designation) {
+                return redirect()->back()->with('error', 'Designation not found.');
+            }
+
+            $designation->delete();
+
+            return back()->with('success', 'Designation deleted successfully.');
+        } catch (Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Something went wrong. Please try again. ' . $e->getMessage());
+        }
     }
 
-    // Manage Staff Functions
-
-    /* Send Password Notification */
+    // SEND PASSWORD - MAIL FUNCTION
     private function sendPasswordMail($data, $password)
     {
         Mail::to($data->email)->send(new PasswordNotifyMail([
@@ -84,11 +111,14 @@ class StaffController extends Controller
         ]));
     }
 
+
+    // ADD STAFF - FUNCTION
     public function addStaff(Request $req)
     {
+        /**** 01 - Validation ****/
         $validator = Validator::make($req->all(), [
             'staff_name' => 'required|string',
-            'staff_idno' => 'nullable|string',
+            'staff_idno' => 'required|string|unique:users,staff_idno',
             'staff_role' => 'required|integer',
             'staff_status' => 'required|integer',
             'email' => 'required|email|unique:users,email',
@@ -109,33 +139,39 @@ class StaffController extends Controller
                 ->with('modal', 'addStaffModal');
         }
 
+        /**** 02 - Create User ****/
         try {
             $validated = $validator->validated();
-            $password = Str::random(12);
+
+            // Generate password using a secure base
+            $password = 'crmd@' . Str::lower($validated['staff_idno']);
             $validated['password'] = bcrypt($password);
 
+            // Create user
             $user = User::create($validated);
 
+            // Send password email
             $this->sendPasswordMail($user, $password);
 
-            return back()->with('success', 'Staff added successfully.');
+            return back()->with('success', 'Staff added successfully. An email with the temporary password has been sent to the staff. Please inform them to change their password upon first login.');
         } catch (Exception $e) {
             return redirect()->back()
-                ->with('error', $e->getMessage())
+                ->with('error', 'Something went wrong. Please try again. ' . $e->getMessage())
                 ->with('modal', 'addStaffModal');
         }
     }
 
+    // UPDATE STAFF - FUNCTION
     public function updateStaff(Request $req, $id)
     {
+        /**** 01 - Validation ****/
         $validator = Validator::make($req->all(), [
             'staff_name' => 'required|string',
-            'staff_idno' => 'nullable|string',
+            'staff_idno' => 'required|string|unique:users,staff_idno,' . $id,
             'staff_role' => 'required|integer',
             'staff_status' => 'required|integer',
             'email' => 'required|email|unique:users,email,' . $id,
             'designation_id' => 'required|integer',
-
         ], [], [
             'staff_name' => 'staff name',
             'staff_idno' => 'staff id number',
@@ -152,21 +188,44 @@ class StaffController extends Controller
                 ->with('modal', 'updateStaffModal-' . $id);
         }
 
+        /**** 02 - Update User ****/
         try {
-            $validated = $validator->validated();
-            User::find($id)->update($validated);
-            return back()->with('success', 'Staff updated successfully.');
+            $user = User::find($id);
+
+            if (!$user) {
+                return redirect()->back()
+                    ->with('error', 'Staff not found.')
+                    ->with('modal', 'updateStaffModal-' . $id);
+            }
+
+            $user->update($validator->validated());
+
+            return back()->with('success', 'Staff details updated successfully.');
         } catch (Exception $e) {
             return redirect()->back()
-                ->with('error', $e->getMessage())
+                ->with('error', 'Something went wrong. Please try again. ' . $e->getMessage())
                 ->with('modal', 'updateStaffModal-' . $id);
         }
     }
 
+    // INACTIVATE STAFF - FUNCTION
     public function deleteStaff($id)
     {
-        User::find($id)->update(['staff_status' => 2]);
-        return back()->with('success', 'Staff account has been inactivated.');
+        try {
+            /**** 01 - Find User ****/
+            $user = User::find($id);
+
+            if (!$user) {
+                return redirect()->back()->with('error', 'Staff not found.');
+            }
+
+            /**** 02 - Update User Status ****/
+            $user->update(['staff_status' => 2]);
+
+            return back()->with('success', 'Staff account has been inactivated.');
+        } catch (Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Something went wrong. Please try again. ' . $e->getMessage());
+        }
     }
-    
 }
