@@ -116,26 +116,51 @@
 
 <body>
     <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h2>Welcome to Cardiac Rhythm Management Division System</h2>
-        </div>
-
-        <!-- Content -->
-        <div class="content">
-            <p>Dear <strong>{{ $data['name'] }}</strong>,</p>
-            <p>Your account has been successfully registered by the system administrator. Below is your temporary
-                password:</p>
-            <div class="password-box">
-                <p class="password">{{ $data['password'] }}</p>
-            </div>
-            <p>Please log in and change your password immediately for security reasons.</p>
-
-            <div class="action-btn">
-                <a href="{{ route('login-page') }}">LOGIN TO YOUR ACCOUNT</a>
+        {{-- New User Registration --}}
+        @if ($data['opt'] == 1)
+            <!-- Header -->
+            <div class="header">
+                <h2>Welcome to Cardiac Rhythm Management Division System</h2>
             </div>
 
-        </div>
+            <!-- Content -->
+            <div class="content">
+                <p>Dear <strong>{{ $data['name'] }}</strong>,</p>
+                <p>Your account has been successfully registered by the system administrator. Below is your temporary
+                    password:</p>
+                <div class="password-box">
+                    <p class="password">{{ $data['password'] }}</p>
+                </div>
+                <p>Please log in and change your password immediately for security reasons.</p>
+
+                <div class="action-btn">
+                    <a href="{{ route('login-page') }}">LOGIN TO YOUR ACCOUNT</a>
+                </div>
+
+            </div>
+            {{-- Password Reset Notification --}}
+        @elseif($data['opt'] == 2)
+            <!-- Header -->
+            <div class="header">
+                <h2>Cardiac Rhythm Management Division System | Password Reset</h2>
+            </div>
+
+            <!-- Content -->
+            <div class="content">
+                <p>Dear <strong>{{ $data['name'] }}</strong>,</p>
+                <p>Your have requested to reset your password. Below is your temporary password:</p>
+                <div class="password-box">
+                    <p class="password">{{ $data['password'] }}</p>
+                </div>
+                <p>Please log in and change your password immediately for security reasons.</p>
+
+                <div class="action-btn">
+                    <a href="{{ route('login-page') }}">LOGIN TO YOUR ACCOUNT</a>
+                </div>
+
+            </div>
+        @endif
+
 
         <!-- Footer -->
         <div class="footer">

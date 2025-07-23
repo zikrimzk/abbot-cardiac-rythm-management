@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Carbon\Carbon;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Mail\PasswordNotifyMail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Validator;
 
@@ -16,10 +20,22 @@ class AuthenticateController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt($credentials)) {
-            return redirect()->route('staff-dashboard-page');
+        $user = User::where('email', $credentials['email'])->first();
+
+        if ($user) {
+            if ($user->staff_status == 2) {
+                return redirect()->route('login-page')
+                    ->with('error', 'Your account has been disabled. Please contact the administrator for more details.');
+            }
+
+            // Only allow login if staff_status is 1
+            if ($user->staff_status == 1 && Auth::attempt($credentials)) {
+                return redirect()->route('staff-dashboard-page');
+            }
         }
-        return redirect()->route('login-page')->with('error', 'Oppes! You have entered invalid credentials');
+
+        return redirect()->route('login-page')
+            ->with('error', 'Oops! You have entered invalid credentials.');
     }
 
     public function staffLogout(Request $request)
@@ -73,7 +89,7 @@ class AuthenticateController extends Controller
 
             ]
         );
-        
+
         try {
             $check = Hash::check($validated['oldPass'], Auth::user()->password, []);
             if ($check) {
@@ -86,5 +102,31 @@ class AuthenticateController extends Controller
             return redirect()->back()
                 ->with('error', $e->getMessage());
         }
+    }
+
+    public function sendEmailPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $data = User::where('email', $request->email)->first();
+
+        if (!$data) {
+            return redirect()->back()->with('error', 'No staff found with this email address.');
+        }
+
+        $password = 'crmd@' . Str::random(8);
+        $data->password = bcrypt($password);
+        $data->save();
+
+        Mail::to($data->email)->send(new PasswordNotifyMail([
+            'name' => Str::headline($data->staff_name),
+            'email' => $data->email,
+            'date' => Carbon::now()->format('d F Y g:i A'),
+            'password' => $password,
+            'opt' => 2
+        ]));
+        return redirect()->back()->with('success', 'Temporary Password has been emailed successfully. Please change it after logging in.');
     }
 }

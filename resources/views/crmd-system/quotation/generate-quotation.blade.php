@@ -18,6 +18,11 @@
         .bg-light-primary {
             background-color: #e8f4ff;
         }
+
+        button,
+        .btn {
+            border-radius: 6px !important;
+        }
     </style>
     <div class="pc-container">
         <div class="pc-content">
@@ -345,7 +350,7 @@
                                             </h6>
                                         </div>
                                     </div>
-                                
+
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="quotation_pt_name" class="form-label fw-medium">Patient Name <span
@@ -382,12 +387,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-footer py-3 d-grid gap-2 d-md-flex flex-col-2 justify-content-md-end border-top">
+                            <div
+                                class="card-footer py-3 d-grid gap-2 d-md-flex flex-col-2 justify-content-md-end border-top">
                                 <button type="reset"
                                     class="btn btn-light btn-outline-secondary d-flex align-items-center justify-content-center">
                                     <i class="ti ti-rotate-clockwise me-2"></i>Reset
                                 </button>
-                                <button type="submit" id="submitBtn" class="btn btn-primary d-flex align-items-center justify-content-center">
+                                <button type="submit" id="submitBtn"
+                                    class="btn btn-primary d-flex align-items-center justify-content-center">
                                     <i class="ti ti-file-invoice me-2"></i>Generate Quotation
                                 </button>
                             </div>

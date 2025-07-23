@@ -9,6 +9,11 @@
             height: 950px;
             border: none;
         }
+
+        button,
+        .btn {
+            border-radius: 6px !important;
+        }
     </style>
     <div class="pc-container">
         <div class="pc-content">

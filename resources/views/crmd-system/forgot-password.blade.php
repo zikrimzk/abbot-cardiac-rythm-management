@@ -237,13 +237,23 @@
                     <i class="fas fa-heartbeat medical-icon"></i>
                 </div>
 
+                <div class="d-flex mt-3 mb-3 justify-content-start align-items-center">
+                    <h6 class="f-w-400 mb-0">
+                        <a href="{{ route('login-page') }}" class="link-primary">
+                            <i class="ti ti-arrow-left me-2"></i>
+                            Go Back to Login
+                        </a>
+                    </h6>
+                </div>
+
                 <div class="card shadow-lg">
-                    <form action="{{ route('staff-login-post') }}" method="POST">
+                    <form action="{{ route('send-email-password-post') }}" method="POST">
                         @csrf
                         <div class="card-body">
                             <div class="text-center mb-4">
-                                <h3>Login</h3>
-                                <div class="text-muted">Cardiac Rhythm Management Division System</div>
+                                <h3>Reset Password</h3>
+                                <div class="text-muted">Please enter your email address to request a password reset.
+                                </div>
                             </div>
 
                             <!-- Start Alert -->
@@ -282,23 +292,9 @@
                                     name="email" value="{{ old('email') }}" autocomplete="off" required />
                                 <label for="email">Email Address</label>
                             </div>
-                            <div class="form-floating mb-3 position-relative">
-                                <input type="password" class="form-control" id="password" placeholder="Password"
-                                    name="password" autocomplete="off" required />
-                                <label for="password">Password</label>
 
-                                <!-- Show/Hide Button -->
-                                <button type="button" class="btn position-absolute show-password" id="show-password">
-                                    <i id="toggle-icon-password" class="ti ti-eye"></i>
-                                </button>
-                            </div>
-                            <div class="d-flex mt-1 justify-content-end align-items-center">
-                                <h6 class="f-w-400 mb-0">
-                                    <a href="{{ route('forgot-password-page') }}" class="link-primary">Forgot Password?</a>
-                                </h6>
-                            </div>
                             <div class="d-grid mt-4">
-                                <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                                <button type="submit" class="btn btn-primary btn-lg">Request Password</button>
                             </div>
                         </div>
                     </form>
@@ -323,26 +319,6 @@
             }
             lastTouchEnd = now;
         }, false);
-    </script>
-    <script>
-        function showpassword(buttonName, txtName, iconName) {
-            document.getElementById(buttonName).addEventListener('click', function() {
-                const passwordInput = document.getElementById(txtName);
-                const icon = document.getElementById(iconName);
-
-                // Toggle password visibility
-                if (passwordInput.type === 'password') {
-                    passwordInput.type = 'text';
-                    icon.classList.remove('ti-eye');
-                    icon.classList.add('ti-eye-off');
-                } else {
-                    passwordInput.type = 'password';
-                    icon.classList.remove('ti-eye-off');
-                    icon.classList.add('ti-eye');
-                }
-            });
-        }
-        showpassword('show-password', 'password', 'toggle-icon-password');
     </script>
     <script src="../assets/js/plugins/popper.min.js"></script>
     <script src="../assets/js/plugins/simplebar.min.js"></script>

@@ -85,6 +85,11 @@
             background-color: #d1e7ff;
         }
 
+        button,
+        .btn {
+            border-radius: 6px !important;
+        }
+
         @media (max-width: 768px) {
             .form-container {
                 padding: 15px;
@@ -449,7 +454,9 @@
                                             </select>
                                             <button type="button"
                                                 class="btn btn-outline-secondary d-flex align-items-center"
-                                                id="addApprovalBtn"><i class="ti ti-circle-plus"></i>
+                                                id="addApprovalBtn"
+                                                style="border-left: none !important; border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important;"><i
+                                                    class="ti ti-circle-plus"></i>
                                             </button>
                                         </div>
                                         <div id="selectedApprovalWrapper" class="mt-2" style="display: none;">
@@ -478,7 +485,8 @@
 
                             <!-- Submit Button -->
                             <div class="d-flex justify-content-end mt-4">
-                                <button type="submit" class="btn btn-primary btn-submit d-flex align-items-center" id="generate-icf-btn">
+                                <button type="submit" class="btn btn-primary btn-submit d-flex align-items-center"
+                                    id="generate-icf-btn">
                                     <i class="ti ti-circle-check me-2"></i> Update ICF
                                 </button>
                             </div>

@@ -3,6 +3,12 @@
 
 <!-- [ Main Content ] start -->
 @section('content')
+    <style>
+        button,
+        .btn {
+            border-radius: 6px !important;
+        }
+    </style>
     <div class="pc-container">
         <div class="pc-content">
             <!-- [ breadcrumb ] start -->
@@ -58,8 +64,12 @@
             <div class="row">
                 <!-- [ Manage Implant ] start -->
 
-                <!-- [ Option ] start -->
                 <div class="col-sm-12">
+
+                </div>
+
+                <div class="col-sm-12">
+                    <!-- [ Option ] start -->
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
@@ -84,57 +94,66 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- [ Option ] end -->
+                    <!-- [ Option ] end -->
 
-                <div class="col-sm-12">
+
+                    <!-- [ Filter ] start -->
                     <div class="card">
                         <div class="card-body">
-
-                            <!-- [ Filter ] start -->
-                            <div class="row">
-
-                                <div class="col-sm-3 mb-3">
-                                    <input type="text" class="form-control mb-2" id="dateRangeFilter"
-                                        placeholder="Start Date to End Date" readonly />
-                                    <a href="javascript:void(0)" id="clearDateRangeFilter" class="link-primary">Clear</a>
+                            <div class="row g-3">
+                                <!-- Date Range Filter -->
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" id="dateRangeFilter"
+                                        placeholder="Start Date to End Date" readonly>
+                                    <div><a href="javascript:void(0)" id="clearDateRangeFilter"
+                                            class="small text-primary">Clear</a></div>
                                 </div>
 
-                                <div class="col-sm-3 mb-3">
-                                    <select class="form-select mb-2" id="regionFilter">
+                                <!-- Region Filter -->
+                                <div class="col-md-3">
+                                    <select class="form-select" id="regionFilter">
                                         <option value="">-- Select Region --</option>
                                         @foreach ($region as $rn)
                                             <option value="{{ $rn->id }}">{{ $rn->region_name }}</option>
                                         @endforeach
                                     </select>
-                                    <a href="javascript:void(0)" id="clearRegionFilter" class="link-primary">Clear</a>
+                                    <div><a href="javascript:void(0)" id="clearRegionFilter"
+                                            class="small text-primary">Clear</a></div>
                                 </div>
 
-                                <div class="col-sm-3 mb-3">
-                                    <select class="form-select mb-2" id="hospFilter">
+                                <!-- Hospital Filter -->
+                                <div class="col-md-3">
+                                    <select class="form-select" id="hospFilter">
                                         <option value="">-- Select Hospital --</option>
                                         @foreach ($hosp as $h)
                                             <option value="{{ $h->id }}">({{ $h->hospital_code }}) -
                                                 {{ $h->hospital_name }}</option>
                                         @endforeach
                                     </select>
-                                    <a href="javascript:void(0)" id="clearHospFilter" class="link-primary">Clear</a>
+                                    <div><a href="javascript:void(0)" id="clearHospFilter"
+                                            class="small text-primary">Clear</a></div>
                                 </div>
 
-                                <div class="col-sm-3 mb-3">
-                                    <select class="form-select mb-2" id="generatorFilter">
+                                <!-- Generator Filter -->
+                                <div class="col-md-3">
+                                    <select class="form-select" id="generatorFilter">
                                         <option value="">-- Select Generator --</option>
                                         @foreach ($gene as $gn)
                                             <option value="{{ $gn->id }}">({{ $gn->generator_code }}) -
                                                 {{ $gn->generator_name }}</option>
                                         @endforeach
                                     </select>
-                                    <a href="javascript:void(0)" id="clearGeneratorFilter" class="link-primary">Clear</a>
+                                    <div><a href="javascript:void(0)" id="clearGeneratorFilter"
+                                            class="small text-primary">Clear</a></div>
                                 </div>
 
                             </div>
-                            <!-- [ Filter ] end -->
+                        </div>
+                    </div>
+                    <!-- [ Filter ] end -->
 
+                    <div class="card">
+                        <div class="card-body">
                             <div class="dt-responsive table-responsive">
                                 <table class="table data-table table-hover nowrap">
                                     <thead>
@@ -150,7 +169,6 @@
                                     </thead>
                                 </table>
                             </div>
-
                         </div>
                     </div>
                 </div>

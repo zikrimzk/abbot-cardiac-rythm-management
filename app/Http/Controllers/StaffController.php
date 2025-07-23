@@ -108,6 +108,7 @@ class StaffController extends Controller
             'email' => $data->email,
             'date' => Carbon::now()->format('d F Y g:i A'),
             'password' => $password,
+            'opt'=>1
         ]));
     }
 

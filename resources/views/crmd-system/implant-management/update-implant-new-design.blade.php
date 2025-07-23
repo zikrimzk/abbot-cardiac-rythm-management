@@ -108,6 +108,11 @@
             background-color: #d1e7ff;
         }
 
+        button,
+        .btn {
+            border-radius: 6px !important;
+        }
+
         @media (max-width: 768px) {
             .form-container {
                 padding: 15px;
@@ -824,7 +829,8 @@
                                                 </select>
                                                 <button type="button"
                                                     class="btn btn-outline-secondary d-flex align-items-center"
-                                                    id="addApprovalBtn">
+                                                    id="addApprovalBtn"
+                                                    style="border-left: none !important; border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important;">
                                                     <i class="ti ti-circle-plus"></i>
                                                 </button>
                                             </div>
@@ -857,7 +863,8 @@
                                 </div>
                             </div>
                             <div class="card-footer d-flex align-items-center justify-content-end">
-                                 <button type="submit" class="btn btn-primary btn-submit d-flex align-items-center" id="update-implant-btn">
+                                <button type="submit" class="btn btn-primary btn-submit d-flex align-items-center"
+                                    id="update-implant-btn">
                                     <i class="ti ti-circle-check me-2"></i> Update Implant
                                 </button>
                             </div>

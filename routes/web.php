@@ -17,8 +17,13 @@ Route::get('/',function () {
 });
 
 Route::prefix('auth')->group(function () {
-    Route::get('/login', [RouteController::class, 'loginpage'])->name('login-page');
+    //Login Page
+    Route::get('/login', [RouteController::class, 'loginPage'])->name('login-page');
     Route::post('/authenticate-staff', [AuthenticateController::class, 'staffLogin'])->name('staff-login-post');
+
+    // Forgot Password
+    Route::get('/forgot-password', [RouteController::class, 'forgotPasswordPage'])->name('forgot-password-page');
+    Route::post('/send-email-password', [AuthenticateController::class, 'sendEmailPassword'])->name('send-email-password-post');
 
     // Guest Patient ID Card Download
     Route::get('/guest-view-patient-id-card-{id}-{opt}-{type}', [RouteController::class, 'viewDownloadPatientIdCard'])->name('guest-view-patient-id-card-page');
@@ -52,8 +57,6 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::get('/get-approval-type', [ImplantController::class, 'getApprovalType'])->name('get-approval-type-get');
     Route::post('/add-approval-type', [ImplantController::class, 'addApprovalType'])->name('add-approval-type-post');
     Route::post('/delete-approval-type', [ImplantController::class, 'deleteApprovalType'])->name('delete-approval-type-post');
-
-
 
     //Generate Patient ID Card
     Route::get('/generate-patient-id-card-{id}', [RouteController::class, 'generatePatientIdCard'])->name('generate-patient-id-card-page');

@@ -108,6 +108,11 @@
             background-color: #d1e7ff;
         }
 
+        button,
+        .btn {
+            border-radius: 6px !important;
+        }
+
         @media (max-width: 768px) {
             .form-container {
                 padding: 15px;
@@ -122,7 +127,7 @@
             }
         }
     </style>
-    
+
     <div class="pc-container">
         <div class="pc-content">
             <!-- [ breadcrumb ] start -->
@@ -779,7 +784,9 @@
                                                 </select>
                                                 <button type="button"
                                                     class="btn btn-outline-secondary d-flex align-items-center"
-                                                    id="addApprovalBtn"><i class="ti ti-circle-plus"></i>
+                                                    id="addApprovalBtn"
+                                                    style="border-left: none !important; border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important;">
+                                                    <i class="ti ti-circle-plus"></i>
                                                 </button>
                                             </div>
                                             <div id="selectedApprovalWrapper" class="mt-2" style="display: none;">
@@ -793,7 +800,8 @@
 
                                         <!-- [ Sales Amount ] Input -->
                                         <div class="col-md-6 mb-3">
-                                            <label for="implant_sales_total_price" class="form-label">Sales Amount </label>
+                                            <label for="implant_sales_total_price" class="form-label">Sales Amount
+                                            </label>
                                             <div class="input-group">
                                                 <span class="input-group-text input-icon">RM</span>
                                                 <input type="text" name="implant_sales_total_price"
@@ -1065,7 +1073,7 @@
                 let modelSelected = loopContainer.find(".model-select").val();
                 let serialNumber = loopContainer.find(".sn-input").val();
                 let stockLocation = loopContainer.find(".stock-location-select").val();
-            
+
 
                 let price = loopContainer.find(".price-input").val();
                 let qty = loopContainer.find(".qty-input").val();
@@ -1081,7 +1089,7 @@
 
                 // Validation: If any of the 3 is filled, all must be
                 let anyFilled = modelSelected || serialNumber || stockLocation || price !== "0.00" || qty !== "1";
-                let allFilled = modelSelected && serialNumber && stockLocation ;
+                let allFilled = modelSelected && serialNumber && stockLocation;
 
                 if (anyFilled && !allFilled) {
                     warningIcon.removeClass("d-none");

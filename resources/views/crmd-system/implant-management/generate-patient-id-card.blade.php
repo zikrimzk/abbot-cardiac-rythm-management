@@ -66,6 +66,11 @@
         font-size: 9px;
     }
 
+     button,
+        .btn {
+            border-radius: 6px !important;
+        }
+
     @media (max-width: 768px) {
         .card-wrapper {
             flex-direction: column;

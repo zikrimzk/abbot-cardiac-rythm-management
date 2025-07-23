@@ -35,11 +35,23 @@ use Yajra\DataTables\Facades\DataTables;
 class RouteController extends Controller
 {
     // LOGIN PAGE - ROUTE
-    public function loginpage()
+    public function loginPage()
     {
         if (!Auth::check()) {
             return view('crmd-system.login-page', [
                 'title' => 'CRMD System | Login'
+            ]);
+        } else {
+            return redirect()->route('staff-dashboard-page');
+        }
+    }
+
+    // FORGOT PASSWORD PAGE - ROUTE
+    public function forgotPasswordPage()
+    {
+        if (!Auth::check()) {
+            return view('crmd-system.forgot-password', [
+                'title' => 'CRMD System | Forgot Password'
             ]);
         } else {
             return redirect()->route('staff-dashboard-page');

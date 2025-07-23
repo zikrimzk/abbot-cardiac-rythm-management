@@ -123,7 +123,7 @@
                                                         <input type="text"
                                                             class="form-control @error('staff_idno') is-invalid @enderror"
                                                             name="staff_idno" placeholder="Staff ID Number"
-                                                            value="{{ Auth::user()->staff_idno }}">
+                                                            value="{{ Auth::user()->staff_idno }}" readonly />
                                                         @error('staff_idno')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
@@ -154,7 +154,8 @@
                                                 </div>
                                             </div>
                                             <div class="card-footer text-end">
-                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                                <button type="submit" class="btn btn-primary"
+                                                    style="border-radius: 6px !important;">Save changes</button>
                                             </div>
                                         </div>
                                     </div>
@@ -182,7 +183,8 @@
                                                     <div class="input-group mb-3">
                                                         <input type="password"
                                                             class="form-control @error('oldPass') is-invalid @enderror"
-                                                            name="oldPass" id="oldpassword" placeholder="Current Password" required />
+                                                            name="oldPass" id="oldpassword"
+                                                            placeholder="Current Password" required />
                                                         <button class="btn btn-light border border-1 border-secondary"
                                                             type="button" id="show-old-password">
                                                             <i id="toggle-icon-old-password" class="ti ti-eye"></i>
@@ -198,7 +200,8 @@
                                                     <div class="input-group mb-3">
                                                         <input type="password"
                                                             class="form-control @error('newPass') is-invalid @enderror"
-                                                            id="passwords" name="newPass" placeholder="New Password" required/>
+                                                            id="passwords" name="newPass" placeholder="New Password"
+                                                            required />
                                                         <button class="btn btn-light border border-1 border-secondary"
                                                             type="button" id="show-password">
                                                             <i id="toggle-icon-password" class="ti ti-eye"></i>
@@ -215,7 +218,8 @@
                                                     <div class="input-group mb-3">
                                                         <input type="password"
                                                             class="form-control @error('cpassword') is-invalid @enderror"
-                                                            name="renewPass" id="cpassword" placeholder="Confirm Password" required />
+                                                            name="renewPass" id="cpassword"
+                                                            placeholder="Confirm Password" required />
                                                         <button class="btn btn-light border border-1 border-secondary"
                                                             type="button" id="show-password-confirm">
                                                             <i id="toggle-icon-confirm-password" class="ti ti-eye"></i>
@@ -250,7 +254,8 @@
                                         </div>
                                     </div>
                                     <div class="card-footer text-end btn-page">
-                                        <button type="submit" class="btn btn-primary disabled" id="submit-btn">Update
+                                        <button type="submit" class="btn btn-primary disabled" id="submit-btn"
+                                            style="border-radius: 6px !important;">Update
                                             Password</button>
                                     </div>
                                 </div>
@@ -381,7 +386,6 @@
             $('.nav-link[href="#' + activeTab + '"]').tab('show');
 
         });
-        
     </script>
 @endsection
 <!-- [ Main Content ] end -->

@@ -22,8 +22,12 @@
         .bg-light-primary {
             background-color: #e8f4ff;
         }
-    </style>
 
+        button,
+        .btn {
+            border-radius: 6px !important;
+        }
+    </style>
     <div class="pc-container">
         <div class="pc-content">
 
@@ -128,7 +132,8 @@
                                                         <option value="{{ $company->id }}" selected>
                                                             {{ $company->company_name }}</option>
                                                     @else
-                                                        <option value="{{ $company->id }}" disabled>{{ $company->company_name }}
+                                                        <option value="{{ $company->id }}" disabled>
+                                                            {{ $company->company_name }}
                                                         </option>
                                                     @endif
                                                 @endforeach
@@ -206,7 +211,8 @@
                                                             [{{ $hosp->hospital_code }}] - {{ $hosp->hospital_name }}
                                                         </option>
                                                     @else
-                                                        <option value="{{ $hosp->id }}" disabled>[{{ $hosp->hospital_code }}]
+                                                        <option value="{{ $hosp->id }}" disabled>
+                                                            [{{ $hosp->hospital_code }}]
                                                             - {{ $hosp->hospital_name }}</option>
                                                     @endif
                                                 @endforeach
@@ -295,7 +301,8 @@
                                                             [{{ $gene->generator_code }}] - {{ $gene->generator_name }}
                                                         </option>
                                                     @else
-                                                        <option value="{{ $gene->id }}" disabled>[{{ $gene->generator_code }}]
+                                                        <option value="{{ $gene->id }}" disabled>
+                                                            [{{ $gene->generator_code }}]
                                                             - {{ $gene->generator_name }}</option>
                                                     @endif
                                                 @endforeach
@@ -412,7 +419,8 @@
                                     class="btn btn-light btn-outline-secondary d-flex align-items-center justify-content-center">
                                     <i class="ti ti-rotate-clockwise me-2"></i>Reset
                                 </button>
-                                <button type="submit" id="submitBtn" class="btn btn-primary d-flex align-items-center justify-content-center">
+                                <button type="submit" id="submitBtn"
+                                    class="btn btn-primary d-flex align-items-center justify-content-center">
                                     <i class="ti ti-circle-check me-2"></i> Update Quotation
                                 </button>
                             </div>

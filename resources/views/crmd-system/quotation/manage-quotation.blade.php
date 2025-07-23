@@ -3,6 +3,12 @@
 
 <!-- [ Main Content ] start -->
 @section('content')
+    <style>
+        button,
+        .btn {
+            border-radius: 6px !important;
+        }
+    </style>
     <div class="pc-container">
         <div class="pc-content">
             <!-- [ breadcrumb ] start -->
@@ -59,8 +65,8 @@
             <div class="row">
                 <!-- [ Manage Quotation ] start -->
 
-                <!-- [ Option ] start -->
                 <div class="col-sm-12">
+                    <!-- [ Option ] start -->
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
@@ -73,23 +79,21 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- [ Option ] end -->
+                    <!-- [ Option ] end -->
 
-                <div class="col-sm-12">
+                    <!-- [ Filter ] start -->
                     <div class="card">
                         <div class="card-body">
+                            <div class="row g-3">
 
-                            <!-- [ Filter ] start -->
-                            <div class="row">
-
-                                <div class="col-sm-3 mb-3">
+                                <div class="col-sm-3">
                                     <input type="text" class="form-control mb-2" id="dateRangeFilter"
                                         placeholder="Start Date to End Date" readonly />
-                                    <a href="javascript:void(0)" id="clearDateRangeFilter" class="link-primary">Clear</a>
+                                    <a href="javascript:void(0)" id="clearDateRangeFilter"
+                                        class="small link-primary">Clear</a>
                                 </div>
 
-                                <div class="col-sm-3 mb-3">
+                                <div class="col-sm-3">
                                     <select class="form-select mb-2" id="compFilter">
                                         <option value="">-- Select Company --</option>
                                         @foreach ($comps as $comp)
@@ -97,10 +101,10 @@
                                                 {{ $comp->company_name }}</option>
                                         @endforeach
                                     </select>
-                                    <a href="javascript:void(0)" id="clearCompFilter" class="link-primary">Clear</a>
+                                    <a href="javascript:void(0)" id="clearCompFilter" class="small link-primary">Clear</a>
                                 </div>
 
-                                <div class="col-sm-3 mb-3">
+                                <div class="col-sm-3">
                                     <select class="form-select mb-2" id="hospFilter">
                                         <option value="">-- Select Hospital --</option>
                                         @foreach ($hosp as $h)
@@ -108,10 +112,10 @@
                                                 {{ $h->hospital_name }}</option>
                                         @endforeach
                                     </select>
-                                    <a href="javascript:void(0)" id="clearHospFilter" class="link-primary">Clear</a>
+                                    <a href="javascript:void(0)" id="clearHospFilter" class="small link-primary">Clear</a>
                                 </div>
 
-                                <div class="col-sm-3 mb-3">
+                                <div class="col-sm-3">
                                     <select class="form-select mb-2" id="generatorFilter">
                                         <option value="">-- Select Generator --</option>
                                         @foreach ($gene as $gn)
@@ -119,12 +123,17 @@
                                                 {{ $gn->generator_name }}</option>
                                         @endforeach
                                     </select>
-                                    <a href="javascript:void(0)" id="clearGeneratorFilter" class="link-primary">Clear</a>
+                                    <a href="javascript:void(0)" id="clearGeneratorFilter"
+                                        class="small link-primary">Clear</a>
                                 </div>
 
                             </div>
-                            <!-- [ Filter ] end -->
-                            
+                        </div>
+                    </div>
+                    <!-- [ Filter ] end -->
+
+                    <div class="card">
+                        <div class="card-body">
                             <div class="dt-responsive table-responsive">
                                 <table class="table data-table table-hover nowrap">
                                     <thead>
@@ -142,6 +151,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
 
 
