@@ -34,9 +34,5 @@ class Implant extends Model
         'doctor_id',
         'stock_location_id',
         'approval_type_id',
-
-        // 'implant_remarkSales',
-        // 'implant_remark',
-        // 'implant_note',
     ];
 }

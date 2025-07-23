@@ -263,10 +263,18 @@
                                         <select name="generator_id" id="generator_id" class="form-select" required>
                                             @foreach ($generators as $g)
                                                 @if ($im->generator_id == $g->id)
-                                                    <option value="{{ $g->id }}" selected>{{ $g->generator_code }}
-                                                    </option>
+                                                    @if ($g->generator_status == 1)
+                                                        <option value="{{ $g->id }}" selected>
+                                                            {{ $g->generator_code }}</option>
+                                                    @else
+                                                        <option value="{{ $g->id }}" selected>
+                                                            {{ $g->generator_code }} [Not In Use]</option>
+                                                    @endif
                                                 @else
-                                                    <option value="{{ $g->id }}">{{ $g->generator_code }}</option>
+                                                    @if ($g->generator_status == 1)
+                                                        <option value="{{ $g->id }}">
+                                                            {{ $g->generator_code }}</option>
+                                                    @endif
                                                 @endif
                                             @endforeach
                                         </select>
@@ -291,14 +299,21 @@
                                             required>
                                             @foreach ($stocklocations as $sl)
                                                 @if ($im->stock_location_id == $sl->id)
-                                                    <option value="{{ $sl->id }}" selected>
-                                                        ({{ $sl->stock_location_code }})
-                                                        - {{ $sl->stock_location_name }}
-                                                    </option>
+                                                    @if ($sl->stock_location_status == 1)
+                                                        <option value="{{ $sl->id }}" selected>
+                                                            ({{ $sl->stock_location_code }})
+                                                            - {{ $sl->stock_location_name }}</option>
+                                                    @else
+                                                        <option value="{{ $sl->id }}" selected>
+                                                            ({{ $sl->stock_location_code }})
+                                                            - {{ $sl->stock_location_name }} [Inactive]</option>
+                                                    @endif
                                                 @else
-                                                    <option value="{{ $sl->id }}">({{ $sl->stock_location_code }})
-                                                        -
-                                                        {{ $sl->stock_location_name }}</option>
+                                                    @if ($sl->stock_location_status == 1)
+                                                        <option value="{{ $sl->id }}">
+                                                            ({{ $sl->stock_location_code }})
+                                                            - {{ $sl->stock_location_name }}</option>
+                                                    @endif
                                                 @endif
                                             @endforeach
                                         </select>
@@ -361,11 +376,18 @@
                                                     <label class="form-label">Model</label>
                                                     <select name="model_ids[]" class="form-select model-select">
                                                         <option value="" selected>Select Model</option>
-                                                        @foreach ($abbottmodels->where('mcategory_id', $mc->id) as $am)
+                                                        @foreach ($abbottmodels->where('mcategory_id', $mc->id)->where('model_status', 1) as $am)
                                                             <option value="{{ $am->id }}"
                                                                 {{ $imd->model_id == $am->id ? 'selected' : '' }}>
                                                                 {{ $am->model_code }}
                                                             </option>
+                                                        @endforeach
+                                                        @foreach ($abbottmodels->where('mcategory_id', $mc->id)->where('model_status', 2) as $am)
+                                                            @if ($imd->model_id == $am->id)
+                                                                <option value="{{ $am->id }}" selected>
+                                                                    {{ $am->model_code }} [Not In Use]
+                                                                </option>
+                                                            @endif
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -387,12 +409,21 @@
                                                     <select name="stock_location_ids[]"
                                                         class="form-select stock-location-select">
                                                         <option value="" selected>Select Location</option>
-                                                        @foreach ($stocklocations as $sl)
+                                                        @foreach ($stocklocations->where('stock_location_status', 1) as $sl)
                                                             <option value="{{ $sl->id }}"
                                                                 {{ $imd->stock_location_id == $sl->id ? 'selected' : '' }}>
                                                                 ({{ $sl->stock_location_code }})
                                                                 - {{ $sl->stock_location_name }}
                                                             </option>
+                                                        @endforeach
+                                                        @foreach ($stocklocations->where('stock_location_status', 2) as $sl)
+                                                            @if ($imd->stock_location_id == $sl->id)
+                                                                <option value="{{ $sl->id }}" selected>
+                                                                    ({{ $sl->stock_location_code }})
+                                                                    - {{ $sl->stock_location_name }}
+                                                                    [Inactive]
+                                                                </option>
+                                                            @endif
                                                         @endforeach
                                                     </select>
                                                 </div>

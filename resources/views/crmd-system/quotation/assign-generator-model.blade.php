@@ -70,7 +70,8 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
-                                <button type="button" id="addAssignmentBtn"  data-bs-toggle="modal" data-bs-target="#addAssignmentModal"
+                                <button type="button" id="addAssignmentBtn" data-bs-toggle="modal"
+                                    data-bs-target="#addAssignmentModal"
                                     class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="tooltip"
                                     data-bs-placement="top" title="Assign Generator & Model">
                                     <i class="ti ti-plus f-18"></i>
@@ -126,9 +127,15 @@
                                                     required>
                                                     <option value="" disabled selected>Select Generator</option>
                                                     @foreach ($generators as $generator)
-                                                        <option value="{{ $generator->id }}">
-                                                            [{{ $generator->generator_code }}] -
-                                                            {{ $generator->generator_name }}</option>
+                                                        @if ($generator->generator_status == 1)
+                                                            <option value="{{ $generator->id }}">
+                                                                [{{ $generator->generator_code }}] -
+                                                                {{ $generator->generator_name }}</option>
+                                                        @else
+                                                            <option value="{{ $generator->id }}" disabled>
+                                                                [{{ $generator->generator_code }}] -
+                                                                {{ $generator->generator_name }} (Not In Use)</option>
+                                                        @endif
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -269,13 +276,27 @@
                                                         <option value="" disabled>Select Generator</option>
                                                         @foreach ($generators as $generator)
                                                             @if ($qgm->generator_id == $generator->id)
-                                                                <option value="{{ $generator->id }}" selected>
-                                                                    [{{ $generator->generator_code }}] -
-                                                                    {{ $generator->generator_name }}</option>
+                                                                @if ($generator->generator_status == 1)
+                                                                    <option value="{{ $generator->id }}" selected>
+                                                                        [{{ $generator->generator_code }}] -
+                                                                        {{ $generator->generator_name }}</option>
+                                                                @else
+                                                                    <option value="{{ $generator->id }}" selected>
+                                                                        [{{ $generator->generator_code }}] -
+                                                                        {{ $generator->generator_name }} (Not In Use)
+                                                                    </option>
+                                                                @endif
                                                             @else
-                                                                <option value="{{ $generator->id }}">
-                                                                    [{{ $generator->generator_code }}] -
-                                                                    {{ $generator->generator_name }}</option>
+                                                                @if ($generator->generator_status == 1)
+                                                                    <option value="{{ $generator->id }}">
+                                                                        [{{ $generator->generator_code }}] -
+                                                                        {{ $generator->generator_name }}</option>
+                                                                @else
+                                                                    <option value="{{ $generator->id }}" disabled>
+                                                                        [{{ $generator->generator_code }}] -
+                                                                        {{ $generator->generator_name }} (Not In Use)
+                                                                    </option>
+                                                                @endif
                                                             @endif
                                                         @endforeach
                                                     </select>
@@ -295,13 +316,12 @@
                                                                 $row->mcategory_id == $mc->id;
                                                         });
 
-                                                        // If nothing found and it's multi-model, show at least 1 empty row
-if (
-    $categoryImplants->isEmpty() &&
-    $mc->mcategory_ismorethanone == 1
-) {
-    $categoryImplants = collect([
-        (object) ['model_id' => null],
+                                                        if (
+                                                            $categoryImplants->isEmpty() &&
+                                                            $mc->mcategory_ismorethanone == 1
+                                                        ) {
+                                                            $categoryImplants = collect([
+                                                                (object) ['model_id' => null],
                                                             ]);
                                                         }
                                                     @endphp
@@ -418,35 +438,27 @@ if (
 
                     <!-- [ Delete Modal ] start -->
                     <div class="modal fade" id="deleteGeneratorModelModal-{{ $qgm->generator_id }}"
-                        data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+                        data-bs-keyboard="false" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
                         <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-sm-12 mb-4">
-                                            <div class="d-flex justify-content-center align-items-center mb-3">
-                                                <i class="ti ti-trash text-danger" style="font-size: 100px"></i>
-                                            </div>
+                            <div class="modal-content border-0 shadow-lg rounded-3">
+                                <div class="modal-body p-5">
+                                    <div class="text-center mb-4">
+                                        <i class="ti ti-trash text-danger" style="font-size: 80px;"></i>
+                                    </div>
+                                    <div class="text-center mb-2">
+                                        <h4 class="fw-bold text-dark">Are you sure?</h4>
+                                        <p class="text-muted mb-0">This action cannot be undone.</p>
+                                    </div>
 
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                <h2>Are you sure ?</h2>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 mb-3">
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                <p class="fw-normal f-18 text-center">This action cannot be undone.</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <div class="d-flex justify-content-between gap-3 align-items-center">
-                                                <button type="reset" class="btn btn-light btn-pc-default w-50"
-                                                    data-bs-dismiss="modal">Cancel</button>
-                                                <a href="{{ route('delete-assign-generator-model-get', ['generator_id' => Crypt::encrypt($qgm->generator_id)]) }}"
-                                                    class="btn btn-danger w-100">Delete Anyways</a>
-                                            </div>
-                                        </div>
+                                    <div class="d-flex justify-content-center gap-3 mt-4">
+                                        <button type="button" class="btn btn-outline-secondary w-50"
+                                            data-bs-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                        <a href="{{ route('delete-assign-generator-model-get', ['generator_id' => Crypt::encrypt($qgm->generator_id)]) }}"
+                                            class="btn btn-danger w-50">
+                                            Delete Anyways
+                                        </a>
                                     </div>
                                 </div>
                             </div>

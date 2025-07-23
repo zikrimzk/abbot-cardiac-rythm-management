@@ -216,7 +216,7 @@
          left: 0;
          width: 4px;
          height: 100%;
-         background: linear-gradient(180deg, #002e77 0%, #96bfff  50%);
+         background:linear-gradient(180deg, #1a6edb, #28a745);
          z-index: 1;
      }
 
@@ -318,40 +318,44 @@
                      <label>Setting</label>
                  </li>
 
-                 <li class="pc-item pc-hasmenu">
-                     <a href="javascript: void(0)" class="pc-link">
-                         <span class="pc-micon">
-                             <i class="pc-icon fas fa-users-cog"></i>
-                         </span>
-                         <span class="pc-mtext">User</span>
-                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                     </a>
-                     <ul class="pc-submenu">
-                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-designation-page') }}">Manage
-                                 Designation</a>
-                         </li>
-                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-staff-page') }}">Manage Staff</a>
-                         </li>
-                     </ul>
-                 </li>
+                 @if (auth()->user()->staff_role == 1)
+                     <li class="pc-item pc-hasmenu">
+                         <a href="javascript: void(0)" class="pc-link">
+                             <span class="pc-micon">
+                                 <i class="pc-icon fas fa-users-cog"></i>
+                             </span>
+                             <span class="pc-mtext">User</span>
+                             <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                         </a>
+                         <ul class="pc-submenu">
+                             <li class="pc-item"><a class="pc-link" href="{{ route('manage-designation-page') }}">Manage
+                                     Designation</a>
+                             </li>
+                             <li class="pc-item"><a class="pc-link" href="{{ route('manage-staff-page') }}">Manage
+                                     Staff</a>
+                             </li>
+                         </ul>
+                     </li>
 
-                 <li class="pc-item pc-hasmenu">
-                     <a href="javascript: void(0)" class="pc-link">
-                         <span class="pc-micon">
-                             <i class="pc-icon fas fa-hospital-alt"></i>
-                         </span>
-                         <span class="pc-mtext">Hospital & Doctor</span>
-                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                     </a>
-                     <ul class="pc-submenu">
-                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-hospital-page') }}">Manage
-                                 Hospital</a>
-                         </li>
-                         <li class="pc-item"><a class="pc-link" href="{{ route('manage-doctor-page') }}">Manage
-                                 Doctor</a>
-                         </li>
-                     </ul>
-                 </li>
+                     <li class="pc-item pc-hasmenu">
+                         <a href="javascript: void(0)" class="pc-link">
+                             <span class="pc-micon">
+                                 <i class="pc-icon fas fa-hospital-alt"></i>
+                             </span>
+                             <span class="pc-mtext">Hospital & Doctor</span>
+                             <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                         </a>
+                         <ul class="pc-submenu">
+                             <li class="pc-item"><a class="pc-link" href="{{ route('manage-hospital-page') }}">Manage
+                                     Hospital</a>
+                             </li>
+                             <li class="pc-item"><a class="pc-link" href="{{ route('manage-doctor-page') }}">Manage
+                                     Doctor</a>
+                             </li>
+                         </ul>
+                     </li>
+                 @endif
+
 
                  <li class="pc-item pc-hasmenu">
                      <a href="javascript: void(0)" class="pc-link">
@@ -362,11 +366,13 @@
                          <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                      </a>
                      <ul class="pc-submenu">
-                         <li class="pc-item">
-                             <a class="pc-link" href="{{ route('manage-model-category-page') }}">
-                                 Manage Model Category
-                             </a>
-                         </li>
+                         @if (auth()->user()->staff_role == 1)
+                             <li class="pc-item">
+                                 <a class="pc-link" href="{{ route('manage-model-category-page') }}">
+                                     Manage Model Category
+                                 </a>
+                             </li>
+                         @endif
                          <li class="pc-item">
                              <a class="pc-link" href="{{ route('manage-generator-page') }}">
                                  Manage Generator
@@ -381,34 +387,36 @@
                      </ul>
                  </li>
 
-                 <li class="pc-item pc-hasmenu">
-                     <a href="#!" class="pc-link">
-                         <span class="pc-micon">
-                             <i class="pc-icon fas fa-cog"></i>
-                         </span>
-                         <span class="pc-mtext">Others</span>
-                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                     </a>
-                     <ul class="pc-submenu">
+                 @if (auth()->user()->staff_role == 1)
+                     <li class="pc-item pc-hasmenu">
+                         <a href="#!" class="pc-link">
+                             <span class="pc-micon">
+                                 <i class="pc-icon fas fa-cog"></i>
+                             </span>
+                             <span class="pc-mtext">Others</span>
+                             <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                         </a>
+                         <ul class="pc-submenu">
 
-                         <li class="pc-item">
-                             <a class="pc-link" href="{{ route('manage-region-page') }}">
-                                 Manage Region
-                             </a>
-                         </li>
-                         <li class="pc-item">
-                             <a class="pc-link" href="{{ route('manage-product-group-page') }}">
-                                 Manage Product Group
-                             </a>
-                         </li>
-                         <li class="pc-item">
-                             <a class="pc-link" href="{{ route('manage-stock-location-page') }}">
-                                 Manage Stock Location
-                             </a>
-                         </li>
+                             <li class="pc-item">
+                                 <a class="pc-link" href="{{ route('manage-region-page') }}">
+                                     Manage Region
+                                 </a>
+                             </li>
+                             <li class="pc-item">
+                                 <a class="pc-link" href="{{ route('manage-product-group-page') }}">
+                                     Manage Product Group
+                                 </a>
+                             </li>
+                             <li class="pc-item">
+                                 <a class="pc-link" href="{{ route('manage-stock-location-page') }}">
+                                     Manage Stock Location
+                                 </a>
+                             </li>
 
-                     </ul>
-                 </li>
+                         </ul>
+                     </li>
+                 @endif
              </ul>
 
              <br><br><br><br>

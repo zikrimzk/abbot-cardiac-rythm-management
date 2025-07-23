@@ -265,8 +265,11 @@
                                                             <option value="{{ $hs->id }}" selected>
                                                                 {{ $hs->hospital_name }}</option>
                                                         @else
-                                                            <option value="{{ $hs->id }}">{{ $hs->hospital_name }}
-                                                            </option>
+                                                            @if ($hs->hospital_visibility == 1)
+                                                                <option value="{{ $hs->id }}">
+                                                                    {{ $hs->hospital_name }}
+                                                                </option>
+                                                            @endif
                                                         @endif
                                                     @endforeach
                                                 </select>
@@ -288,11 +291,20 @@
                                                     <option value="" selected>Select Doctor</option>
                                                     @foreach ($doctors as $dr)
                                                         @if (old('doctor_id') == $dr->id)
-                                                            <option value="{{ $dr->id }}" selected>
-                                                                {{ $dr->doctor_name }}</option>
+                                                            @if ($dr->doctor_status == 1)
+                                                                <option value="{{ $dr->id }}" selected>
+                                                                    {{ $dr->doctor_name }}</option>
+                                                            @endif
                                                         @else
-                                                            <option value="{{ $dr->id }}">{{ $dr->doctor_name }}
-                                                            </option>
+                                                            @if ($dr->doctor_status == 1)
+                                                                <option value="{{ $dr->id }}">
+                                                                    {{ $dr->doctor_name }}
+                                                                </option>
+                                                            @else
+                                                                <option value="{{ $dr->id }}" disabled>
+                                                                    {{ $dr->doctor_name }} [Inactive]
+                                                                </option>
+                                                            @endif
                                                         @endif
                                                     @endforeach
                                                 </select>
@@ -312,7 +324,7 @@
                                         <div class="col-12">
                                             <div class="product-group-container">
                                                 <div class="d-flex flex-wrap gap-2">
-                                                    @foreach ($pgs as $pg)
+                                                    @foreach ($pgs->where('product_group_visibility', 1) as $pg)
                                                         <input type="checkbox" class="btn-check" name="product_groups[]"
                                                             value="{{ $pg->product_group_name }}"
                                                             id="{{ $pg->id }}">
@@ -345,13 +357,16 @@
                                                     class="form-select @error('generator_id') is-invalid @enderror"
                                                     required>
                                                     <option value="" selected>Select Model</option>
-                                                    @foreach ($generators as $g)
+                                                    @foreach ($generators->where('generator_status', 1) as $g)
                                                         @if (old('generator_id') == $g->id)
                                                             <option value="{{ $g->id }}" selected>
                                                                 {{ $g->generator_code }}</option>
                                                         @else
-                                                            <option value="{{ $g->id }}">{{ $g->generator_code }}
-                                                            </option>
+                                                            @if ($g->generator_status == 1)
+                                                                <option value="{{ $g->id }}">
+                                                                    {{ $g->generator_code }}
+                                                                </option>
+                                                            @endif
                                                         @endif
                                                     @endforeach
                                                 </select>
@@ -389,16 +404,18 @@
                                                     class="form-select @error('stock_location_id') is-invalid @enderror"
                                                     required>
                                                     <option value="" selected>Select Stock Location</option>
-                                                    @foreach ($stocklocations as $sl)
+                                                    @foreach ($stocklocations->where('stock_location_status', 1) as $sl)
                                                         @if (old('stock_location_id') == $sl->id)
                                                             <option value="{{ $sl->id }}" selected>
                                                                 ({{ $sl->stock_location_code }})
                                                                 -
                                                                 {{ $sl->stock_location_name }}</option>
                                                         @else
-                                                            <option value="{{ $sl->id }}">
-                                                                ({{ $sl->stock_location_code }}) -
-                                                                {{ $sl->stock_location_name }}</option>
+                                                            @if ($sl->stock_location_status == 1)
+                                                                <option value="{{ $sl->id }}">
+                                                                    ({{ $sl->stock_location_code }}) -
+                                                                    {{ $sl->stock_location_name }}</option>
+                                                            @endif
                                                         @endif
                                                     @endforeach
                                                 </select>
@@ -461,7 +478,7 @@
                                                                 <select name="model_ids[]"
                                                                     class="form-select model-select @error('model_ids') is-invalid @enderror">
                                                                     <option value="" selected>Select Model</option>
-                                                                    @foreach ($abbottmodels->where('mcategory_id', $mc->id) as $am)
+                                                                    @foreach ($abbottmodels->where('mcategory_id', $mc->id)->where('model_status', 1) as $am)
                                                                         <option value="{{ $am->id }}">
                                                                             {{ $am->model_code }}</option>
                                                                     @endforeach
@@ -497,7 +514,7 @@
                                                                     class="form-select stock-location-select @error('stock_location_ids') is-invalid @enderror">
                                                                     <option value="" selected>Select Location
                                                                     </option>
-                                                                    @foreach ($stocklocations as $sl)
+                                                                    @foreach ($stocklocations->where('stock_location_status', 1) as $sl)
                                                                         <option value="{{ $sl->id }}">
                                                                             ({{ $sl->stock_location_code }})
                                                                             -
@@ -560,7 +577,7 @@
                                                             <select name="model_ids[]"
                                                                 class="form-select model-select @error('model_ids') is-invalid @enderror">
                                                                 <option value="" selected>Select Model</option>
-                                                                @foreach ($abbottmodels->where('mcategory_id', $mc->id) as $am)
+                                                                @foreach ($abbottmodels->where('mcategory_id', $mc->id)->where('model_status', 1) as $am)
                                                                     <option value="{{ $am->id }}">
                                                                         {{ $am->model_code }}</option>
                                                                 @endforeach
@@ -595,7 +612,7 @@
                                                             <select name="stock_location_ids[]"
                                                                 class="form-select stock-location-select @error('stock_location_ids') is-invalid @enderror">
                                                                 <option value="" selected>Select Location</option>
-                                                                @foreach ($stocklocations as $sl)
+                                                                @foreach ($stocklocations->where('stock_location_status', 1) as $sl)
                                                                     <option value="{{ $sl->id }}">
                                                                         ({{ $sl->stock_location_code }})
                                                                         -
@@ -608,7 +625,6 @@
                                                         </div>
                                                     </div>
 
-
                                                     <!-- [ Model Quantity ] Input -->
                                                     <div class="col-md-1 mb-3">
                                                         <label class="form-label">Quantity</label>
@@ -619,7 +635,6 @@
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
-
 
                                                     <!-- [ Model Price ] Input -->
                                                     <div class="col-md-2 mb-3">

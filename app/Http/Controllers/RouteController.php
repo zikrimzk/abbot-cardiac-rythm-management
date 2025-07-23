@@ -62,8 +62,130 @@ class RouteController extends Controller
     public function staffDashboard()
     {
         try {
+
+            $totalImplants = Implant::count();
+            $totalDoctors = Doctor::where('doctor_status', 1)->count();
+            $totalHospitals = Hospital::where('hospital_visibility', 1)->count();
+            $totalStaff = User::where('staff_status', 1)->count();
+            $totalGenerators = Generator::where('generator_status', 1)->count();
+            $totalModels = AbbottModel::where('model_status', 1)->count();
+            $totalQuotations = Quotation::count();
+
+            // IMPLANT CHARTS BY MONTH
+            $implantsByMonth = Implant::selectRaw('DATE_FORMAT(implant_date, "%Y-%m") as month, COUNT(*) as total')
+                ->groupBy('month')
+                ->orderBy('month')
+                ->get();
+
+            $implantsByMonthlabels = $implantsByMonth->pluck('month')->map(function ($month) {
+                return Carbon::createFromFormat('Y-m', $month)->format('M Y');
+            });
+
+            $implantsByMonthdata = $implantsByMonth->pluck('total');
+
+            // IMPLANT SALES CHARTS BY MONTH
+            $monthlySales = Implant::selectRaw('DATE_FORMAT(implant_date, "%Y-%m") as month, SUM(implant_sales_total_price) as total_sales')
+                ->groupBy('month')
+                ->orderBy('month')
+                ->get();
+
+            $salesLabels = $monthlySales->pluck('month')->map(fn($m) => Carbon::createFromFormat('Y-m', $m)->format('M Y'));
+            $salesData = $monthlySales->pluck('total_sales');
+
+            // IMPLANT GENERATOR CHARTS BY MONTH
+            $generatorMonthlyQty = Implant::join('generators', 'implants.generator_id', '=', 'generators.id')
+                ->selectRaw('generators.generator_code, DATE_FORMAT(implant_date, "%Y-%m") as month, SUM(implant_generator_qty) as qty_total')
+                ->groupBy('generators.generator_code', 'month')
+                ->orderBy('month')
+                ->get();
+
+            $uniqueMonthsQty = $generatorMonthlyQty->pluck('month')->unique()->sort()->values()->map(function ($m) {
+                return Carbon::createFromFormat('Y-m', $m)->format('M Y');
+            });
+
+            $generatorCodesQty = $generatorMonthlyQty->pluck('generator_code')->unique();
+
+            $chartDatasetsQty = [];
+
+            foreach ($generatorCodesQty as $code) {
+                $monthlyTotals = [];
+
+                foreach ($uniqueMonthsQty as $formattedMonth) {
+                    $rawMonth = Carbon::createFromFormat('M Y', $formattedMonth)->format('Y-m');
+                    $qty = $generatorMonthlyQty->firstWhere(
+                        fn($entry) =>
+                        $entry->generator_code === $code && $entry->month === $rawMonth
+                    )?->qty_total ?? 0;
+
+                    $monthlyTotals[] = $qty;
+                }
+
+                $chartDatasetsQty[] = [
+                    'label' => $code,
+                    'data' => $monthlyTotals,
+                    'borderWidth' => 2,
+                    'fill' => false,
+                    'tension' => 0.4,
+                ];
+            }
+
+
+            // IMPLANT MODEL CHARTS BY MONTH
+            $modelImplantRawData = DB::table('implant_models')
+                ->join('abbott_models', 'implant_models.model_id', '=', 'abbott_models.id')
+                ->join('implants', 'implant_models.implant_id', '=', 'implants.id')
+                ->selectRaw('abbott_models.model_code, DATE_FORMAT(implants.implant_date, "%Y-%m") as implant_month, SUM(implant_models.implant_model_qty) as total_implanted_qty')
+                ->groupBy('abbott_models.model_code', 'implant_month')
+                ->orderBy('implant_month')
+                ->get();
+
+            $modelImplantMonths = $modelImplantRawData->pluck('implant_month')->unique()->sort()->values()
+                ->map(fn($month) => Carbon::createFromFormat('Y-m', $month)->format('M Y'));
+
+            $modelImplantCodes = $modelImplantRawData->pluck('model_code')->unique();
+
+            $modelImplantDatasets = [];
+
+            foreach ($modelImplantCodes as $code) {
+                $monthlyQuantities = [];
+
+                foreach ($modelImplantMonths as $formattedMonth) {
+                    $rawMonth = Carbon::createFromFormat('M Y', $formattedMonth)->format('Y-m');
+
+                    $quantity = $modelImplantRawData->firstWhere(
+                        fn($row) =>
+                        $row->model_code === $code && $row->implant_month === $rawMonth
+                    )?->total_implanted_qty ?? 0;
+
+                    $monthlyQuantities[] = $quantity;
+                }
+
+                $modelImplantDatasets[] = [
+                    'label' => $code,
+                    'data' => $monthlyQuantities,
+                    'borderWidth' => 1
+                ];
+            }
+
+
             return view('crmd-system.staff.staff-dashboard', [
-                'title' => 'CRMD System | Staff Dashboard'
+                'title' => 'CRMD System | Staff Dashboard',
+                'totalImplants' => $totalImplants,
+                'totalDoctors' => $totalDoctors,
+                'totalHospitals' => $totalHospitals,
+                'totalStaff' => $totalStaff,
+                'totalGenerators' => $totalGenerators,
+                'totalModels' => $totalModels,
+                'totalQuotations' => $totalQuotations,
+                'implantsByMonthlabels' => $implantsByMonthlabels,
+                'implantsByMonthdata' => $implantsByMonthdata,
+                'salesLabels' => $salesLabels,
+                'salesData' => $salesData,
+                'qtyChartMonths' => $uniqueMonthsQty,
+                'qtyChartDatasets' => $chartDatasetsQty,
+                'modelImplantMonths' => $modelImplantMonths,
+                'modelImplantDatasets' => $modelImplantDatasets,
+
             ]);
         } catch (Exception $e) {
             return abort(500, $e->getMessage());
