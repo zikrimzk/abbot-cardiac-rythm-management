@@ -7,10 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ $title }}</title>
 
-    <!-- Favicon -->
     <link rel="icon" href="../assets/images/logo-test-white.png" type="image/x-icon" />
 
-    <!-- Fonts -->
     <link rel="stylesheet" href="../assets/fonts/inter/inter.css" id="main-font-link" />
     <link rel="stylesheet" href="../assets/fonts/phosphor/duotone/style.css" />
     <link rel="stylesheet" href="../assets/fonts/tabler-icons.min.css" />
@@ -18,18 +16,21 @@
     <link rel="stylesheet" href="../assets/fonts/fontawesome.css" />
     <link rel="stylesheet" href="../assets/fonts/material.css" />
 
-    <!-- CSS Files -->
     <link rel="stylesheet" href="../assets/css/style.css" id="main-style-link" />
     <link rel="stylesheet" href="../assets/css/style-preset.css" />
     <link rel="stylesheet" href="../assets/css/landing.css" />
 
     <style>
         /* Medical-themed customizations */
-        .medical-login {
+        :root {
             --medical-blue: #1a6edb;
             --medical-blue-light: #e8f4ff;
             --medical-blue-dark: #1557b0;
-            --medical-green: #28a745;
+            --medical-green: #198754;
+            --medical-green-light: #d1e7dd;
+            --medical-red: #dc3545;
+            --medical-red-light: #f8d7da;
+            --medical-red-dark: #58151c;
             --medical-gray: #f8f9fa;
             --medical-text: #2c3e50;
         }
@@ -40,6 +41,8 @@
             min-height: 100vh;
             display: flex;
             align-items: center;
+            justify-content: center;
+            padding: 1rem;
         }
 
         .medical-login .auth-main {
@@ -49,24 +52,13 @@
         .medical-login .auth-wrapper.v1 {
             max-width: 500px;
             margin: 0 auto;
-            padding: 20px;
         }
 
         .medical-login .auth-form {
             position: relative;
         }
 
-        .medical-login .auth-form::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 6px;
-            background: linear-gradient(90deg, var(--medical-blue), var(--medical-green));
-            border-radius: 4px 4px 0 0;
-        }
-
+        /* Gradient top bar */
         .medical-login .card {
             border: none;
             border-radius: 12px;
@@ -75,40 +67,36 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* .medical-login .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 123, 255, 0.2);
-        } */
+        .medical-login .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 6px;
+            width: 100%;
+            background: linear-gradient(90deg, var(--medical-blue), var(--medical-green));
+            z-index: 1;
+        }
+
+        .medical-login .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 123, 255, 0.18);
+        }
 
         .medical-login .card-body {
-            padding: 2rem;
+            padding: 2.5rem;
         }
 
         .medical-login h3 {
-            color: var(--medical-blue);
-            font-weight: 600;
-            margin-bottom: 1.5rem !important;
-            position: relative;
-            display: inline-block;
-            padding-bottom: 0.5rem;
-        }
-
-        .medical-login h3::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50px;
-            height: 3px;
-            background: var(--medical-blue);
-            border-radius: 2px;
+            color: var(--medical-text);
+            font-weight: 700;
+            margin-bottom: 0.5rem !important;
         }
 
         .medical-login .text-muted {
             color: #6c757d !important;
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            margin-bottom: 2rem;
             display: block;
         }
 
@@ -130,7 +118,7 @@
         }
 
         .medical-login .btn-lg {
-            padding: 0.75rem 1.5rem;
+            padding: 0.85rem 1.5rem;
             border-radius: 8px;
             font-weight: 600;
             transition: all 0.3s;
@@ -155,27 +143,37 @@
             text-decoration: underline;
         }
 
+        /* Refined Alert Styles */
         .medical-login .alert {
             border-radius: 8px;
             padding: 1rem 1.25rem;
             margin-bottom: 1.5rem;
+            border: 1px solid transparent;
+            border-left-width: 5px;
+            font-weight: 500;
+        }
+
+        .medical-login .alert .btn-close {
+            padding: 1rem;
+            display: none;
         }
 
         .medical-login .alert-success {
-            background-color: rgba(40, 167, 69, 0.1);
-            border-color: rgba(40, 167, 69, 0.2);
-            color: #28a745;
+            background-color: var(--medical-green-light);
+            border-color: var(--medical-green);
+            color: var(--medical-green);
         }
 
         .medical-login .alert-danger {
-            background-color: rgba(220, 53, 69, 0.1);
-            border-color: rgba(220, 53, 69, 0.2);
-            color: #dc3545;
+            background-color: var(--medical-red-light);
+            border-color: var(--medical-red);
+            color: var(--medical-red-dark);
         }
 
-        .medical-login .alert-heading {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
+        .medical-login .alert i {
+            font-size: 1.2rem;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
         }
 
         .medical-login .logo-container {
@@ -183,44 +181,31 @@
             position: relative;
         }
 
-        .medical-login .logo-container::after {
-            content: "";
-            display: block;
-            width: 60px;
-            height: 4px;
-            background: var(--medical-blue);
-            margin: 1rem auto 0;
-            border-radius: 2px;
-        }
-
         .medical-login .medical-icon {
             position: absolute;
-            right: 30px;
-            top: 20px;
+            right: 0px;
+            top: -10px;
             color: var(--medical-blue);
-            opacity: 0.1;
-            font-size: 5rem;
+            opacity: 0.07;
+            font-size: 6rem;
             z-index: 0;
             pointer-events: none;
-        }
-
-        .medical-login .show-password {
-            top: 50%;
-            transform: translateY(-50%);
-            right: 12px;
-            background: transparent;
-            border: none;
-            color: #6c757d;
-            z-index: 5;
+            transform: rotate(-15deg);
         }
 
         @media (max-width: 575.98px) {
             .medical-login .auth-wrapper.v1 {
-                padding: 15px;
+                padding: 1rem;
             }
 
             .medical-login .card-body {
-                padding: 1.5rem;
+                padding: 2rem 2rem;
+                margin-top: 1rem;
+                margin-bottom: 1rem
+            }
+
+            .medical-login .alert .message {
+                font-size: 9pt;
             }
         }
     </style>
@@ -234,16 +219,6 @@
                 <div class="text-center logo-container">
                     <a href=""><img src="../assets/images/logo/abbott-logo.png" alt="Abbott Logo"
                             class="img-fluid" width="150" height="100" /></a>
-                    <i class="fas fa-heartbeat medical-icon"></i>
-                </div>
-
-                <div class="d-flex mt-3 mb-3 justify-content-start align-items-center">
-                    <h6 class="f-w-400 mb-0">
-                        <a href="{{ route('login-page') }}" class="link-primary">
-                            <i class="ti ti-arrow-left me-2"></i>
-                            Go Back to Login
-                        </a>
-                    </h6>
                 </div>
 
                 <div class="card shadow-lg">
@@ -251,42 +226,33 @@
                         @csrf
                         <div class="card-body">
                             <div class="text-center mb-4">
-                                <h3>Reset Password</h3>
-                                <div class="text-muted">Please enter your email address to request a password reset.
+                                <h4>Reset Password</h4>
+                                <div class="text-muted"><small>Enter your email to receive a temporary password.</small>
                                 </div>
                             </div>
 
-                            <!-- Start Alert -->
-                            <div>
-                                @if (session()->has('success'))
-                                    <div class="alert alert-success alert-dismissible" role="alert">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h5 class="alert-heading">
-                                                <i class="fas fa-check-circle"></i>
-                                                Success
-                                            </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <p class="mb-0">{{ session('success') }}</p>
+                            @if (session()->has('success'))
+                                <div class="alert alert-success d-flex align-items-center alert-dismissible fade show"
+                                    role="alert">
+                                    <i class="fas fa-check-circle"></i>
+                                    <div class="message">
+                                        {{ session('success') }}
                                     </div>
-                                @endif
-                                @if (session()->has('error'))
-                                    <div class="alert alert-danger alert-dismissible" role="alert">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h5 class="alert-heading">
-                                                <i class="fas fa-info-circle"></i>
-                                                Error
-                                            </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <p class="mb-0">{{ session('error') }}</p>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+                            @endif
+                            @if (session()->has('error'))
+                                <div class="alert alert-danger d-flex align-items-center alert-dismissible fade show"
+                                    role="alert">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <div class="message">
+                                        {{ session('error') }}
                                     </div>
-                                @endif
-                            </div>
-                            <!-- End Alert -->
-
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+                            @endif
                             <div class="form-floating mb-3">
                                 <input type="email" class="form-control" id="email" placeholder="Email"
                                     name="email" value="{{ old('email') }}" autocomplete="off" required />
@@ -294,7 +260,13 @@
                             </div>
 
                             <div class="d-grid mt-4">
-                                <button type="submit" class="btn btn-primary btn-lg">Request Password</button>
+                                <button type="submit" class="btn btn-primary btn-lg">Send Reset Link</button>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <a href="{{ route('login-page') }}" class="link-primary">
+                                    <i class="ti ti-arrow-left me-1"></i>Go Back to Login
+                                </a>
                             </div>
                         </div>
                     </form>
@@ -303,7 +275,6 @@
         </div>
     </div>
 
-    <!-- Required Js -->
     <script>
         // Prevent pinch-to-zoom
         document.addEventListener('gesturestart', function(e) {
