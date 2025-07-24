@@ -59,9 +59,57 @@ class RouteController extends Controller
     }
 
     // STAFF DASHBOARD - ROUTE
-    public function staffDashboard()
+    public function staffDashboard(Request $req)
     {
         try {
+
+            if ($req->ajax()) {
+
+                $data = DB::table('implant_logs')
+                    ->join('implants', 'implant_logs.implant_id', '=', 'implants.id')
+                    ->select(
+                        'implant_logs.log_activity',
+                        'implant_logs.log_datetime',
+                        'implants.implant_refno',
+                        'implants.id as implant_id',
+                    )
+                    ->orderBy('implant_logs.log_datetime', 'desc')
+                    ->limit(5);
+
+                $data = $data->get();
+
+                $table = DataTables::of($data)->addIndexColumn();
+
+
+                $table->addColumn('log_datetime', function ($row) {
+                    return Carbon::parse($row->log_datetime)->format('d M Y g:i:s A');
+                });
+
+                $table->addColumn('implant_refno', function ($row) {
+                    $code =
+                        '
+                    <a href="' . route('view-irf-document', ['id' => Crypt::encrypt($row->implant_id), 'option' => 2]) . '" class="link-primary" target="_blank">
+                        ' . $row->implant_refno . '
+                    </a>
+
+                ';
+                    return $code;
+                });
+
+                $table->addColumn('log_activity', function ($row) {
+                    $log = strip_tags($row->log_activity);
+                    $limit = 48;
+
+                    $shortLog = strlen($log) > $limit ? substr($log, 0, $limit) . '...' : $log;
+
+                    return '<span data-bs-toggle="tooltip" data-bs-placement="top" title="' . e($log) . '">' . e($shortLog) . '</span>';
+                });
+
+                $table->rawColumns(['implant_refno', 'log_datetime', 'log_activity']);
+
+                return $table->make(true);
+            }
+
 
             $totalImplants = Implant::count();
             $totalDoctors = Doctor::where('doctor_status', 1)->count();

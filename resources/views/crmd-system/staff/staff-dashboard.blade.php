@@ -38,7 +38,7 @@
                     $message = "Rise and shine! Let's have a great start.";
                 } elseif ($hour < 18) {
                     $greeting = 'Good Afternoon';
-                    $icon = 'fa-cloud-sun text-orange';
+                    $icon = 'fa-cloud-sun text-warning';
                     $message = "Keep going strong! You're doing great.";
                 } elseif ($hour < 21) {
                     $greeting = 'Good Evening';
@@ -69,280 +69,177 @@
             <!-- [Greeting] end -->
 
             <!-- [Dashboard Cards] start -->
-            <div class="row">
-                @if (auth()->user()->staff_role == 1)
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="avtar bg-light-primary">
-                                            <i class="fas fa-file-medical-alt f-24"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <p class="mb-1">Total Implants</p>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <h4 class="mb-0">{{ $totalImplants }}</h4>
-                                            <a href="{{ route('manage-implant-page') }}"
-                                                class="text-primary fw-medium">View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="row g-3">
+                @php
+                    $cards = [];
 
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="avtar bg-light-warning">
-                                            <i class="fas fa-user-md f-24"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <p class="mb-1">Total Doctors</p>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <h4 class="mb-0">{{ $totalDoctors }}</h4>
-                                            <a href="{{ route('manage-doctor-page') }}"
-                                                class="text-warning fw-medium">View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    if (auth()->user()->staff_role == 1) {
+                        $cards = [
+                            [
+                                'label' => 'Total Implants',
+                                'icon' => 'fas fa-file-medical-alt',
+                                'color' => 'primary',
+                                'count' => $totalImplants,
+                                'route' => 'manage-implant-page',
+                            ],
+                            [
+                                'label' => 'Total Doctors',
+                                'icon' => 'fas fa-user-md',
+                                'color' => 'warning',
+                                'count' => $totalDoctors,
+                                'route' => 'manage-doctor-page',
+                            ],
+                            [
+                                'label' => 'Total Hospital',
+                                'icon' => 'fas fa-hospital-alt',
+                                'color' => 'success',
+                                'count' => $totalHospitals,
+                                'route' => 'manage-hospital-page',
+                            ],
+                            [
+                                'label' => 'Total Staff',
+                                'icon' => 'fas fa-users',
+                                'color' => 'danger',
+                                'count' => $totalStaff,
+                                'route' => 'manage-staff-page',
+                            ],
+                            [
+                                'label' => 'Total Generators',
+                                'icon' => 'fas fa-box',
+                                'color' => 'primary',
+                                'count' => $totalGenerators,
+                                'route' => 'manage-generator-page',
+                            ],
+                            [
+                                'label' => 'Total Models',
+                                'icon' => 'fas fa-boxes',
+                                'color' => 'danger',
+                                'count' => $totalModels,
+                                'route' => 'manage-model-page',
+                            ],
+                            [
+                                'label' => 'Total Quotations',
+                                'icon' => 'fas fa-file-invoice',
+                                'color' => 'warning',
+                                'count' => $totalQuotations,
+                                'route' => 'manage-quotation-page',
+                            ],
+                        ];
+                    } elseif (auth()->user()->staff_role == 2) {
+                        $cards = [
+                            [
+                                'label' => 'Total Implants',
+                                'icon' => 'fas fa-file-medical-alt',
+                                'color' => 'primary',
+                                'count' => $totalImplants,
+                                'route' => 'manage-implant-page',
+                            ],
+                            [
+                                'label' => 'Total Generators',
+                                'icon' => 'fas fa-box',
+                                'color' => 'primary',
+                                'count' => $totalGenerators,
+                                'route' => 'manage-generator-page',
+                            ],
+                            [
+                                'label' => 'Total Models',
+                                'icon' => 'fas fa-boxes',
+                                'color' => 'danger',
+                                'count' => $totalModels,
+                                'route' => 'manage-model-page',
+                            ],
+                            [
+                                'label' => 'Total Quotations',
+                                'icon' => 'fas fa-file-invoice',
+                                'color' => 'warning',
+                                'count' => $totalQuotations,
+                                'route' => 'manage-quotation-page',
+                            ],
+                        ];
+                    }
+                @endphp
 
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="avtar bg-light-success">
-                                            <i class="fas fa-hospital-alt f-24"></i>
-                                        </div>
+                @foreach ($cards as $card)
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card shadow-sm border-0 hover-shadow">
+                            <div class="card-body d-flex align-items-center gap-3">
+                                <div class="flex-shrink-0">
+                                    <div class="avatar bg-light-{{ $card['color'] }} rounded-circle d-flex align-items-center justify-content-center"
+                                        style="width: 50px; height: 50px;">
+                                        <i class="{{ $card['icon'] }} text-{{ $card['color'] }} f-20"></i>
                                     </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <p class="mb-1">Total Hospital</p>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <h4 class="mb-0">{{ $totalHospitals }}</h4>
-                                            <a href="{{ route('manage-hospital-page') }}"
-                                                class="text-success fw-medium">View</a>
-                                        </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="mb-1 fw-semibold text-muted">{{ $card['label'] }}</p>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <h4 class="mb-0">{{ $card['count'] }}</h4>
+                                        <a href="{{ route($card['route']) }}"
+                                            class="text-{{ $card['color'] }} fw-medium small">View</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="avtar bg-light-danger">
-                                            <i class="fas fa-users f-24"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <p class="mb-1">Total Staff</p>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <h4 class="mb-0">{{ $totalStaff }}</h4>
-                                            <a href="{{ route('manage-staff-page') }}"
-                                                class="text-danger fw-medium">View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="avtar bg-light-primary">
-                                            <i class="fas fa-box f-24"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <p class="mb-1">Total Generators</p>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <h4 class="mb-0">{{ $totalGenerators }}</h4>
-                                            <a href="{{ route('manage-generator-page') }}"
-                                                class="text-primary fw-medium">View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="avtar bg-light-danger">
-                                            <i class="fas fa-boxes f-24"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <p class="mb-1">Total Models</p>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <h4 class="mb-0">{{ $totalModels }}</h4>
-                                            <a href="{{ route('manage-model-page') }}"
-                                                class="text-danger fw-medium">View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="avtar bg-light-warning">
-                                            <i class="fas fa-file-invoice f-24"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <p class="mb-1">Total Generated Quotations</p>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <h4 class="mb-0">{{ $totalQuotations }}</h4>
-                                            <a href="{{ route('manage-quotation-page') }}"
-                                                class="text-warning fw-medium">View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @elseif(auth()->user()->staff_role == 2)
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="avtar bg-light-primary">
-                                            <i class="fas fa-file-medical-alt f-24"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <p class="mb-1">Total Implants</p>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <h4 class="mb-0">{{ $totalImplants }}</h4>
-                                            <a href="{{ route('manage-implant-page') }}"
-                                                class="text-primary fw-medium">View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="avtar bg-light-primary">
-                                            <i class="fas fa-box f-24"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <p class="mb-1">Total Generators</p>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <h4 class="mb-0">{{ $totalGenerators }}</h4>
-                                            <a href="{{ route('manage-generator-page') }}"
-                                                class="text-primary fw-medium">View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="avtar bg-light-danger">
-                                            <i class="fas fa-boxes f-24"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <p class="mb-1">Total Models</p>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <h4 class="mb-0">{{ $totalModels }}</h4>
-                                            <a href="{{ route('manage-model-page') }}"
-                                                class="text-danger fw-medium">View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="avtar bg-light-warning">
-                                            <i class="fas fa-file-invoice f-24"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <p class="mb-1">Total Quotations</p>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <h4 class="mb-0">{{ $totalQuotations }}</h4>
-                                            <a href="{{ route('manage-quotation-page') }}"
-                                                class="text-warning fw-medium">View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
+                @endforeach
             </div>
             <!-- [Dashboard Cards] end -->
+
+            <!-- [Recent Implant Logs] start -->
+            @if (auth()->user()->staff_role == 1)
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="card shadow-sm border-0 hover-shadow">
+                            <div class="card-body">
+                                <h5 class="card-title mb-0 text-muted fw-semibold">
+                                    <i class="fas fa-history me-2 text-muted fw-semibold"></i>Recent Implant Logs
+                                </h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-borderless align-middle data-table w-100">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="text-muted small" style="width: 120px;">Date</th>
+                                                <th class="text-muted small" style="width: 120px;">Implant</th>
+                                                <th class="text-muted small">Recent Activity</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+            <!-- [Recent Implant Logs] end -->
 
             <!-- [Charts] start -->
             <div class="row">
                 <div class="col-sm-6">
                     <div class="card shadow-sm rounded-lg">
                         <div class="card-body">
-                            <canvas id="implantByMonthChart" height="200"></canvas>
+                            <canvas id="implantByMonthChart" height="300"></canvas>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="card shadow-sm rounded-lg">
                         <div class="card-body">
-                            <canvas id="salesByMonthChart" height="200"></canvas>
+                            <canvas id="salesByMonthChart" height="300"></canvas>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="card shadow-sm rounded-lg">
                         <div class="card-body">
-                            <canvas id="generatorQtyBarChart" height="200"></canvas>
+                            <canvas id="generatorQtyBarChart" height="300"></canvas>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="card shadow-sm rounded-lg">
                         <div class="card-body">
-                            <canvas id="implantModelMonthlyChart" height="200"></canvas>
+                            <canvas id="implantModelMonthlyChart" height="300"></canvas>
                         </div>
                     </div>
                 </div>
@@ -357,6 +254,54 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
     <script>
+        $(document).ready(function() {
+
+            $('.data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                paging: false,
+                searching: false,
+                info: false,
+                order: [
+                    [0, 'desc']
+                ],
+                ajax: "{{ route('staff-dashboard-page') }}", // <-- Replace with actual route
+                columns: [{
+                        data: 'log_datetime',
+                        name: 'log_datetime',
+                        className: 'text-nowrap text-muted small',
+                    },
+                    {
+                        data: 'implant_refno',
+                        name: 'implant_refno',
+                        className: 'text-body small',
+                    },
+                    {
+                        data: 'log_activity',
+                        name: 'log_activity',
+                        render: function(data, type, row) {
+                            if (type === 'display') {
+                                const cleanText = $('<div>').html(data).text();
+                                const shortText = cleanText.length > 80 ? cleanText.substring(0,
+                                    80) + '...' : cleanText;
+                                return `<span data-bs-toggle="tooltip" title="${cleanText}">${shortText}</span>`;
+                            }
+                            return data;
+                        },
+                        className: 'text-body small',
+                    }
+                ],
+                drawCallback: function() {
+                    const tooltips = [].slice.call(document.querySelectorAll(
+                        '[data-bs-toggle="tooltip"]'));
+                    tooltips.map(t => new bootstrap.Tooltip(t));
+                }
+            });
+
+
+        });
+
         const ctx = document.getElementById('implantByMonthChart').getContext('2d');
         new Chart(ctx, {
             type: 'bar',
