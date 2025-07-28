@@ -155,7 +155,7 @@
                                             </div>
                                             <div class="card-footer text-end">
                                                 <button type="submit" class="btn btn-primary"
-                                                    style="border-radius: 6px !important;">Save changes</button>
+                                                    style="border-radius: 6px !important;">Save Changes</button>
                                             </div>
                                         </div>
                                     </div>

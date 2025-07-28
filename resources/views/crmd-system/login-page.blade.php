@@ -236,8 +236,8 @@
                         @csrf
                         <div class="card-body">
                             <div class="text-center mb-4">
-                                <h4>Login</h4>
-                                <div class="text-muted"><small>Cardiac Rhythm Management Division System</small></div>
+                                <h4>Cardiac Rhythm Management Division System</h4>
+                                <div class="text-muted"><small>Please sign in to your account to access the system.</small></div>
                             </div>
 
                             @if (session()->has('success'))
