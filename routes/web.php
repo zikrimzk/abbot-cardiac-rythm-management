@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\ModelController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\StaffController;
@@ -12,7 +13,32 @@ use App\Http\Controllers\SalesBillingController;
 use App\Http\Controllers\HospitalDoctorController;
 
 
-Route::get('/',function () {
+/* [SERVER USE] */
+Route::get('/artisan/{cmd}/{key}', function ($cmd, $key) {
+    $secret = 'zikri123';
+
+    if ($key !== $secret) {
+        abort(403, 'Unauthorized');
+    }
+
+    $allowed = [
+        'migrate' => 'migrate --force',
+        'key'     => 'key:generate',
+        'cache'   => 'config:cache',
+        'route'   => 'route:cache',
+        'view'    => 'view:cache',
+        'storage' => 'storage:link',
+    ];
+
+    if (!array_key_exists($cmd, $allowed)) {
+        return "Command not allowed.";
+    }
+
+    Artisan::call($allowed[$cmd]);
+    return nl2br(Artisan::output());
+});
+
+Route::get('/', function () {
     return redirect()->route('login-page');
 });
 
@@ -27,7 +53,6 @@ Route::prefix('auth')->group(function () {
 
     // Guest Patient ID Card Download
     Route::get('/guest-view-patient-id-card-{id}-{opt}-{type}', [RouteController::class, 'viewDownloadPatientIdCard'])->name('guest-view-patient-id-card-page');
-
 });
 
 Route::prefix('staff')->middleware('auth')->group(function () {
