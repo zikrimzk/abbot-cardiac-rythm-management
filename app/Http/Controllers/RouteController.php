@@ -1183,7 +1183,7 @@ class RouteController extends Controller
                     ->from('quote_generator_models')
                     ->distinct();
             })->get();
-            
+
             $hospital = Hospital::all();
 
             $quotation = Quotation::where('id', $id)->first();
@@ -1229,7 +1229,7 @@ class RouteController extends Controller
 
                 $table->addColumn('company_name', function ($row) {
                     $logoPath = $row->company_logo;
-                    $logoUrl = storage_path('app/' . $logoPath);
+                    $logoUrl = Storage::url($logoPath);
 
                     $html = '
                         <div class="d-block mb-3 mt-3">
