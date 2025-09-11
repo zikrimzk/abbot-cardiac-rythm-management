@@ -17,6 +17,7 @@ class Quotation extends Model
         'quotation_price',
         'quotation_directory',
         'quotation_refno',
+        'approver_id',
         'hospital_id',
         'staff_id',
         'company_id',

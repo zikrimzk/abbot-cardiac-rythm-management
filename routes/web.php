@@ -28,6 +28,7 @@ Route::get('/artisan/{cmd}/{key}', function ($cmd, $key) {
         'route'   => 'route:cache',
         'view'    => 'view:cache',
         'storage' => 'storage:link',
+        'optimize'   => 'optimize:clear'
     ];
 
     if (!array_key_exists($cmd, $allowed)) {

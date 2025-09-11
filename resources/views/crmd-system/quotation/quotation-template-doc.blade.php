@@ -256,8 +256,8 @@
         <p class="no-margin">Yours sincerely,</p>
         
         <div style="margin-top: 25px;" class="medium">
-            <p class="no-margin"><strong>Michael Chuah</strong></p>
-            <p class="no-margin">Regional Business Manager Malaysia</p>
+            <p class="no-margin"><strong>{{ $data['approver_name'] }}</strong></p>
+            <p class="no-margin">{{ $data['approver_designation'] }}</p>
             <p class="no-margin">Cardiac Rhythm Management Division</p>
             <p class="no-margin">Abbott Medical (Malaysia) Sdn Bhd</p>
         </div>

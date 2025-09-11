@@ -1147,20 +1147,25 @@ class RouteController extends Controller
     {
         try {
             $company = Company::all();
+
             $generator = Generator::whereIn('id', function ($query) {
                 $query->select('generator_id')
                     ->from('quote_generator_models')
                     ->distinct();
             })->get();
+
             $hospital = Hospital::all();
+
+            $approver = User::where('staff_status', 1)->get();
+
             return view('crmd-system.quotation.generate-quotation', [
                 'title' => 'CRMD System | Generate Quotation',
                 'companies' => $company,
                 'generators' => $generator,
                 'hospitals' => $hospital,
+                'approvers' => $approver,
             ]);
         } catch (Exception $e) {
-            dd($e->getMessage());
             return abort(500, $e->getMessage());
         }
     }
@@ -1172,25 +1177,28 @@ class RouteController extends Controller
             $id = Crypt::decrypt($id);
 
             $company = Company::all();
+
             $generator = Generator::whereIn('id', function ($query) {
                 $query->select('generator_id')
                     ->from('quote_generator_models')
                     ->distinct();
             })->get();
+            
             $hospital = Hospital::all();
 
             $quotation = Quotation::where('id', $id)->first();
+
+            $approver = User::all();
 
             return view('crmd-system.quotation.update-quotation', [
                 'title' => 'CRMD System | Update Quotation',
                 'companies' => $company,
                 'generators' => $generator,
                 'hospitals' => $hospital,
-                'quotation' => $quotation
-
+                'quotation' => $quotation,
+                'approvers' => $approver
             ]);
         } catch (Exception $e) {
-            dd($e->getMessage());
             return abort(500, $e->getMessage());
         }
     }

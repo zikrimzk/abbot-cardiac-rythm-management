@@ -385,6 +385,35 @@
                                             @enderror
                                         </div>
                                     </div>
+
+                                    <!-- Letter Details -->
+                                    <div class="col-sm-12">
+                                        <div class="section-header mb-3 mt-4">
+                                            <h6 class="fw-semibold mb-0 text-primary">
+                                                <i class="fas fa-user-injured me-2"></i>Letter Details
+                                            </h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="approver_id" class="form-label fw-medium">Approver<span
+                                                    class="text-danger">*</span></label>
+                                            <select name="approver_id" id="approver_id"
+                                                class="form-select @error('approver_id') is-invalid @enderror" required>
+                                                <option value="" selected disabled>- Select Approver -</option>
+                                                @foreach ($approvers as $approver)
+                                                    <option value="{{ $approver->id }}">[{{ $approver->staff_idno }}] -
+                                                        {{ $approver->staff_name }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('approver_id')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+
                                 </div>
                             </div>
                             <div

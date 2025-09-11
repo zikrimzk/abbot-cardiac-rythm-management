@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('quotation_price', 10, 2)->default(0.00);
             $table->text('quotation_directory')->nullable();
             $table->string('quotation_refno')->nullable();
+            $table->foreignId('approver_id')->constrained('users');
             $table->foreignId('hospital_id')->constrained('hospitals');
             $table->foreignId('staff_id')->constrained('users');
             $table->foreignId('company_id')->constrained('companies');

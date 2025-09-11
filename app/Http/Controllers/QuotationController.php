@@ -304,6 +304,7 @@ class QuotationController extends Controller
             $quotation->quotation_price = (float) $req->quotation_totalprice;
             $quotation->quotation_pt_name = $req->quotation_pt_name;
             $quotation->quotation_pt_icno = $req->quotation_pt_icno;
+            $quotation->approver_id = $req->approver_id;
             $quotation->company_id = $req->company_id;
             $quotation->hospital_id = $req->hospital_id;
             $quotation->staff_id = auth()->user()->id;
@@ -393,6 +394,7 @@ class QuotationController extends Controller
             $quotation->quotation_pt_icno = $req->quotation_pt_icno;
             $quotation->company_id = $req->company_id;
             $quotation->hospital_id = $req->hospital_id;
+            $quotation->approver_id = $req->approver_id;
 
             $excluded = [
                 '_token',
@@ -563,6 +565,18 @@ class QuotationController extends Controller
                 return abort(404, 'Designation not found');
             }
 
+            $approver = User::findOrFail($quotation->approver_id);
+
+            if (!$approver) {
+                return abort(404, 'Approver not found');
+            }
+
+            $approverDesignation = Designation::where('id', $approver->designation_id)->first();
+
+            if (!$approverDesignation) {
+                return abort(404, 'Approver designation not found');
+            }
+
             /**** 03 - Decode JSON Format ****/
             $metadata = json_decode($quotation->quotation_metadata);
             if (!$metadata || !isset($metadata->generator_id)) {
@@ -607,6 +621,8 @@ class QuotationController extends Controller
                 'generator_model'      => $modellist,
                 'user_name'            => $user->staff_name ?? '-',
                 'designation_name'     => $designation->designation_name ?? '-',
+                'approver_name'        => $approver->staff_name ?? '-',
+                'approver_designation' => $approverDesignation->designation_name ?? '-',
             ];
 
             /**** 06 - Prepare Quotation Title ****/
