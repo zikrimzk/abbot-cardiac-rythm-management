@@ -1229,12 +1229,12 @@ class RouteController extends Controller
 
                 $table->addColumn('company_name', function ($row) {
                     $logoPath = $row->company_logo;
-                    $logoUrl = Storage::url($logoPath);
+                    // $logoUrl = Storage::url($logoPath);
 
                     $html = '
                         <div class="d-block mb-3 mt-3">
                             <div>
-                                <img src="' . $logoUrl . '" alt="Logo" style="max-height: 50px;" class="mb-2">
+                                <img src="' . $logoPath . '" alt="Logo" style="max-height: 50px;" class="mb-2">
                             </div>
                             <div>' . e($row->company_name) . '</div>
                             <div class="text-muted">' . e($row->company_ssm) . '</div>
