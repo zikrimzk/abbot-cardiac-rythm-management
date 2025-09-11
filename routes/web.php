@@ -22,13 +22,14 @@ Route::get('/artisan/{cmd}/{key}', function ($cmd, $key) {
     }
 
     $allowed = [
-        'migrate' => 'migrate --force',
+        'migrate' => 'migrate',
         'key'     => 'key:generate',
         'cache'   => 'config:cache',
         'route'   => 'route:cache',
         'view'    => 'view:cache',
         'storage' => 'storage:link',
-        'optimize'   => 'optimize:clear'
+        'optimize'   => 'optimize:clear',
+        'composer' => 'composer dump-autoload',
     ];
 
     if (!array_key_exists($cmd, $allowed)) {
