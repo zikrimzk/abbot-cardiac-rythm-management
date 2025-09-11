@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <title>{{ $title }}</title>
@@ -12,44 +11,30 @@
             margin: 15px;
             line-height: 1.3;
         }
-
         .letterhead {
             border-bottom: 2px solid #2c3e50;
             padding-bottom: 8px;
             margin-bottom: 15px;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 8px 0;
         }
-
-        .items-table th,
+        .items-table th, 
         .items-table td {
             padding: 5px;
             border: 1px solid #ddd;
         }
-
         .items-table th {
             /* background-color: #2c3e50;
             color: white; */
             font-weight: bold;
             font-size: 9pt;
         }
-
-        .text-right {
-            text-align: right;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .section {
-            margin: 15px 0;
-        }
-
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .section { margin: 15px 0; }
         .box-sender {
             border: 1px solid #2c3e50;
             background-color: #f8f9fa;
@@ -57,7 +42,6 @@
             border-radius: 2px;
             font-size: 8.5pt;
         }
-
         .patient-info {
             background-color: #f0f8ff;
             padding: 8px;
@@ -65,56 +49,38 @@
             margin: 10px 0;
             font-size: 8.5pt;
         }
-
         .terms-list {
             padding-left: 12px;
             margin: 5px 0;
             font-size: 8.5pt;
         }
-
         .terms-list li {
             margin-bottom: 4px;
             list-style-type: square;
         }
-
         .signature-section {
             margin-top: 25px;
             padding-top: 10px;
             border-top: 1px dashed #ccc;
         }
-
         .page-break {
             page-break-before: always;
             margin-top: 20px;
         }
-
         .company-info {
             font-size: 8.5pt;
             color: #555;
         }
-
         .auth-header {
             font-weight: bold;
             margin: 15px 0;
             font-size: 10pt;
         }
+        .compact { margin: 8px 0; }
+        .smaller { font-size: 8.5pt; }
+        .medium { font-size: 10pt; }
 
-        .compact {
-            margin: 8px 0;
-        }
-
-        .smaller {
-            font-size: 8.5pt;
-        }
-
-        .medium {
-            font-size: 10pt;
-        }
-
-        .no-margin {
-            margin: 0;
-        }
-
+        .no-margin { margin: 0; }
         .subject-line {
             font-weight: bold;
             margin: 10px 0;
@@ -123,34 +89,26 @@
         }
     </style>
 </head>
-
 <body>
 
     {{-- Page 1: Quotation --}}
     <table class="letterhead">
         <tr>
             <td width="25%">
-                {{-- <img src="{{ public_path(str_replace('public/', 'storage/', $data['company_logo'])) }}" 
+                    {{-- <img src="{{ public_path(str_replace('public/', 'storage/', $data['company_logo'])) }}" 
                         alt="Company Logo" style="height:50px;"> --}}
-                <img src="{{ $data['company_logo'] }}" alt="Company Logo" style="height:50px;">
+                      <img src="{{ public_path($data['company_logo']) }}" 
+                     alt="Company Logo" style="height:50px;">
             </td>
             <td width="75%" class="text-right smaller">
                 <strong style="font-size:10pt;">{{ $data['company_name'] }}</strong><br>
                 <span class="company-info">
                     {{ $data['company_ssm'] }}<br>
                     {!! nl2br(e($data['company_address'])) !!}<br>
-                    @if ($data['company_email'] != '-')
-                        Email: {{ $data['company_email'] }}<br>
-                    @endif
-                    @if ($data['company_website'] != '-')
-                        Website: {{ $data['company_website'] }}<br>
-                    @endif
-                    @if ($data['company_phoneno'] != '-')
-                        Tel: {{ $data['company_phoneno'] }}
-                    @endif
-                    @if ($data['company_fax'] != '-')
-                        &nbsp;Fax: {{ $data['company_fax'] }}
-                    @endif
+                    @if ($data['company_email'] != '-')Email: {{ $data['company_email'] }}<br>@endif
+                    @if ($data['company_website'] != '-')Website: {{ $data['company_website'] }}<br>@endif
+                    @if ($data['company_phoneno'] != '-')Tel: {{ $data['company_phoneno'] }}@endif
+                    @if ($data['company_fax'] != '-')&nbsp;Fax: {{ $data['company_fax'] }}@endif
                 </span>
             </td>
         </tr>
@@ -226,8 +184,7 @@
     </div>
 
     <div class="compact medium">
-        <p>System Features: Rate Modulation, Auto Capture Pacing System, Extended Hysteresis, Rest Rate, AF Suppression,
-            Auto Mode Switch, Ventricle Intrinsic Preference, 14 mins EGM Recording and MRI Compatible.</p>
+        <p>System Features: Rate Modulation, Auto Capture Pacing System, Extended Hysteresis, Rest Rate, AF Suppression, Auto Mode Switch, Ventricle Intrinsic Preference, 14 mins EGM Recording and MRI Compatible.</p>
     </div>
 
     <div class="medium">
@@ -239,7 +196,7 @@
         <p class="medium">Terms and Conditions:</p>
         <ul class="terms-list medium">
             <li>Delivery: Subject to prior sales otherwise 8–12 weeks upon receipt of confirmed order</li>
-            <li>Validity: {{ date('d F Y', strtotime($data['quotation_date'])) }} -
+            <li>Validity: {{ date('d F Y', strtotime($data['quotation_date'])) }} - 
                 {{ date('d F Y', strtotime('+1 year', strtotime($data['quotation_date']))) }} (1 year)</li>
             <li>Payment: By bank draft made payable to "{{ $data['company_name'] }}"</li>
         </ul>
@@ -248,7 +205,7 @@
     <div class="signature-section medium">
         <p class="no-margin">Thank you for your consideration.</p>
         <p class="no-margin">Yours sincerely,</p>
-
+        
         <div style="margin-top: 15px;">
             <p class="no-margin"><strong>{{ $data['user_name'] }}</strong></p>
             <p class="no-margin">{{ $data['designation_name'] }}</p>
@@ -261,8 +218,8 @@
     <table>
         <tr>
             <td width="40%">
-                <img src="{{ public_path('assets/images/logo/abbott-logo.png') }}" alt="Abbott Logo"
-                    style="height:40px;">
+                <img src="{{ public_path('assets/images/logo/abbott-logo.png') }}" 
+                     alt="Abbott Logo" style="height:40px;">
             </td>
             <td width="60%" class="company-info text-right">
                 <strong>Abbott Medical (Malaysia) Sdn. Bhd.</strong><br>
@@ -299,7 +256,7 @@
 
     <div class="signature-section medium">
         <p class="no-margin">Yours sincerely,</p>
-
+        
         <div style="margin-top: 25px;" class="medium">
             <p class="no-margin"><strong>{{ $data['approver_name'] }}</strong></p>
             <p class="no-margin">{{ $data['approver_designation'] }}</p>
@@ -309,5 +266,4 @@
     </div>
 
 </body>
-
 </html>
