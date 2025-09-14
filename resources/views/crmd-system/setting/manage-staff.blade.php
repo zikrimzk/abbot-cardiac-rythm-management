@@ -180,12 +180,13 @@
 
                                         <div class="col-sm-12">
                                             <div class="mb-3">
-                                                <label for="staffIdno" class="form-label">ID Number <span
+                                                <label for="staffIdno" class="form-label">IC Number <span
                                                         class="text-danger">*</span></label>
                                                 <input type="text" id="staffIdno"
-                                                    class="form-control @error('staff_idno') is-invalid @enderror"
-                                                    name="staff_idno" placeholder="ID Number"
-                                                    value="{{ old('staff_idno') }}" required>
+                                                    class="form-control ic-input @error('staff_idno') is-invalid @enderror"
+                                                    name="staff_idno" placeholder="IC Number"
+                                                    value="{{ old('staff_idno') }}" maxlength="14"
+                                                    pattern="\d{6}-\d{2}-\d{4}" required>
                                                 @error('staff_idno')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -336,12 +337,13 @@
 
                                             <div class="col-sm-12">
                                                 <div class="mb-3">
-                                                    <label for="staffIdno" class="form-label">ID Number <span
+                                                    <label for="staffIdno" class="form-label">IC Number <span
                                                             class="text-danger">*</span></label>
                                                     <input type="text" id="staffIdno"
-                                                        class="form-control @error('staff_idno') is-invalid @enderror"
-                                                        name="staff_idno" placeholder="ID Number"
-                                                        value="{{ $st->staff_idno }}" required>
+                                                        class="form-control ic-input @error('staff_idno') is-invalid @enderror"
+                                                        name="staff_idno" placeholder="IC Number"
+                                                        value="{{ $st->staff_idno }}" maxlength="14"
+                                                        pattern="\d{6}-\d{2}-\d{4}" required>
                                                     @error('staff_idno')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -600,6 +602,23 @@
             $("#clearStatusFilter").click(function() {
                 $('#statusFilter').val("");
                 $('.data-table').DataTable().ajax.reload();
+            });
+
+            $(".ic-input").on("input", function() {
+                let val = $(this).val().replace(/\D/g, ""); // remove non-digits
+                if (val.length > 12) val = val.slice(0, 12); // max 12 digits only
+
+                let formatted = "";
+                if (val.length > 6) {
+                    formatted = val.substring(0, 6) + "-" + val.substring(6);
+                } else {
+                    formatted = val;
+                }
+                if (val.length > 8) {
+                    formatted = formatted.substring(0, 9) + "-" + formatted.substring(9);
+                }
+
+                $(this).val(formatted);
             });
 
         });

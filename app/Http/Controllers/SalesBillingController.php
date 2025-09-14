@@ -348,7 +348,7 @@ class SalesBillingController extends Controller
             ];
 
             $title =  $formattedData['hospital_code'] . '_' . $formattedData['generator_code'] . '_' . strtoupper(Carbon::parse($formattedData['implant_date'])->format('dMY')) . '_' .  strtoupper(preg_replace('/[^A-Za-z0-9]/', '_', $formattedData['implant_pt_name'])) . '_ICF';
-            $pdf = Pdf::loadView('crmd-system.sales-billing.icf-template-doc', [
+            $pdf = Pdf::loadView('crmd-system.sales-billing.icf-template-doc-v2', [
                 'title' => $title,
                 'data' => $formattedData,
                 'stocklocations' => StockLocation::all(),
