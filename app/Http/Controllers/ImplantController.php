@@ -775,6 +775,27 @@ class ImplantController extends Controller
         }
     }
 
+    // SEND IMPLANT EMAIL - FUNCTION [NOT COMPLETE]
+    public function sendImplantEmail(Request $req, $id)
+    {
+
+        /* DECRYPT PROCESS */
+        $id = Crypt::decrypt($id);
+
+        try {
+            dd($req->all());
+
+            /* LOAD IMPLANT DATA */
+            $implant = Implant::where('id', $id)->first();
+
+            if (!$implant) {
+                return back()->with('error', 'Error: Implant record not found.');
+            }
+        } catch (Exception $e) {
+            return back()->with('error', 'Error sending email: ' . $e->getMessage());
+        }
+    }
+
     // PREVIEW PATIENT ID CARD - FUNCTION
     public function previewPatientIDCard(Request $request, $id)
     {
@@ -832,7 +853,7 @@ class ImplantController extends Controller
                 ->join('abbott_models as j', 'i.model_id', '=', 'j.id')
                 ->join('model_categories as k', 'j.mcategory_id', '=', 'k.id')
                 ->where('i.implant_id', $id)
-                ->where('k.mcategory_ismorethanone', 0)
+                // ->where('k.mcategory_ismorethanone', 0)
                 ->select([
                     'k.id as model_category_id',
                     'k.mcategory_name as model_category',
@@ -842,15 +863,30 @@ class ImplantController extends Controller
                 ->get();
 
             $mergedModels = [];
-            foreach ($modelCategories as $category) {
-                $foundModel = $models->firstWhere('model_category_id', $category->model_category_id);
 
-                $mergedModels[] = [
-                    'model_category_id' => $category->model_category_id,
-                    'model_category' => $category->model_category,
-                    'model_code' => $foundModel->model_code ?? '-',
-                    'implant_model_sn' => $foundModel->implant_model_sn ?? '-'
-                ];
+            foreach ($modelCategories as $category) {
+                // Get all models that match the category id
+                $foundModels = $models->where('model_category_id', $category->model_category_id);
+
+                // If no models found, still push a placeholder row
+                if ($foundModels->isEmpty()) {
+                    $mergedModels[] = [
+                        'model_category_id' => $category->model_category_id,
+                        'model_category' => $category->model_category,
+                        'model_code' => '-',
+                        'implant_model_sn' => '-'
+                    ];
+                } else {
+                    // Push each model individually
+                    foreach ($foundModels as $foundModel) {
+                        $mergedModels[] = [
+                            'model_category_id' => $category->model_category_id,
+                            'model_category' => $category->model_category,
+                            'model_code' => $foundModel->model_code,
+                            'implant_model_sn' => $foundModel->implant_model_sn
+                        ];
+                    }
+                }
             }
 
             $formattedData = [

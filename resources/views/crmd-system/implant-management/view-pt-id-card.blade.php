@@ -138,7 +138,7 @@
                         {{ $data['implant_date'] }}
                     </td>
                 </tr>
-                @foreach (array_chunk($data['models'], 3) as $modelRow)
+                @foreach (array_chunk($data['models'], 4) as $modelRow)
                     @foreach ($modelRow as $item)
                         <tr>
                             <th style="padding-left: 15px; padding-bottom: 2px; font-weight:700;">

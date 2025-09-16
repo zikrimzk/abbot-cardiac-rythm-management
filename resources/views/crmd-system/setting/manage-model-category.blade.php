@@ -119,22 +119,6 @@
                                     <div class="row">
 
                                         <div class="col-sm-12">
-                                            <div class="alert alert-warning d-flex align-items-center" role="alert">
-                                                <i class="fas fa-exclamation-circle f-18 me-2"></i>
-                                                <div>
-                                                    <span class="text-danger fw-bold">**</span>
-                                                    For Multiple Input, If you select <strong>"Yes"</strong>, this
-                                                    category
-                                                    <strong>will
-                                                        not be displayed</strong> in the generated Implant Registration
-                                                    Form
-                                                    and <strong>
-                                                        will not be included</strong> when exporting to Excel.
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-sm-12">
                                             <div class="mb-3">
                                                 <label for="mcategory_name" class="form-label">Category Name <span
                                                         class="text-danger">*</span></label>
@@ -185,6 +169,9 @@
                                                         <option value="0">No</option>
                                                     @endif
                                                 </select>
+                                                <small class="text-muted form-text">Select Yes if the category can have
+                                                    multiple models</small>
+
                                                 @error('mcategory_ismorethanone')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -211,6 +198,8 @@
                                                         <option value="0">No</option>
                                                     @endif
                                                 </select>
+                                                <small class="text-muted form-text">Select Yes if the category should
+                                                    appear in the Patient ID Card</small>
                                                 @error('mcategory_isappear_incard')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -260,22 +249,6 @@
                                         <div class="row">
 
                                             <div class="col-sm-12">
-                                                <div class="alert alert-warning d-flex align-items-center" role="alert">
-                                                    <i class="fas fa-exclamation-circle f-18 me-2"></i>
-                                                    <div>
-                                                        <span class="text-danger fw-bold">**</span>
-                                                        For Multiple Input, If you select <strong>"Yes"</strong>, this
-                                                        category
-                                                        <strong>will
-                                                            not be displayed</strong> in the generated Implant Registration
-                                                        Form
-                                                        and <strong>
-                                                            will not be included</strong> when exporting to Excel.
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-sm-12">
                                                 <div class="mb-3">
                                                     <label for="mcategory_name" class="form-label">Category Name <span
                                                             class="text-danger">*</span></label>
@@ -311,7 +284,7 @@
                                                 <div class="mb-3">
                                                     <label for="mcategory_ismorethanone" class="form-label">
                                                         Multiple Input
-                                                        <span class="text-danger">**</span>
+                                                        <span class="text-danger">*</span>
                                                     </label>
 
                                                     <select name="mcategory_ismorethanone" id="mcategory_ismorethanone"
@@ -329,6 +302,8 @@
                                                             <option value="0">No</option>
                                                         @endif
                                                     </select>
+                                                    <small class="text-muted form-text">Select Yes if the category can have
+                                                        multiple models</small>
                                                     @error('mcategory_ismorethanone')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -356,6 +331,8 @@
                                                             <option value="0">No</option>
                                                         @endif
                                                     </select>
+                                                    <small class="text-muted form-text">Select Yes if the category should
+                                                        appear in the Patient ID Card</small>
                                                     @error('mcategory_isappear_incard')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror

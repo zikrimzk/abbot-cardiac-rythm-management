@@ -79,6 +79,8 @@ Route::prefix('staff')->middleware('auth')->group(function () {
     Route::get('/view-implant-registration-form-{id}-{option}', [RouteController::class, 'viewGenerateDownloadIRF'])->name('view-irf-document');
     Route::get('/download-implant-directory/{id}', [ImplantController::class, 'downloadImplantDirectory'])->name('download-implant-directory');
     Route::get('/download-multiple-implant-directory', [ImplantController::class, 'downloadMultipleImplantDirectory'])->name('download-multiple-implant-directory');
+    Route::post('/send-implant-email-{id}', [ImplantController::class, 'sendImplantEmail'])->name('send-implant-email-post');
+
 
     // MANAGE IMPLANT > APPROVAL TYPE
     Route::get('/get-approval-type', [ImplantController::class, 'getApprovalType'])->name('get-approval-type-get');

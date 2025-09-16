@@ -6,14 +6,15 @@ use App\Models\ApprovalType;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithEvents;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use PhpOffice\PhpSpreadsheet\Style\Border;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
-use Maatwebsite\Excel\Concerns\WithTitle;
 
 class ImplantsExport implements FromCollection, WithHeadings, WithEvents, WithCustomStartCell, WithTitle
 {
@@ -37,7 +38,7 @@ class ImplantsExport implements FromCollection, WithHeadings, WithEvents, WithCu
     public function collection()
     {
         $modelCategories = DB::table('model_categories')
-            ->where('mcategory_ismorethanone', 0)
+            // ->where('mcategory_ismorethanone', 0)
             ->pluck('mcategory_name')
             ->toArray();
 
@@ -76,7 +77,7 @@ class ImplantsExport implements FromCollection, WithHeadings, WithEvents, WithCu
             ->leftJoin('implant_models as i', 'a.id', '=', 'i.implant_id')
             ->leftJoin('abbott_models as j', 'i.model_id', '=', 'j.id')
             ->leftJoin('model_categories as k', 'j.mcategory_id', '=', 'k.id')
-            ->where('k.mcategory_ismorethanone', '=', 0)
+            // ->where('k.mcategory_ismorethanone', '=', 0)
             ->groupBy([
                 'a.id',
                 'a.implant_date',
@@ -144,11 +145,39 @@ class ImplantsExport implements FromCollection, WithHeadings, WithEvents, WithCu
                 ]);
             }
 
+            // if ($item->model_category) {
+            //     $formattedData[$implantId][$item->model_category . "_model"] = $item->model_code ?? 'N/A';
+            //     $formattedData[$implantId][$item->model_category . "_serial"] = $item->implant_model_sn ?? 'N/A';
+            //     $formattedData[$implantId][$item->model_category . "_qty"] = $item->implant_model_qty ?? 'N/A';
+            //     $formattedData[$implantId][$item->model_category . "_price"] = $item->implant_model_itemPrice ? 'RM ' . number_format($item->implant_model_itemPrice, 2) : 'N/A';
+            // }
+
             if ($item->model_category) {
-                $formattedData[$implantId][$item->model_category . "_model"] = $item->model_code ?? 'N/A';
-                $formattedData[$implantId][$item->model_category . "_serial"] = $item->implant_model_sn ?? 'N/A';
-                $formattedData[$implantId][$item->model_category . "_qty"] = $item->implant_model_qty ?? 'N/A';
-                $formattedData[$implantId][$item->model_category . "_price"] = $item->implant_model_itemPrice ? 'RM ' . number_format($item->implant_model_itemPrice, 2) : 'N/A';
+                $categoryKey = $item->model_category;
+
+                // Append model codes
+                $formattedData[$implantId][$categoryKey . "_model"] =
+                    ($formattedData[$implantId][$categoryKey . "_model"] !== 'N/A'
+                        ? $formattedData[$implantId][$categoryKey . "_model"] . "\n" . $item->model_code
+                        : $item->model_code);
+
+                // Append serial numbers
+                $formattedData[$implantId][$categoryKey . "_serial"] =
+                    ($formattedData[$implantId][$categoryKey . "_serial"] !== 'N/A'
+                        ? $formattedData[$implantId][$categoryKey . "_serial"] . "\n" . $item->implant_model_sn
+                        : $item->implant_model_sn);
+
+                // Append qty
+                $formattedData[$implantId][$categoryKey . "_qty"] =
+                    ($formattedData[$implantId][$categoryKey . "_qty"] !== 'N/A'
+                        ? $formattedData[$implantId][$categoryKey . "_qty"] . "\n" . $item->implant_model_qty
+                        : $item->implant_model_qty);
+
+                // Append price
+                $formattedData[$implantId][$categoryKey . "_price"] =
+                    ($formattedData[$implantId][$categoryKey . "_price"] !== 'N/A'
+                        ? $formattedData[$implantId][$categoryKey . "_price"] . "\n" . 'RM ' . number_format($item->implant_model_itemPrice, 2)
+                        : 'RM ' . number_format($item->implant_model_itemPrice, 2));
             }
         }
 
@@ -158,7 +187,7 @@ class ImplantsExport implements FromCollection, WithHeadings, WithEvents, WithCu
     public function headings(): array
     {
         $modelCategories = DB::table('model_categories')
-            ->where('mcategory_ismorethanone', 0)
+            // ->where('mcategory_ismorethanone', 0)
             ->pluck('mcategory_name')
             ->toArray();
 
@@ -200,78 +229,53 @@ class ImplantsExport implements FromCollection, WithHeadings, WithEvents, WithCu
         return [
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
-                
-                // Get the highest column and row
+
                 $highestColumn = $sheet->getHighestColumn();
                 $highestRow = $sheet->getHighestRow();
-                
-                // Add company title
+
+                // ---- TITLES ----
                 $sheet->setCellValue('A1', 'Abbott | Cardiac Rhythm Management Division');
-                $sheet->mergeCells('A1:' . $highestColumn . '1');
-                
-                // Add report title
+                $sheet->mergeCells("A1:{$highestColumn}1");
+
                 $sheet->setCellValue('A2', 'Implant List');
-                $sheet->mergeCells('A2:' . $highestColumn . '2');
-                
-                // Add generation date
+                $sheet->mergeCells("A2:{$highestColumn}2");
+
                 $sheet->setCellValue('A3', 'Generated on: ' . date('d/m/Y H:i:s'));
-                $sheet->mergeCells('A3:' . $highestColumn . '3');
-                
-                // Style the main title (Row 1)
+                $sheet->mergeCells("A3:{$highestColumn}3");
+
+                // ---- STYLES (titles + headers) ----
                 $sheet->getStyle('A1')->applyFromArray([
-                    'font' => [
-                        'bold' => true,
-                        'size' => 16,
-                        'color' => ['rgb' => '00000'],
-                    ],
+                    'font' => ['bold' => true, 'size' => 16],
                     'alignment' => [
                         'horizontal' => Alignment::HORIZONTAL_CENTER,
                         'vertical' => Alignment::VERTICAL_CENTER,
                     ],
                 ]);
-                
-                // Style the subtitle (Row 2)
+
                 $sheet->getStyle('A2')->applyFromArray([
-                    'font' => [
-                        'bold' => true,
-                        'size' => 14,
-                        'color' => ['rgb' => '000000'],
-                    ],
+                    'font' => ['bold' => true, 'size' => 14],
                     'alignment' => [
                         'horizontal' => Alignment::HORIZONTAL_CENTER,
                         'vertical' => Alignment::VERTICAL_CENTER,
                     ],
                 ]);
-                
-                // Style the date (Row 3)
+
                 $sheet->getStyle('A3')->applyFromArray([
-                    'font' => [
-                        'size' => 10,
-                        'italic' => true,
-                        'color' => ['rgb' => '666666'],
-                    ],
+                    'font' => ['size' => 10, 'italic' => true, 'color' => ['rgb' => '666666']],
                     'alignment' => [
                         'horizontal' => Alignment::HORIZONTAL_CENTER,
                         'vertical' => Alignment::VERTICAL_CENTER,
                     ],
                 ]);
-                
-                // Set row heights
-                $sheet->getRowDimension('1')->setRowHeight(30);
-                $sheet->getRowDimension('2')->setRowHeight(25);
-                $sheet->getRowDimension('3')->setRowHeight(20);
-                $sheet->getRowDimension('4')->setRowHeight(25); // Header row
-                
-                // Style the header row (Row 4)
-                $sheet->getStyle('A4:' . $highestColumn . '4')->applyFromArray([
-                    'font' => [
-                        'bold' => true,
-                        'size' => 11,
-                        'color' => ['rgb' => 'FFFFFF'],
-                    ],
+
+                // ---- HEADER ROW ----
+                $sheet->getRowDimension('4')->setRowHeight(25);
+
+                $sheet->getStyle("A4:{$highestColumn}4")->applyFromArray([
+                    'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
                     'fill' => [
                         'fillType' => Fill::FILL_SOLID,
-                        'startColor' => ['rgb' => '333333'], // Dark gray
+                        'startColor' => ['rgb' => '333333'],
                     ],
                     'alignment' => [
                         'horizontal' => Alignment::HORIZONTAL_CENTER,
@@ -285,89 +289,27 @@ class ImplantsExport implements FromCollection, WithHeadings, WithEvents, WithCu
                         ],
                     ],
                 ]);
-                
-                // Style data rows with alternating colors
+
+                // ---- AUTO HEIGHT FOR ALL DATA ROWS ----
                 for ($row = 5; $row <= $highestRow; $row++) {
-                    $fillColor = ($row % 2 == 0) ? 'F8F9FA' : 'FFFFFF'; // Light gray and white alternating
-                    
-                    $sheet->getStyle('A' . $row . ':' . $highestColumn . $row)->applyFromArray([
-                        'fill' => [
-                            'fillType' => Fill::FILL_SOLID,
-                            'startColor' => ['rgb' => $fillColor],
-                        ],
-                        'alignment' => [
-                            'vertical' => Alignment::VERTICAL_CENTER,
-                            'wrapText' => true,
-                        ],
-                        'borders' => [
-                            'allBorders' => [
-                                'borderStyle' => Border::BORDER_THIN,
-                                'color' => ['rgb' => 'DDDDDD'],
-                            ],
-                        ],
-                    ]);
-                    
-                    // Set row height for data rows
-                    $sheet->getRowDimension($row)->setRowHeight(20);
+                    $sheet->getRowDimension($row)->setRowHeight(-1); // auto height
+
+                    // Apply wrapText to entire row (so newlines show properly)
+                    $sheet->getStyle("A{$row}:{$highestColumn}{$row}")
+                        ->getAlignment()->setWrapText(true);
                 }
-                
-                // Set column widths
-                $columnWidths = [
-                    'A' => 6,   // No
-                    'B' => 15,  // Implant Date
-                    'C' => 35,  // Hospital
-                    'D' => 12,  // Region
-                    'E' => 20,  // Product Group
-                    'F' => 30,  // Doctor
-                    'G' => 20,  // Generator Name
-                    'H' => 18,  // Generator Model
-                    'I' => 18,  // Serial Number
-                    'J' => 8,   // Qty
-                    'K' => 15,  // Price
-                ];
-                
-                // Apply static column widths
-                foreach ($columnWidths as $column => $width) {
-                    $sheet->getColumnDimension($column)->setWidth($width);
+
+                // ---- AUTO WIDTH FOR ALL COLUMNS (even past Z) ----
+                $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn);
+                for ($col = 1; $col <= $highestColumnIndex; $col++) {
+                    $sheet->getColumnDimension(Coordinate::stringFromColumnIndex($col))->setAutoSize(true);
                 }
-                
-                // Dynamic column widths for model categories
-                $modelCategories = DB::table('model_categories')
-                    ->where('mcategory_ismorethanone', 0)
-                    ->pluck('mcategory_name')
-                    ->toArray();
-                
-                $columnLetter = 'L'; // Start after the static columns
-                
-                foreach ($modelCategories as $category) {
-                    $sheet->getColumnDimension($columnLetter)->setWidth(20); // Model
-                    $columnLetter++;
-                    $sheet->getColumnDimension($columnLetter)->setWidth(18); // Serial Number
-                    $columnLetter++;
-                    $sheet->getColumnDimension($columnLetter)->setWidth(8);  // Qty
-                    $columnLetter++;
-                    $sheet->getColumnDimension($columnLetter)->setWidth(15); // Price
-                    $columnLetter++;
-                }
-                
-                // Set widths for ending columns
-                $endingWidths = [30, 15, 20, 15, 25]; // Patient Name, MRN, IC/Passport, Total Sales, Added By
-                
-                foreach ($endingWidths as $width) {
-                    $sheet->getColumnDimension($columnLetter)->setWidth($width);
-                    $columnLetter++;
-                }
-                
-                // Center align specific columns (numbers, dates, etc.)
-                $centerAlignColumns = ['A', 'B', 'D', 'J', 'K']; // No, Date, Region, Qty, Price
-                
-                foreach ($centerAlignColumns as $column) {
-                    $sheet->getStyle($column . '5:' . $column . $highestRow)->getAlignment()
-                        ->setHorizontal(Alignment::HORIZONTAL_CENTER);
-                }
-                
-                // Apply borders to the entire table
-                $sheet->getStyle('A1:' . $highestColumn . $highestRow)->applyFromArray([
+
+                $sheet->getStyle("A1:{$highestColumn}{$highestRow}")
+                    ->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+                // ---- TABLE BORDER ----
+                $sheet->getStyle("A1:{$highestColumn}{$highestRow}")->applyFromArray([
                     'borders' => [
                         'outline' => [
                             'borderStyle' => Border::BORDER_MEDIUM,
@@ -375,12 +317,10 @@ class ImplantsExport implements FromCollection, WithHeadings, WithEvents, WithCu
                         ],
                     ],
                 ]);
-                
-                // Freeze the header rows
+
+                // ---- FREEZE + FILTER ----
                 $sheet->freezePane('A5');
-                
-                // Auto-filter for the data
-                $sheet->setAutoFilter('A4:' . $highestColumn . $highestRow);
+                $sheet->setAutoFilter("A4:{$highestColumn}{$highestRow}");
             },
         ];
     }

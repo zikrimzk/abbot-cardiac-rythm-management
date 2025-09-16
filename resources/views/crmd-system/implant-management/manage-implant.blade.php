@@ -318,6 +318,131 @@
             </div>
         </div>
         <!-- [ View Implant Log Modal ] end -->
+
+        <!-- [ Send Email Modal ] start -->
+        <form action="{{ route('send-implant-email-post', Crypt::encrypt($im->id)) }}" method="POST">
+            @csrf
+            <div class="modal fade" id="sendEmailModal-{{ $im->id }}" tabindex="-1"
+                aria-labelledby="updateDesignationModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title">Send Email</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="email_send_to" class="form-label">Send To <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" name="email_send_to"
+                                    class="form-control @error('email_send_to') is-invalid @enderror" required
+                                    id="email_send_to" placeholder="Enter email address">
+                                @error('email_send_to')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email_subject" class="form-label">Subject <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" name="email_subject"
+                                    class="form-control @error('email_subject') is-invalid @enderror" required
+                                    id="email_subject" placeholder="Enter email subject">
+                                @error('email_subject')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="email_message_1" class="form-label">Message <span
+                                        class="text-danger">*</span></label>
+                                <textarea name="email_message_1" rows="8" class="form-control @error('email_message_1') is-invalid @enderror"
+                                    required id="email_message_1">
+Dear DCH team,
+
+Correction: amendment made to the device's cost.
+
+Please assist with the SF billing for the following case. Attached are the DO, IRF, and all relevant documents for your further action.</textarea>
+                                @error('email_message_1')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <th>Implant Hospital</th>
+                                            <td>{{ $hosp->where('id', $im->hospital_id)->first()->hospital_name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Implant Date</th>
+                                            <td>{{ $im->implant_date }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Patient Name</th>
+                                            <td>{{ $im->implant_pt_name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Patient IC</th>
+                                            <td>{{ $im->implant_pt_icno }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Approval Type</th>
+                                            <td>
+                                                <input type="text" name="email_approval_type"
+                                                    class="form-control @error('email_approval_type') is-invalid @enderror"
+                                                    required id="email_approval_type"
+                                                    placeholder="eg: Waiting for Teraju Farma PO">
+                                                @error('email_approval_type')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Billing Type (B/R5)</th>
+                                            <td>
+                                                <input type="text" name="email_billing_type"
+                                                    class="form-control @error('email_billing_type') is-invalid @enderror"
+                                                    required id="email_billing_type" placeholder="eg: B or R5">
+                                                @error('email_billing_type')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div class="mb-3">
+                                <textarea name="email_message_2" rows="4" class="form-control @error('email_message_2') is-invalid @enderror"
+                                    id="email_message_2">Dear Teraju Farma,
+
+Kindly send the PO to DCH Auriga to proceed with SF Billing.</textarea>
+                                @error('email_message_2')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="modal-footer justify-content-end">
+                            <div class="flex-grow-1 text-end">
+                                <div class="col-sm-12">
+                                    <div class="d-flex justify-content-between gap-3 align-items-center">
+                                        <button type="button" class="btn btn-light btn-pc-default w-100"
+                                            data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-primary w-100">Send</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- [ Send Email Modal ] end -->
     @endforeach
 
     <script type="text/javascript">

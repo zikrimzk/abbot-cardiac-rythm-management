@@ -67,8 +67,8 @@
 
         .table th,
         .table td {
-            border: 1px solid #000;
-            padding: 6px 8px;
+            border: 1px solid #e0e0e0;
+            padding: 8px 10px;
             vertical-align: top;
             text-align: left;
         }
@@ -76,6 +76,7 @@
         .table th {
             background-color: #f9f9f9;
             font-weight: bold;
+            color: #444;
         }
 
         .footer {
@@ -90,7 +91,6 @@
             color: #666;
         }
 
-        /* Enhanced Model Table */
         .model-table {
             width: 100%;
             border-collapse: collapse;
@@ -99,8 +99,8 @@
 
         .model-table th,
         .model-table td {
-            border: 1px solid #000;
-            padding: 6px 8px;
+            border: 1px solid #e0e0e0;
+            padding: 8px 10px;
             vertical-align: top;
             text-align: left;
         }
@@ -109,30 +109,35 @@
             background-color: #eaeaea;
             font-weight: bold;
         }
+
+        .model-table .sub-table-header th {
+            font-weight: normal;
+            background-color: #f9f9f9;
+            color: #444;
+        }
+
+        .model-table .sub-table-row td {
+            border-top: none;
+        }
     </style>
 </head>
 
 <body>
 
-    <!-- Header -->
     <table class="header-table">
         <tr>
-            <!-- Logo on the left -->
             <td class="header-logo">
                 <img src="{{ public_path('assets/images/logo/abbott-logo.png') }}" width="120" alt="Abbott Logo">
             </td>
 
-            <!-- Title in the center -->
             <td class="header-title">
-                <div class="title"></div>
                 <div style="display:block;">
                     IMPLANT REGISTRATION FORM
                 </div>
-                <small style="text-align: center; display:block; font-size: 8pt; font-weight: normal;">Cardiac Rythm
+                <small style="text-align: center; display:block; font-size: 8pt; font-weight: normal;">Cardiac Rhythm
                     Management Division</small>
             </td>
 
-            <!-- Ref info on the right -->
             <td class="header-info">
                 <div><strong>Implant Date:</strong> {{ $im['implant_date'] }}</div>
                 <div><strong>Ref No:</strong> {{ $im['implant_refno'] }}</div>
@@ -140,7 +145,6 @@
         </tr>
     </table>
 
-    <!-- Patient Information -->
     <div class="section-title">Patient Information</div>
     <table class="table">
         <tr>
@@ -167,7 +171,6 @@
         </tr>
     </table>
 
-    <!-- Physician Information -->
     <div class="section-title">Implanting Physician Information</div>
     <table class="table">
         <tr>
@@ -184,7 +187,6 @@
         </tr>
     </table>
 
-    <!-- Generator Information -->
     <div class="section-title">Pulse Generator (Pacemaker / ICD / CRT)</div>
     <table class="table">
         <tr>
@@ -197,7 +199,6 @@
         </tr>
     </table>
 
-    <!-- Updated Model Table -->
     <div class="section-title">Leads / Accessories Information</div>
     <table class="model-table">
         <thead>
@@ -208,17 +209,25 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($im['models'] as $item)
+            @php
+                $grouped_models = collect($im['models'])->groupBy('model_category');
+            @endphp
+            @foreach ($grouped_models as $category => $items)
                 <tr>
-                    <td>{{ $item['model_category'] }}</td>
-                    <td>{{ $item['model_code'] }}</td>
-                    <td>{{ $item['implant_model_sn'] }}</td>
+                    <td rowspan="{{ count($items) }}">{{ $category }}</td>
+                    <td>{{ $items[0]['model_code'] }}</td>
+                    <td>{{ $items[0]['implant_model_sn'] }}</td>
                 </tr>
+                @for ($i = 1; $i < count($items); $i++)
+                    <tr>
+                        <td>{{ $items[$i]['model_code'] }}</td>
+                        <td>{{ $items[$i]['implant_model_sn'] }}</td>
+                    </tr>
+                @endfor
             @endforeach
         </tbody>
     </table>
 
-    <!-- Footer -->
     <div class="footer">
         <div class="text-muted">System Generated Document – No Signature Required</div>
         <div><strong>Date:</strong> {{ $im['today_date'] }}</div>
