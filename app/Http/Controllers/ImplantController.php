@@ -18,6 +18,7 @@ use App\Models\ImplantModel;
 use App\Models\ProductGroup;
 use Illuminate\Http\Request;
 use App\Models\StockLocation;
+use App\Mail\FinalImplantMail;
 use App\Exports\ImplantsExport;
 use App\Mail\PatientIDCardMail;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -267,26 +268,60 @@ class ImplantController extends Controller
             }
 
             /**** 04 - Directory Handling ****/
-            $sequence = str_pad($implant->id, 3, '0', STR_PAD_LEFT);
-            $formattedDate = Carbon::parse($validated['implant_date'])->format('dmY');
-            $newCode = 'IMP' . $sequence . $formattedDate;
-            $hospcode = Hospital::find($validated['hospital_id'])->hospital_code;
-            $newDir = $sequence . '_' . Carbon::parse($validated['implant_date'])->format('d.m.Y') . '_' . strtoupper(preg_replace('/[^A-Za-z0-9]/', '_', $validated['implant_pt_name'])) . '_' . strtoupper($hospcode ?? 'H0000');
+            if (
+                $implant->implant_date != $validated['implant_date'] ||
+                $implant->implant_pt_name != $validated['implant_pt_name'] ||
+                $implant->hospital_id != $validated['hospital_id']
+            ) {
 
-            if ($implant->implant_pt_directory !== $newDir) {
-                if (Storage::exists("public/implants/{$implant->implant_pt_directory}")) {
-                    Storage::move("public/implants/{$implant->implant_pt_directory}", "public/implants/$newDir");
-                    $changes[] = "Directory renamed from \"{$implant->implant_pt_directory}\" to \"$newDir\"";
+                if (preg_match('/^(\d{3})_/', $implant->implant_pt_directory, $m)) {
+                    $sequence = $m[1]; // e.g. "001"
                 } else {
-                    Storage::makeDirectory("public/implants/$newDir");
+                    $sequence = str_pad($implant->id, 3, '0', STR_PAD_LEFT);
                 }
+
+                $formattedDate = Carbon::parse($validated['implant_date'])->format('d.m.Y');
+                $safeName     = strtoupper(preg_replace('/[^A-Za-z0-9]/', '_', $validated['implant_pt_name']));
+                $hospcode     = Hospital::find($validated['hospital_id'])->hospital_code ?? 'H0000';
+                $newDir       = "{$sequence}_{$formattedDate}_{$safeName}_" . strtoupper($hospcode);
+
+                if ($implant->implant_pt_directory !== $newDir) {
+                    if (Storage::exists("public/implants/{$implant->implant_pt_directory}")) {
+                        Storage::move("public/implants/{$implant->implant_pt_directory}", "public/implants/{$newDir}");
+                        $changes[] = "Directory renamed from \"{$implant->implant_pt_directory}\" to \"$newDir\"";
+                    } else {
+                        Storage::makeDirectory("public/implants/{$newDir}");
+                        $changes[] = "Directory created \"$newDir\"";
+                    }
+                }
+
+                // 05 - Update Implant Record
+                $implant->update(array_merge($validated, [
+                    'implant_pt_directory' => $newDir,
+                ]));
+
+                // $sequence = str_pad($implant->id, 3, '0', STR_PAD_LEFT);
+                // $formattedDate = Carbon::parse($validated['implant_date'])->format('dmY');
+                // $newCode = 'IMP' . $sequence . $formattedDate;
+                // $hospcode = Hospital::find($validated['hospital_id'])->hospital_code;
+                // $newDir = $sequence . '_' . Carbon::parse($validated['implant_date'])->format('d.m.Y') . '_' . strtoupper(preg_replace('/[^A-Za-z0-9]/', '_', $validated['implant_pt_name'])) . '_' . strtoupper($hospcode ?? 'H0000');
+
+                // if ($implant->implant_pt_directory !== $newDir) {
+                //     if (Storage::exists("public/implants/{$implant->implant_pt_directory}")) {
+                //         Storage::move("public/implants/{$implant->implant_pt_directory}", "public/implants/$newDir");
+                //         $changes[] = "Directory renamed from \"{$implant->implant_pt_directory}\" to \"$newDir\"";
+                //     } else {
+                //         Storage::makeDirectory("public/implants/$newDir");
+                //     }
+                // }
+
+                // /**** 05 - Update Implant Record ****/
+                // $implant->update(array_merge($validated, [
+                //     'implant_refno' => $newCode,
+                //     'implant_pt_directory' => $newDir,
+                // ]));
             }
 
-            /**** 05 - Update Implant Record ****/
-            $implant->update(array_merge($validated, [
-                'implant_refno' => $newCode,
-                'implant_pt_directory' => $newDir,
-            ]));
 
             /**** 06 - Sync Product Groups ****/
             $existingPGs = ProductGroupList::where('implant_id', $id)->pluck('product_group_id')->toArray();
@@ -775,22 +810,48 @@ class ImplantController extends Controller
         }
     }
 
-    // SEND IMPLANT EMAIL - FUNCTION [NOT COMPLETE]
-    public function sendImplantEmail(Request $req, $id)
+    // SEND IMPLANT EMAIL - FUNCTION
+    public function sendImplantEmail(Request $request, $id)
     {
 
         /* DECRYPT PROCESS */
         $id = Crypt::decrypt($id);
 
         try {
-            dd($req->all());
 
             /* LOAD IMPLANT DATA */
-            $implant = Implant::where('id', $id)->first();
+            $implant = DB::table('implants as a')
+                ->join('hospitals as b', 'a.hospital_id', '=', 'b.id')
+                ->where('a.id', $id)
+                ->select([
+                    'a.*',
+                    'b.hospital_name',
+                ])
+                ->first();
 
             if (!$implant) {
                 return back()->with('error', 'Error: Implant record not found.');
             }
+
+            /* DATA ARRAY */
+            $data = [
+                'email_subject'        => $request->email_subject,
+                'email_message_1'      => nl2br($request->email_message_1),
+                'email_message_2'      => nl2br($request->email_message_2),
+                'implant_hospital'     => $implant->hospital_name,
+                'implant_date'         => $implant->implant_date,
+                'implant_pt_name'      => $implant->implant_pt_name,
+                'implant_pt_icno'      => $implant->implant_pt_icno,
+                'implant_approval_type' => $request->email_approval_type,
+                'implant_billing_type' => $request->email_billing_type,
+                'download_link'       => route('download-implant-directory', Crypt::encrypt($implant->id)),
+            ];
+
+            /* SEND EMAIL */
+            Mail::to($request->email_send_to)->send(new FinalImplantMail($data));
+
+            /* RETURN SUCCESS */
+            return back()->with('success', 'Patient implant details has been emailed to ' . $request->email_send_to . ' successfully.');
         } catch (Exception $e) {
             return back()->with('error', 'Error sending email: ' . $e->getMessage());
         }

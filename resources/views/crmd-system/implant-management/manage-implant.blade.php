@@ -346,11 +346,11 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="email_subject" class="form-label">Subject <span
+                                <label for="email_subject" class="form-label">Subject/Title <span
                                         class="text-danger">*</span></label>
                                 <input type="text" name="email_subject"
                                     class="form-control @error('email_subject') is-invalid @enderror" required
-                                    id="email_subject" placeholder="Enter email subject">
+                                    id="email_subject" placeholder="Enter email subject/title">
                                 @error('email_subject')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
