@@ -90,15 +90,15 @@
 
                 <h6 class="fw-bold mt-3">Hospital & Doctor Module</h6>
                 <ul class="mb-3">
-                    <li><strong>Manage Hospital</strong> – Maintain hospital details</li>
-                    <li><strong>Manage Doctor</strong> – Maintain doctor details</li>
+                    <li><strong>Manage Hospital</strong> – Handle hospital details</li>
+                    <li><strong>Manage Doctor</strong> – Handle doctor details</li>
                 </ul>
 
                 <h6 class="fw-bold mt-3">Model Module</h6>
                 <ul class="mb-3">
                     <li><strong>Manage Model Category</strong> – Categories such as RA Leads, RV Leads, etc.</li>
-                    <li><strong>Manage Generator</strong> – Manage generator details</li>
-                    <li><strong>Manage Model</strong> – Manage other models not under generators (e.g., RV leads)</li>
+                    <li><strong>Manage Generator</strong> – Handle generator details (e.g., PM3562, PM1262)</li>
+                    <li><strong>Manage Model</strong> – Manage other models not under generators (e.g., 2088TC-52, A001HELX)</li>
                 </ul>
 
                 <h6 class="fw-bold mt-3">Other Settings</h6>
