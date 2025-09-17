@@ -108,7 +108,7 @@ class StaffController extends Controller
             'email' => $data->email,
             'date' => Carbon::now()->format('d F Y g:i A'),
             'password' => $password,
-            'opt'=>1
+            'opt' => 1
         ]));
     }
 
@@ -145,9 +145,11 @@ class StaffController extends Controller
             $validated = $validator->validated();
 
             // Generate password using a secure base
-            $password = 'crmd@' . Str::lower($validated['staff_idno']);
+            $prefix = 'crmd@';
+            $shortId = substr($validated['staff_idno'], 0, 6);
+            $password = $prefix . Str::lower($shortId);
             $validated['password'] = bcrypt($password);
-
+            
             // Create user
             $user = User::create($validated);
 
