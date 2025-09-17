@@ -117,7 +117,7 @@
         <!-- Footer -->
         <div class="footer">
             <p>&copy; {{ date('Y') }} Cardiac Rhythm Management Division. All rights reserved.</p>
-            <p>Need help? <a href="mailto:support@abbot.com">Contact Support</a></p>
+            <p>Need help? <a href="mailto:noreply@appnest.my">Contact Support</a></p>
         </div>
     </div>
 </body>

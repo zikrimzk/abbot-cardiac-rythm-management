@@ -68,6 +68,75 @@
             </div>
             <!-- [Greeting] end -->
 
+            <!-- [Startup Alert] start -->
+            <div class="alert alert-light shadow-sm border-0 rounded-3">
+                <h4 class="alert-heading mb-3">Welcome to Cardiac Rhythm Management Division System</h4>
+                <p class="mb-2">
+                    To begin, it is <strong>advisable to change your account password</strong> to secure your account.
+                </p>
+
+                <hr>
+
+                <h6 class="fw-bold mt-3">For Administrator</h6>
+                <ul class="mb-3">
+                    <li>Full access to all system settings</li>
+                </ul>
+
+                <h6 class="fw-bold mt-3">User Module</h6>
+                <ul class="mb-3">
+                    <li><strong>Manage Designation</strong> – Add staff designations before adding new staff</li>
+                    <li><strong>Manage Staff</strong> – Add users as administrators or staff</li>
+                </ul>
+
+                <h6 class="fw-bold mt-3">Hospital & Doctor Module</h6>
+                <ul class="mb-3">
+                    <li><strong>Manage Hospital</strong> – Maintain hospital details</li>
+                    <li><strong>Manage Doctor</strong> – Maintain doctor details</li>
+                </ul>
+
+                <h6 class="fw-bold mt-3">Model Module</h6>
+                <ul class="mb-3">
+                    <li><strong>Manage Model Category</strong> – Categories such as RA Leads, RV Leads, etc.</li>
+                    <li><strong>Manage Generator</strong> – Manage generator details</li>
+                    <li><strong>Manage Model</strong> – Manage other models not under generators (e.g., RV leads)</li>
+                </ul>
+
+                <h6 class="fw-bold mt-3">Other Settings</h6>
+                <ul class="mb-3">
+                    <li><strong>Manage Region</strong> – e.g., Northern, Central, Southern</li>
+                    <li><strong>Manage Product Group</strong> – e.g., LV SC, LV DC and other combinations</li>
+                    <li><strong>Manage Stock Location</strong> – Stock locations used dynamically in inventory forms</li>
+                </ul>
+
+                <h6 class="fw-bold mt-3">Implant Module</h6>
+                <ul class="mb-3">
+                    <li>Add and update implant records</li>
+                    <li>Export data and download patient directory</li>
+                    <li>Upload implant registration forms (PDF format)</li>
+                    <li>Send implant details by email (template provided)</li>
+                    <li>Generate patient ID card</li>
+                </ul>
+
+                <h6 class="fw-bold mt-3">Sales Billing Module</h6>
+                <ul class="mb-3">
+                    <li>Update ICF-related details</li>
+                    <li>Upload billing documents (approval, delivery order, etc.)</li>
+                </ul>
+
+                <h6 class="fw-bold mt-3">Quotation Module</h6>
+                <ul class="mb-3">
+                    <li>Manage quotations</li>
+                    <li>Manage companies to generate quotation templates</li>
+                    <li>Assign generator and model</li>
+                </ul>
+
+                <p class="mt-4 mb-0 text-muted">
+                    <em>Note: All changes and actions related to implants are recorded in the implant logs.</em>
+                </p>
+            </div>
+
+            <!-- [Startup Alert] end -->
+
             <!-- [Dashboard Cards] start -->
             <div class="row g-3">
                 @php
@@ -229,7 +298,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                {{-- <div class="col-sm-6">
                     <div class="card shadow-sm rounded-lg">
                         <div class="card-body">
                             <canvas id="generatorQtyBarChart" height="300"></canvas>
@@ -242,7 +311,7 @@
                             <canvas id="implantModelMonthlyChart" height="300"></canvas>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
             <!-- [Charts] end -->
 

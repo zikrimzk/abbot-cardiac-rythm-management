@@ -339,7 +339,8 @@
                                         class="text-danger">*</span></label>
                                 <input type="text" name="email_send_to"
                                     class="form-control @error('email_send_to') is-invalid @enderror" required
-                                    id="email_send_to" placeholder="Enter email address">
+                                    id="email_send_to" placeholder="Enter email address" value="{{ auth()->user()->email }}">
+                                    <small class="form-text text-muted">You may change the email address if needed</small>
                                 @error('email_send_to')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -389,7 +390,7 @@ Please assist with the SF billing for the following case. Attached are the DO, I
                                             <td>{{ $im->implant_pt_icno }}</td>
                                         </tr>
                                         <tr>
-                                            <th>Approval Type</th>
+                                            <th>Approval Type <span class="text-danger">*</span></th>
                                             <td>
                                                 <input type="text" name="email_approval_type"
                                                     class="form-control @error('email_approval_type') is-invalid @enderror"
@@ -401,7 +402,7 @@ Please assist with the SF billing for the following case. Attached are the DO, I
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Billing Type (B/R5)</th>
+                                            <th>Billing Type (B/R5) <span class="text-danger">*</span></th>
                                             <td>
                                                 <input type="text" name="email_billing_type"
                                                     class="form-control @error('email_billing_type') is-invalid @enderror"
@@ -432,7 +433,7 @@ Kindly send the PO to DCH Auriga to proceed with SF Billing.</textarea>
                                     <div class="d-flex justify-content-between gap-3 align-items-center">
                                         <button type="button" class="btn btn-light btn-pc-default w-100"
                                             data-bs-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn btn-primary w-100">Send</button>
+                                        <button type="submit" class="btn btn-primary w-100">Send Email</button>
                                     </div>
                                 </div>
                             </div>
