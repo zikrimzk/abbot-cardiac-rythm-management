@@ -111,8 +111,7 @@ class StaffController extends Controller
             'opt' => 1
         ]));
     }
-
-
+    
     // ADD STAFF - FUNCTION
     public function addStaff(Request $req)
     {
@@ -149,7 +148,7 @@ class StaffController extends Controller
             $shortId = substr($validated['staff_idno'], 0, 6);
             $password = $prefix . Str::lower($shortId);
             $validated['password'] = bcrypt($password);
-            
+
             // Create user
             $user = User::create($validated);
 
