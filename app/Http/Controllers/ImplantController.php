@@ -550,7 +550,7 @@ class ImplantController extends Controller
             $id = Crypt::decrypt($id);
             $modelCategories = DB::table('model_categories')
                 ->select('id as model_category_id', 'mcategory_name as model_category')
-                ->where('mcategory_ismorethanone', 0)
+                // ->where('mcategory_ismorethanone', 0)
                 ->get();
 
             $implant = DB::table('implants as a')
@@ -615,7 +615,7 @@ class ImplantController extends Controller
                 ->join('abbott_models as j', 'i.model_id', '=', 'j.id')
                 ->join('model_categories as k', 'j.mcategory_id', '=', 'k.id')
                 ->where('i.implant_id', $id)
-                ->where('k.mcategory_ismorethanone', 0)
+                // ->where('k.mcategory_ismorethanone', 0)
                 ->select([
                     'k.id as model_category_id',
                     'k.mcategory_name as model_category',
@@ -625,15 +625,40 @@ class ImplantController extends Controller
                 ->get();
 
             $mergedModels = [];
-            foreach ($modelCategories as $category) {
-                $foundModel = $models->firstWhere('model_category_id', $category->model_category_id);
+            // foreach ($modelCategories as $category) {
+            //     $foundModel = $models->firstWhere('model_category_id', $category->model_category_id);
 
-                $mergedModels[] = [
-                    'model_category_id' => $category->model_category_id,
-                    'model_category' => $category->model_category,
-                    'model_code' => $foundModel->model_code ?? '-',
-                    'implant_model_sn' => $foundModel->implant_model_sn ?? '-'
-                ];
+            //     $mergedModels[] = [
+            //         'model_category_id' => $category->model_category_id,
+            //         'model_category' => $category->model_category,
+            //         'model_code' => $foundModel->model_code ?? '-',
+            //         'implant_model_sn' => $foundModel->implant_model_sn ?? '-'
+            //     ];
+            // }
+
+            foreach ($modelCategories as $category) {
+                // Get all models that match the category id
+                $foundModels = $models->where('model_category_id', $category->model_category_id);
+
+                // If no models found, still push a placeholder row
+                if ($foundModels->isEmpty()) {
+                    $mergedModels[] = [
+                        'model_category_id' => $category->model_category_id,
+                        'model_category' => $category->model_category,
+                        'model_code' => '-',
+                        'implant_model_sn' => '-'
+                    ];
+                } else {
+                    // Push each model individually
+                    foreach ($foundModels as $foundModel) {
+                        $mergedModels[] = [
+                            'model_category_id' => $category->model_category_id,
+                            'model_category' => $category->model_category,
+                            'model_code' => $foundModel->model_code,
+                            'implant_model_sn' => $foundModel->implant_model_sn
+                        ];
+                    }
+                }
             }
 
             $formattedData = [
@@ -670,7 +695,6 @@ class ImplantController extends Controller
                 'im' => $formattedData
 
             ]);
-
 
             $filePath = 'storage/implants/' . $formattedData['implant_pt_directory'] . '/' . $title . '.pdf';
             return $pdf->save(public_path($filePath));

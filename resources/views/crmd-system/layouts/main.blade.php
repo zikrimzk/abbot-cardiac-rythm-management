@@ -6,7 +6,6 @@
     <title>{{ $title }}</title>
     <!-- [Meta] -->
     <meta charset="utf-8" />
-    <meta charset="utf-8" />
     <meta name="viewport"
         content="width=device-width, initial-scale=0.9, maximum-scale=1.0, user-scalable=no, minimal-ui">
     <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -45,8 +44,18 @@
     <link rel="stylesheet" href="../assets/css/plugins/flatpickr.min.css" />
     <!-- [Flatpickr Scripts] -->
     <script src="../assets/js/plugins/flatpickr.min.js"></script>
+    <!-- [Custom Font Links] -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com/">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 
     <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
         .data-table td {
             white-space: normal !important;
         }

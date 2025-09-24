@@ -2,71 +2,78 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ $title }}</title>
+    <title>CRM Division System | Login</title>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=0.9, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="description" content="Abbott - Cardiac Rythm Management Division System" />
+    <meta name="keywords" content="abbott, crmd, cardiac, rythm, management, division, system" />
+    <meta name="author" content="Muhammad Zikri Kashim | Zeeke Software Solution" />
 
     <link rel="icon" href="../assets/images/logo-test-white.png" type="image/x-icon" />
 
-    <link rel="stylesheet" href="../assets/fonts/inter/inter.css" id="main-font-link" />
-    <link rel="stylesheet" href="../assets/fonts/phosphor/duotone/style.css" />
-    <link rel="stylesheet" href="../assets/fonts/tabler-icons.min.css" />
-    <link rel="stylesheet" href="../assets/fonts/feather.css" />
-    <link rel="stylesheet" href="../assets/fonts/fontawesome.css" />
-    <link rel="stylesheet" href="../assets/fonts/material.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com/">
 
-    <link rel="stylesheet" href="../assets/css/style.css" id="main-style-link" />
-    <link rel="stylesheet" href="../assets/css/style-preset.css" />
-    <link rel="stylesheet" href="../assets/css/landing.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Medical-themed customizations */
         :root {
-            --medical-blue: #1a6edb;
-            --medical-blue-light: #e8f4ff;
-            --medical-blue-dark: #1557b0;
-            --medical-green: #198754;
-            --medical-green-light: #d1e7dd;
-            --medical-red: #dc3545;
-            --medical-red-light: #f8d7da;
-            --medical-red-dark: #58151c;
-            --medical-gray: #f8f9fa;
-            --medical-text: #2c3e50;
+            --color-primary: #1a6edb;
+            --color-primary-dark: #1557b0;
+            --color-primary-light: #e8f4ff;
+            --color-secondary: #6c757d;
+            --color-success: #198754;
+            --color-success-light: #d1e7dd;
+            --color-danger: #dc3545;
+            --color-danger-light: #f8d7da;
+            --color-white: #ffffff;
+            --color-light-gray: #f8f9fa;
+            --color-medium-gray: #e9ecef;
+            --color-dark-gray: #2c3e50;
+            --shadow-md: 0 4px 12px rgba(26, 110, 219, 0.15);
+            --shadow-lg: 0 10px 30px rgba(74, 74, 74, 0.2);
         }
 
-        .medical-login body.landing-page {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e6f7ff 100%);
+        /* Basic Reset & Typography */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--color-dark-gray);
+            /* background: linear-gradient(135deg, #f0f9ff 0%, #e6f7ff 100%); */
+            background-color: var(--color-light-gray);
             background-attachment: fixed;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
+            display: grid;
+            place-items: center;
+            padding: 2rem 1rem;
+            line-height: 1.6;
         }
 
-        .medical-login .auth-main {
+        /* Login Card & Layout */
+        .login-container {
             width: 100%;
+            max-width: 420px;
         }
 
-        .medical-login .auth-wrapper.v1 {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .medical-login .auth-form {
-            position: relative;
-        }
-
-        .medical-login .card {
-            border: none;
-            border-radius: 12px;
+        .login-card {
+            background: var(--color-white);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.15);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            position: relative;
+            animation: slideUpFadeIn 0.6s ease-out forwards;
         }
 
-        .medical-login .card::before {
+        .login-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -77,221 +84,564 @@
             z-index: 1;
         }
 
-        .medical-login .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(0, 123, 255, 0.18);
-        }
-
-        .medical-login .card-body {
-            padding: 2.5rem;
-        }
-
-        .medical-login h3 {
-            color: var(--medical-text);
-            font-weight: 700;
-            margin-bottom: 0.5rem !important;
-        }
-
-        .medical-login .text-muted {
-            color: #6c757d !important;
-            font-size: 1rem;
-            margin-bottom: 2rem;
-            display: block;
-        }
-
-        .medical-login .form-floating {
-            margin-bottom: 1.5rem;
-        }
-
-        .medical-login .form-control {
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 1rem 1.25rem;
-            height: auto;
-            transition: all 0.3s;
-        }
-
-        .medical-login .form-control:focus {
-            border-color: var(--medical-blue);
-            box-shadow: 0 0 0 0.2rem rgba(26, 110, 219, 0.25);
-        }
-
-        .medical-login .btn-lg {
-            padding: 0.85rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s;
-            background: var(--medical-blue);
-            border: none;
-        }
-
-        .medical-login .btn-lg:hover {
-            background: var(--medical-blue-dark);
-            transform: translateY(-2px);
-        }
-
-        .medical-login .link-primary {
-            color: var(--medical-blue);
-            font-weight: 500;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .medical-login .link-primary:hover {
-            color: var(--medical-blue-dark);
-            text-decoration: underline;
-        }
-
-        /* Refined Alert Styles */
-        .medical-login .alert {
-            border-radius: 8px;
-            padding: 1rem 1.25rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid transparent;
-            border-left-width: 5px;
-            font-weight: 500;
-        }
-
-        .medical-login .alert .btn-close {
-            padding: 1rem;
-            display: none;
-        }
-
-        .medical-login .alert-success {
-            background-color: var(--medical-green-light);
-            border-color: var(--medical-green);
-            color: var(--medical-green);
-        }
-
-        .medical-login .alert-danger {
-            background-color: var(--medical-red-light);
-            border-color: var(--medical-red);
-            color: var(--medical-red-dark);
-        }
-
-        .medical-login .alert i {
-            font-size: 1.2rem;
-            margin-right: 0.75rem;
-            flex-shrink: 0;
-        }
-
-        .medical-login .logo-container {
-            margin-bottom: 2rem;
+        /* Header */
+        .login-header {
+            padding: 2.5rem 2rem 1.5rem;
+            border-bottom: 1px solid var(--color-medium-gray);
             position: relative;
         }
 
-        .medical-login .medical-icon {
-            position: absolute;
-            right: 0px;
-            top: -10px;
-            color: var(--medical-blue);
-            opacity: 0.07;
-            font-size: 6rem;
-            z-index: 0;
-            pointer-events: none;
-            transform: rotate(-15deg);
+        .company-logo {
+            margin-bottom: 1rem;
         }
 
-        .medical-login .show-password {
+        .company-logo img {
+            width: 150px;
+            height: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .company-logo img:hover {
+            transform: scale(1.05);
+        }
+
+        .system-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-dark-gray);
+            margin-bottom: 0.25rem;
+        }
+
+        .system-subtitle {
+            font-size: 0.9rem;
+            color: var(--color-secondary);
+        }
+
+        /* Login Body (Form) */
+        .login-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-dark-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--color-medium-gray);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: var(--color-white);
+            color: var(--color-dark-gray);
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(26, 110, 219, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: var(--color-secondary);
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 0.75rem;
             top: 50%;
             transform: translateY(-50%);
-            right: 12px;
             background: transparent;
             border: none;
-            color: #6c757d;
-            z-index: 5;
+            color: var(--color-secondary);
+            cursor: pointer;
+            padding: 0.25rem;
+            font-size: 1rem;
+            transition: color 0.2s ease-in-out;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        @media (max-width: 575.98px) {
-            .medical-login .auth-wrapper.v1 {
-                padding: 1rem;
+        .password-toggle:hover,
+        .password-toggle:focus {
+            color: var(--color-dark-gray);
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Form Options */
+        .form-options {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 2rem;
+            font-size: 0.85rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 1rem;
+            height: 1rem;
+            accent-color: var(--color-primary);
+        }
+
+        .remember-me label {
+            color: var(--color-dark-gray);
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            color: var(--color-dark-gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .forgot-password:hover {
+            color: var(--color-primary);
+            text-decoration: underline;
+        }
+
+        /* Button */
+        .login-button {
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            /* font-weight: 600; */
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            letter-spacing: 0.5px;
+        }
+
+        .login-button:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(26, 110, 219, 0.3);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .login-button:disabled {
+            background: var(--color-secondary);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            opacity: 0;
+            transform: translateY(-10px);
+            animation: slideInFadeIn 0.3s ease-out forwards;
+            font-weight: 500;
+            text-align: left;
+        }
+
+        .alert-icon-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+        }
+
+        .alert-icon-wrapper .icon {
+            width: 1.5em;
+            height: 1.5em;
+        }
+
+        .alert-success {
+            background-color: #d1e7dd;
+            color: var(--color-success);
+            border: 1px solid #badbcc;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: var(--color-danger);
+            border: 1px solid #f5c2c7;
+        }
+
+        .alert-close {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin-left: auto;
+            opacity: 0.7;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .alert-close:hover {
+            opacity: 1;
+        }
+
+        /* Footer */
+        .footer-info {
+            background: var(--color-light-gray);
+            border-top: 1px solid var(--color-medium-gray);
+            padding: 1.5rem 2rem;
+            font-size: 0.8rem;
+            color: var(--color-secondary);
+            line-height: 1.5;
+        }
+
+        .footer-info a {
+            color: var(--color-primary);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 0.25rem;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .footer-info a:hover {
+            text-decoration: underline;
+            color: var(--color-primary-dark);
+        }
+
+        /* Loading State */
+        .loading .login-button {
+            background: var(--color-secondary);
+            cursor: not-allowed;
+            position: relative;
+            pointer-events: none;
+            transform: none !important;
+            color: transparent;
+        }
+
+        .loading .login-button::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) rotate(0deg);
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid transparent;
+            border-top: 2px solid var(--color-white);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* Animations */
+        @keyframes slideUpFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
 
-            .medical-login .card-body {
-                padding: 2rem 2rem;
-                margin-top: 1rem;
-                margin-bottom: 1rem
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
             }
 
-            .medical-login .alert .message {
-                font-size: 9pt;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            body {
+                padding: 0;
+                background: var(--color-white);
+            }
+
+            .login-card {
+                box-shadow: none;
+                width: 100%;
+            }
+
+            .login-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 6px;
+                width: 100%;
+                background: linear-gradient(90deg, #ffffff, #ffffff);
+                z-index: 1;
+            }
+
+            .login-container {
+                padding: 0;
+            }
+
+            .login-header,
+            .login-body,
+            .footer-info {
+                padding: 1.5rem 1.25rem;
+            }
+
+            .company-logo img {
+                width: 130px;
+            }
+
+            .system-title {
+                font-size: 1.2rem;
+            }
+
+            .system-subtitle {
+                font-size: 0.8rem;
+            }
+
+            .form-group {
+                margin-bottom: 1rem;
+            }
+
+            .form-options {
+                margin-bottom: 1.5rem;
+            }
+
+            .login-button {
+                font-size: 0.95rem;
+                padding: 0.75rem;
+            }
+
+            .footer-info {
+                font-size: 0.75rem;
+                background-color: var(--color-white);
+            }
+
+
         }
     </style>
 </head>
 
-<body class="medical-login" data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr"
-    data-pc-theme_contrast="" data-pc-theme="light">
-    <div class="auth-main">
-        <div class="auth-wrapper v1">
-            <div class="auth-form">
-                <div class="text-center logo-container">
-                    <a href=""><img src="../assets/images/logo/abbott-logo.png" alt="Abbott Logo"
-                            class="img-fluid" width="150" height="100" /></a>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <header class="login-header">
+                <div class="company-logo">
+                    <img src="../assets/images/logo/abbott-logo.png" alt="Abbott Logo" />
                 </div>
+                <h1 class="system-title">CRMD System</h1>
+                <p class="system-subtitle">Please sign in to your account to access the system.</p>
+            </header>
 
-
-                <div class="card shadow-lg">
-                    <form action="{{ route('staff-login-post') }}" method="POST">
-                        @csrf
-                        <div class="card-body">
-                            <div class="text-center mb-4">
-                                <h4>Cardiac Rhythm Management Division System</h4>
-                                <div class="text-muted"><small>Please sign in to your account to access the system.</small></div>
-                            </div>
-
-                            @if (session()->has('success'))
-                                <div class="alert alert-success d-flex align-items-center alert-dismissible fade show"
-                                    role="alert">
-                                    <i class="fas fa-check-circle"></i>
-                                    <div class="message">
-                                        {{ session('success') }}
-                                    </div>
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
-                                </div>
-                            @endif
-                            @if (session()->has('error'))
-                                <div class="alert alert-danger d-flex align-items-center alert-dismissible fade show"
-                                    role="alert">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                    <div class="message">
-                                        {{ session('error') }}
-                                    </div>
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
-                                </div>
-                            @endif
-                            <div class="form-floating mb-3">
-                                <input type="email" class="form-control" id="email" placeholder="Email"
-                                    name="email" value="{{ old('email') }}" autocomplete="off" required />
-                                <label for="email">Email Address</label>
-                            </div>
-                            <div class="form-floating mb-3 position-relative">
-                                <input type="password" class="form-control" id="password" placeholder="Password"
-                                    name="password" autocomplete="off" required />
-                                <label for="password">Password</label>
-
-                                <button type="button" class="btn position-absolute show-password" id="show-password">
-                                    <i id="toggle-icon-password" class="ti ti-eye"></i>
-                                </button>
-                            </div>
-                            <div class="d-flex mt-1 justify-content-end align-items-center">
-                                <a href="{{ route('forgot-password-page') }}" class="link-primary">Forgot
-                                    Password?</a>
-                            </div>
-                            <div class="d-grid mt-4">
-                                <button type="submit" class="btn btn-primary btn-lg">Login</button>
-                            </div>
+            <main class="login-body">
+                <div id="alert-container">
+                    @if (session()->has('success'))
+                        <div class="alert alert-success" id="success-alert">
+                            <span class="alert-icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M5 12l5 5l10 -10"></path>
+                                </svg>
+                            </span>
+                            <span id="success-message">{{ session('success') }}</span>
+                            <button type="button" class="alert-close" onclick="closeAlert('success-alert')">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M18 6l-12 12"></path>
+                                    <path d="M6 6l12 12"></path>
+                                </svg>
+                            </button>
                         </div>
-                    </form>
+                    @endif
+                    @if (session()->has('error'))
+                        <div class="alert alert-danger" id="error-alert">
+                            <span class="alert-icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M12 9v4"></path>
+                                    <path
+                                        d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.875h16.214a1.914 1.914 0 0 0 1.636 -2.875l-8.106 -13.534a1.914 1.914 0 0 0 -3.274 0z">
+                                    </path>
+                                    <path d="M12 16h.01"></path>
+                                </svg>
+                            </span>
+                            <span id="error-message">{{ session('error') }}</span>
+                            <button type="button" class="alert-close" onclick="closeAlert('error-alert')">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M18 6l-12 12"></path>
+                                    <path d="M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    @endif
                 </div>
-            </div>
+
+                <form id="login-form" action="{{ route('staff-login-post') }}" method="POST" autocomplete="off">
+                    @csrf
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email"
+                            placeholder="Enter your email address" value="{{ old('email') }}" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" class="form-control" id="password" name="password"
+                                placeholder="Enter your password" required />
+                            <button type="button" class="password-toggle" id="password-toggle"
+                                aria-label="Toggle password visibility">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" id="password-icon"
+                                    width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                    stroke="currentColor" fill="none" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path>
+                                    <path
+                                        d="M21 12c-2.761 4.51 -6.828 7 -10.5 7c-4.145 0 -7.215 -2.31 -10.5 -7c2.761 -4.51 6.828 -7 10.5 -7c4.145 0 7.215 2.31 10.5 7">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        {{-- <div class="remember-me">
+                            <input type="checkbox" id="remember" name="remember" />
+                            <label for="remember">Remember me</label>
+                        </div> --}}
+                        <a href="{{ route('forgot-password-page') }}" class="forgot-password">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="login-button" id="login-btn">
+                        Sign in
+                    </button>
+                </form>
+            </main>
+
+            <footer class="footer-info">
+                <p>
+                    <strong>Cardiac Rhythm Management Division</strong><br>
+                    For technical support, contact <a href="mailto:crmd-system@appnest.my">crmd-system@appnest.my</a>
+                </p>
+            </footer>
         </div>
     </div>
 
     <script>
-        // Prevent pinch-to-zoom
+        document.addEventListener('DOMContentLoaded', () => {
+            const passwordToggle = document.getElementById('password-toggle');
+            const passwordInput = document.getElementById('password');
+            const loginForm = document.getElementById('login-form');
+            const loginBtn = document.getElementById('login-btn');
+
+            // Password visibility toggle
+            if (passwordToggle) {
+                passwordToggle.addEventListener('click', function() {
+                    const passwordIcon = this.querySelector('.icon');
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        passwordIcon.innerHTML =
+                            `<path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10.585 10.587a2 2 0 0 0 2.829 2.828"></path><path d="M16.681 16.673a8.974 8.974 0 0 1 -4.681 1.327c-3.674 0 -7.215 -2.31 -10.5 -7c1.472 -2.215 3.593 -4.01 5.894 -5.461"></path><path d="M18.843 14.869c.808 -.816 1.411 -1.693 1.916 -2.869c-2.761 -4.51 -6.828 -7 -10.5 -7a8.983 8.983 0 0 0 -5.025 1.558"></path><path d="M3 3l18 18"></path>`;
+                        this.setAttribute('aria-label', 'Hide password');
+                    } else {
+                        passwordInput.type = 'password';
+                        passwordIcon.innerHTML =
+                            `<path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path><path d="M21 12c-2.761 4.51 -6.828 7 -10.5 7c-4.145 0 -7.215 -2.31 -10.5 -7c2.761 -4.51 6.828 -7 10.5 -7c4.145 0 7.215 2.31 10.5 7"></path>`;
+                        this.setAttribute('aria-label', 'Show password');
+                    }
+                });
+            }
+
+            // Form submission loading state
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    if (loginBtn) {
+                        loginBtn.classList.add('loading');
+                        loginBtn.disabled = true;
+                    }
+                });
+            }
+
+            // Auto-focus on email field
+            const emailField = document.getElementById('email');
+            if (emailField && !emailField.value) {
+                emailField.focus();
+            }
+
+            // Alert close functionality
+            window.closeAlert = function(alertId) {
+                const alertElement = document.getElementById(alertId);
+                if (alertElement) {
+                    alertElement.style.animation = 'none';
+                    alertElement.style.opacity = '0';
+                    alertElement.style.transform = 'translateY(-10px)';
+                    setTimeout(() => {
+                        alertElement.style.display = 'none';
+                    }, 300);
+                }
+            };
+
+            // Auto-close alerts after 5 seconds
+            const successAlert = document.getElementById('success-alert');
+            const errorAlert = document.getElementById('error-alert');
+
+            if (successAlert) {
+                setTimeout(() => closeAlert('success-alert'), 5000);
+            }
+            if (errorAlert) {
+                setTimeout(() => closeAlert('error-alert'), 5000);
+            }
+        });
+
+        // Prevent zoom on mobile
         document.addEventListener('gesturestart', function(e) {
             e.preventDefault();
         });
@@ -306,32 +656,6 @@
             lastTouchEnd = now;
         }, false);
     </script>
-    <script>
-        function showpassword(buttonName, txtName, iconName) {
-            document.getElementById(buttonName).addEventListener('click', function() {
-                const passwordInput = document.getElementById(txtName);
-                const icon = document.getElementById(iconName);
-
-                // Toggle password visibility
-                if (passwordInput.type === 'password') {
-                    passwordInput.type = 'text';
-                    icon.classList.remove('ti-eye');
-                    icon.classList.add('ti-eye-off');
-                } else {
-                    passwordInput.type = 'password';
-                    icon.classList.remove('ti-eye-off');
-                    icon.classList.add('ti-eye');
-                }
-            });
-        }
-        showpassword('show-password', 'password', 'toggle-icon-password');
-    </script>
-    <script src="../assets/js/plugins/popper.min.js"></script>
-    <script src="../assets/js/plugins/simplebar.min.js"></script>
-    <script src="../assets/js/plugins/bootstrap.min.js"></script>
-    <script src="../assets/js/fonts/custom-font.js"></script>
-    <script src="../assets/js/pcoded.js"></script>
-    <script src="../assets/js/plugins/feather.min.js"></script>
 </body>
 
 </html>
