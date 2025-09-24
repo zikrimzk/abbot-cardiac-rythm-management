@@ -73,7 +73,7 @@
                                 <button type="button" id="addCompanyBtn" data-bs-toggle="modal"
                                     data-bs-target="#addCompanyModal"
                                     class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="tooltip"
-                                    data-bs-placement="top" title="Add Company [Disabled for now]" disabled>
+                                    data-bs-placement="top" title="Add Company">
                                     <i class="ti ti-plus f-18"></i>
                                     <span class="d-none d-md-inline">Add Company</span>
                                 </button>
