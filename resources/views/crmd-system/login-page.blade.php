@@ -395,7 +395,7 @@
         /* Responsive Design */
         @media (max-width: 480px) {
             body {
-                padding: 0;
+                padding: 1.5rem;
                 background: var(--color-white);
             }
 
