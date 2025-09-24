@@ -26,7 +26,7 @@
         .dashboard-card {
             transition: all 0.3s ease;
             border-left: 4px solid transparent;
-            height: 100%;
+            /* height: 100%; */
             background: #fff;
         }
 
@@ -65,7 +65,7 @@
             transition: all 0.2s ease;
             padding: 0.5rem 0;
             border-top: 1px solid #f1f1f1;
-            margin-top: 0.5rem;
+            /* margin-top: 0.5rem; */
         }
 
         .card-link:hover {
@@ -147,7 +147,7 @@
             <!-- [ Main Content ] start -->
 
             <!-- [Startup Alert] start -->
-            <div class="dashboard-welcome-container mb-4">
+            <div class="dashboard-welcome-container mb-3">
                 <div class="accordion custom-accordion" id="systemAccordion">
                     <div class="accordion-item shadow-sm rounded-3">
                         <h2 class="accordion-header" id="headingOne">
@@ -335,7 +335,7 @@
             <!-- [Greeting] end [UNUSED FOR A MOMENT] -->
 
             <!-- [Dashboard Cards] start -->
-            <div class="row g-3 mb-4">
+            <div class="row">
                 @php
                     $cards = [];
 
@@ -451,7 +451,7 @@
             <!-- [Dashboard Cards] end -->
 
             <!-- [Charts] start -->
-            <div class="row mb-4">
+            <div class="row">
                 <div class="col-sm-6">
                     <div class="card shadow-sm rounded-lg">
                         <div class="card-body">
