@@ -559,8 +559,7 @@ class SalesBillingController extends Controller
         try {
             $path = Crypt::decrypt($path);
             $path = storage_path("app/{$path}");
-
-            dd($path);
+            
             if (!file_exists($path)) {
                 abort(404, 'File not found.');
             }

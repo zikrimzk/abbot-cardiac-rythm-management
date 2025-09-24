@@ -183,8 +183,12 @@ class QuotationController extends Controller
             if ($req->hasFile('company_logo')) {
                 $file = $req->file('company_logo');
                 $filename = Str::lower($validated['company_code']) . '.' . $file->getClientOriginalExtension();
-                $path = $file->storeAs('public/quotation/company', $filename);
-                $validated['company_logo'] = $path;
+
+                // Move file directly into public/uploads/company-logo
+                $file->move(public_path('uploads/company-logo'), $filename);
+
+                // Save relative path for later use
+                $validated['company_logo'] = 'uploads/company-logo/' . $filename;
             }
 
             /**** 02 - Insert Data Into Company ****/
@@ -243,8 +247,12 @@ class QuotationController extends Controller
             if ($req->hasFile('company_logo_up')) {
                 $file = $req->file('company_logo_up');
                 $filename = Str::lower($validated['company_code_up']) . '.' . $file->getClientOriginalExtension();
-                $path = $file->storeAs('public/quotation/company', $filename);
-                $company->company_logo = $path;
+
+                // Move file directly into public/uploads/company-logo
+                $file->move(public_path('uploads/company-logo'), $filename);
+
+                // Save relative path for later use
+                $company->company_logo = 'uploads/company-logo/' . $filename;
             }
 
             /**** 03 - Assign Company Data ****/
@@ -278,9 +286,14 @@ class QuotationController extends Controller
             }
 
             /**** 02 - Delete Company Logo ****/
-            if ($company->company_logo && Storage::exists($company->company_logo)) {
-                Storage::delete($company->company_logo);
+            if ($company->company_logo) {
+                $logoPath = public_path($company->company_logo);
+
+                if (file_exists($logoPath)) {
+                    unlink($logoPath); // delete file physically
+                }
             }
+
 
             /**** 03 - Delete Company Data ****/
             $company->delete();
