@@ -200,7 +200,23 @@
                                         <div class="feature-card h-100 p-3 rounded bg-light">
                                             <div class="d-flex align-items-center mb-3">
                                                 <i class="fas fa-briefcase-medical me-2 text-primary"></i>
-                                                <h5 class="mb-0">Patient & Clinical Records</h5>
+                                                <h5 class="mb-0">Patient Records</h5>
+                                            </div>
+                                            <ul class="list-unstyled mb-0">
+                                                <li class="d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    <span><strong>Implant Module:</strong> Add, update, and manage implant
+                                                        records; generate patient ID cards.</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="feature-card h-100 p-3 rounded bg-light">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <i class="fas fa-clipboard-list me-2 text-primary"></i>
+                                                <h5 class="mb-0">Administrative Functions</h5>
                                             </div>
                                             <ul class="list-unstyled mb-0">
                                                 <li class="mb-2 d-flex align-items-center">
@@ -215,20 +231,9 @@
                                                 </li>
                                                 <li class="d-flex align-items-center">
                                                     <i class="fas fa-check-circle text-success me-2"></i>
-                                                    <span><strong>Implant Module:</strong> Add, update, and manage implant
-                                                        records; generate patient ID cards.</span>
+                                                    <span><strong>Manage Region:</strong> Define geographical regions (e.g.,
+                                                        Northern, Central, Southern).</span>
                                                 </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="feature-card h-100 p-3 rounded bg-light">
-                                            <div class="d-flex align-items-center mb-3">
-                                                <i class="fas fa-clipboard-list me-2 text-primary"></i>
-                                                <h5 class="mb-0">Device & Inventory Management</h5>
-                                            </div>
-                                            <ul class="list-unstyled mb-0">
                                                 <li class="mb-2 d-flex align-items-center">
                                                     <i class="fas fa-check-circle text-success me-2"></i>
                                                     <span><strong>Manage Model Category:</strong> Classify devices into
@@ -257,7 +262,7 @@
                                         <div class="feature-card h-100 p-3 rounded bg-light">
                                             <div class="d-flex align-items-center mb-3">
                                                 <i class="fas fa-chart-line me-2 text-primary"></i>
-                                                <h5 class="mb-0">Sales & Administrative Functions</h5>
+                                                <h5 class="mb-0">Sales Management</h5>
                                             </div>
                                             <ul class="list-unstyled mb-0">
                                                 <li class="mb-2 d-flex align-items-center">
@@ -269,11 +274,6 @@
                                                     <i class="fas fa-check-circle text-success me-2"></i>
                                                     <span><strong>Sales Billing:</strong> Handle ICF details and upload
                                                         billing documents.</span>
-                                                </li>
-                                                <li class="d-flex align-items-center">
-                                                    <i class="fas fa-check-circle text-success me-2"></i>
-                                                    <span><strong>Manage Region:</strong> Define geographical regions (e.g.,
-                                                        Northern, Central, Southern).</span>
                                                 </li>
                                             </ul>
                                         </div>
