@@ -62,21 +62,20 @@ class RouteController extends Controller
     public function staffDashboard(Request $req)
     {
         try {
-
             if ($req->ajax()) {
 
                 $data = DB::table('implant_logs')
                     ->join('implants', 'implant_logs.implant_id', '=', 'implants.id')
                     ->select(
+                        'implant_logs.id',
                         'implant_logs.log_activity',
                         'implant_logs.log_datetime',
                         'implants.implant_refno',
                         'implants.id as implant_id',
                     )
-                    ->orderBy('implant_logs.log_datetime', 'desc')
-                    ->limit(5);
-
-                $data = $data->get();
+                    ->orderBy('implant_logs.id', 'DESC') // get latest first
+                    ->limit(30)
+                    ->get();
 
                 $table = DataTables::of($data)->addIndexColumn();
 
@@ -97,12 +96,10 @@ class RouteController extends Controller
                 });
 
                 $table->addColumn('log_activity', function ($row) {
-                    $log = strip_tags($row->log_activity);
-                    $limit = 48;
-
-                    $shortLog = strlen($log) > $limit ? substr($log, 0, $limit) . '...' : $log;
-
-                    return '<span data-bs-toggle="tooltip" data-bs-placement="top" title="' . e($log) . '">' . e($shortLog) . '</span>';
+                    return '<span data-bs-toggle="tooltip" data-bs-placement="top" title="'
+                        . e(strip_tags($row->log_activity)) . '">'
+                        . $row->log_activity .
+                        '</span>';
                 });
 
                 $table->rawColumns(['implant_refno', 'log_datetime', 'log_activity']);

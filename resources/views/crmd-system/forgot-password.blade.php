@@ -5,7 +5,7 @@
     <title>CRM Division System | Reset Password</title>
     <meta charset="utf-8" />
     <meta name="viewport"
-        content="width=device-width, initial-scale=0.9, maximum-scale=1.0, user-scalable=no, minimal-ui">
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="description" content="Abbott - Cardiac Rythm Management Division System" />
     <meta name="keywords" content="abbott, crmd, cardiac, rythm, management, division, system" />

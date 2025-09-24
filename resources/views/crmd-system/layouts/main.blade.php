@@ -74,7 +74,8 @@
         }
 
         table.dataTable thead th {
-            background: #e2e8f0 !important;
+            background: #374151  !important;
+            color: white !important;
         }
     </style>
 

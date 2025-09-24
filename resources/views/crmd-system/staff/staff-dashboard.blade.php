@@ -3,6 +3,124 @@
 
 <!-- [ Main Content ] start -->
 @section('content')
+    <style>
+        .custom-accordion .accordion-body {
+            padding: 1.5rem;
+        }
+
+        .feature-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border-left: 4px solid #3498db;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .alert-warning {
+            background-color: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+        }
+
+        .dashboard-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            height: 100%;
+            background: #fff;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+            border-left: 4px solid;
+        }
+
+        /* Color-specific hover borders */
+
+
+        .card-icon-container {
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard-card:hover .card-icon-container {
+            transform: scale(1.1);
+        }
+
+        .card-count {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            line-height: 1;
+        }
+
+        .card-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #6c757d;
+        }
+
+        .card-link {
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            padding: 0.5rem 0;
+            border-top: 1px solid #f1f1f1;
+            margin-top: 0.5rem;
+        }
+
+        .card-link:hover {
+            letter-spacing: 0.5px;
+        }
+
+        .card-link:hover .transition-all {
+            transform: translateX(3px);
+        }
+
+        .transition-all {
+            transition: transform 0.2s ease;
+        }
+
+        .card-badge {
+            font-size: 0.7rem;
+        }
+
+        /* Soft background colors */
+        .bg-soft-primary {
+            background-color: rgba(13, 110, 253, 0.1) !important;
+        }
+
+        .bg-soft-warning {
+            background-color: rgba(255, 193, 7, 0.1) !important;
+        }
+
+        .bg-soft-success {
+            background-color: rgba(25, 135, 84, 0.1) !important;
+        }
+
+        .bg-soft-danger {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .card-count {
+                font-size: 1.75rem;
+            }
+
+            .card-icon-container {
+                padding: 0.75rem !important;
+            }
+
+            .card-icon-container i {
+                font-size: 1.25rem !important;
+            }
+
+            .col-xl-3 {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+
     <div class="pc-container">
         <div class="pc-content">
             <!-- [ breadcrumb ] start -->
@@ -28,8 +146,156 @@
 
             <!-- [ Main Content ] start -->
 
-            <!-- [Greeting] start -->
-            @php
+            <!-- [Startup Alert] start -->
+            <div class="dashboard-welcome-container mb-4">
+                <div class="accordion custom-accordion" id="systemAccordion">
+                    <div class="accordion-item shadow-sm rounded-3">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                <div class="d-flex align-items-center w-100">
+                                    <i class="fas fa-heartbeat me-3 text-primary fs-4"></i>
+                                    <div class="flex-grow-1">
+                                        <h4 class="mb-2">Welcome to the Cardiac Rhythm Management Division System</h4>
+                                        <small class="text-muted">Click to expand system information</small>
+                                    </div>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                            data-bs-parent="#systemAccordion">
+                            <div class="accordion-body">
+                                <div class="alert alert-warning d-flex align-items-center mb-4">
+                                    <i class="fas fa-user-shield me-3 fs-4"></i>
+                                    <div>
+                                        <strong>Security Recommendation:</strong> As a first step, it is <strong>highly
+                                            recommended that you change your account password</strong> to ensure your
+                                        account security.
+                                    </div>
+                                </div>
+
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <div class="feature-card h-100 p-3 rounded bg-light">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <i class="fas fa-users me-2 text-primary"></i>
+                                                <h5 class="mb-0">User & Access Management</h5>
+                                            </div>
+                                            <ul class="list-unstyled mb-0">
+                                                <li class="mb-2 d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    <span><strong>Manage Designation:</strong> Define staff roles and
+                                                        designations.</span>
+                                                </li>
+                                                <li class="d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    <span><strong>Manage Staff:</strong> Add and manage user accounts,
+                                                        assigning administrator or staff privileges.</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="feature-card h-100 p-3 rounded bg-light">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <i class="fas fa-briefcase-medical me-2 text-primary"></i>
+                                                <h5 class="mb-0">Patient & Clinical Records</h5>
+                                            </div>
+                                            <ul class="list-unstyled mb-0">
+                                                <li class="mb-2 d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    <span><strong>Manage Hospital:</strong> Maintain detailed records for
+                                                        all hospitals.</span>
+                                                </li>
+                                                <li class="mb-2 d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    <span><strong>Manage Doctor:</strong> Manage all doctor
+                                                        information.</span>
+                                                </li>
+                                                <li class="d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    <span><strong>Implant Module:</strong> Add, update, and manage implant
+                                                        records; generate patient ID cards.</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="feature-card h-100 p-3 rounded bg-light">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <i class="fas fa-clipboard-list me-2 text-primary"></i>
+                                                <h5 class="mb-0">Device & Inventory Management</h5>
+                                            </div>
+                                            <ul class="list-unstyled mb-0">
+                                                <li class="mb-2 d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    <span><strong>Manage Model Category:</strong> Classify devices into
+                                                        categories (e.g., RA Leads, RV Leads).</span>
+                                                </li>
+                                                <li class="mb-2 d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    <span><strong>Manage Generator:</strong> Handle details for all
+                                                        generator models (e.g., PM3562, PM1262).</span>
+                                                </li>
+                                                <li class="mb-2 d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    <span><strong>Manage Model:</strong> Manage other device models not
+                                                        categorized as generators (e.g., 2088TC-52).</span>
+                                                </li>
+                                                <li class="d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    <span><strong>Manage Stock Location:</strong> Specify stock locations
+                                                        for inventory tracking.</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="feature-card h-100 p-3 rounded bg-light">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <i class="fas fa-chart-line me-2 text-primary"></i>
+                                                <h5 class="mb-0">Sales & Administrative Functions</h5>
+                                            </div>
+                                            <ul class="list-unstyled mb-0">
+                                                <li class="mb-2 d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    <span><strong>Quotation Module:</strong> Create and manage quotations,
+                                                        including company and model assignments.</span>
+                                                </li>
+                                                <li class="mb-2 d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    <span><strong>Sales Billing:</strong> Handle ICF details and upload
+                                                        billing documents.</span>
+                                                </li>
+                                                <li class="d-flex align-items-center">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    <span><strong>Manage Region:</strong> Define geographical regions (e.g.,
+                                                        Northern, Central, Southern).</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 pt-3 border-top">
+                                    <div class="d-flex align-items-center text-muted small">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <span>*All actions and changes made to implant records are automatically logged for
+                                            security and auditing purposes.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- [Startup Alert] end -->
+
+            <!-- [Greeting] start [UNUSED FOR A MOMENT] -->
+            {{-- @php
                 $hour = now()->format('H');
 
                 if ($hour < 12) {
@@ -65,80 +331,11 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- [Greeting] end -->
-
-            <!-- [Startup Alert] start -->
-            <div class="alert alert-light shadow-sm border-0 rounded-3">
-                <h4 class="alert-heading mb-3">Welcome to Cardiac Rhythm Management Division System</h4>
-                <p class="mb-2">
-                    To begin, it is <strong>advisable to change your account password</strong> to secure your account.
-                </p>
-
-                <hr>
-
-                <h6 class="fw-bold mt-3">For Administrator</h6>
-                <ul class="mb-3">
-                    <li>Full access to all system settings</li>
-                </ul>
-
-                <h6 class="fw-bold mt-3">User Module</h6>
-                <ul class="mb-3">
-                    <li><strong>Manage Designation</strong> – Add staff designations before adding new staff</li>
-                    <li><strong>Manage Staff</strong> – Add users as administrators or staff</li>
-                </ul>
-
-                <h6 class="fw-bold mt-3">Hospital & Doctor Module</h6>
-                <ul class="mb-3">
-                    <li><strong>Manage Hospital</strong> – Handle hospital details</li>
-                    <li><strong>Manage Doctor</strong> – Handle doctor details</li>
-                </ul>
-
-                <h6 class="fw-bold mt-3">Model Module</h6>
-                <ul class="mb-3">
-                    <li><strong>Manage Model Category</strong> – Categories such as RA Leads, RV Leads, etc.</li>
-                    <li><strong>Manage Generator</strong> – Handle generator details (e.g., PM3562, PM1262)</li>
-                    <li><strong>Manage Model</strong> – Manage other models not under generators (e.g., 2088TC-52, A001HELX)</li>
-                </ul>
-
-                <h6 class="fw-bold mt-3">Other Settings</h6>
-                <ul class="mb-3">
-                    <li><strong>Manage Region</strong> – e.g., Northern, Central, Southern</li>
-                    <li><strong>Manage Product Group</strong> – e.g., LV SC, LV DC and other combinations</li>
-                    <li><strong>Manage Stock Location</strong> – Stock locations used dynamically in inventory forms</li>
-                </ul>
-
-                <h6 class="fw-bold mt-3">Implant Module</h6>
-                <ul class="mb-3">
-                    <li>Add and update implant records</li>
-                    <li>Export data and download patient directory</li>
-                    <li>Upload implant registration forms (PDF format)</li>
-                    <li>Send implant details by email (template provided)</li>
-                    <li>Generate patient ID card</li>
-                </ul>
-
-                <h6 class="fw-bold mt-3">Sales Billing Module</h6>
-                <ul class="mb-3">
-                    <li>Update ICF-related details</li>
-                    <li>Upload billing documents (approval, delivery order, etc.)</li>
-                </ul>
-
-                <h6 class="fw-bold mt-3">Quotation Module</h6>
-                <ul class="mb-3">
-                    <li>Manage quotations</li>
-                    <li>Manage companies to generate quotation templates</li>
-                    <li>Assign generator and model</li>
-                </ul>
-
-                <p class="mt-4 mb-0 text-muted">
-                    <em>Note: All changes and actions related to implants are recorded in the implant logs.</em>
-                </p>
-            </div>
-
-            <!-- [Startup Alert] end -->
+            </div> --}}
+            <!-- [Greeting] end [UNUSED FOR A MOMENT] -->
 
             <!-- [Dashboard Cards] start -->
-            <div class="row g-3">
+            <div class="row g-3 mb-4">
                 @php
                     $cards = [];
 
@@ -230,22 +427,22 @@
 
                 @foreach ($cards as $card)
                     <div class="col-xl-3 col-md-6">
-                        <div class="card shadow-sm border-0 hover-shadow">
-                            <div class="card-body d-flex align-items-center gap-3">
-                                <div class="flex-shrink-0">
-                                    <div class="avatar bg-light-{{ $card['color'] }} rounded-circle d-flex align-items-center justify-content-center"
-                                        style="width: 50px; height: 50px;">
-                                        <i class="{{ $card['icon'] }} text-{{ $card['color'] }} f-20"></i>
+                        <div class="card dashboard-card shadow-sm border-0">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div class="card-icon-container bg-soft-{{ $card['color'] }} rounded-2 p-3">
+                                        <i class="{{ $card['icon'] }} text-{{ $card['color'] }} fs-4"></i>
                                     </div>
                                 </div>
-                                <div class="flex-grow-1">
-                                    <p class="mb-1 fw-semibold text-muted">{{ $card['label'] }}</p>
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <h4 class="mb-0">{{ $card['count'] }}</h4>
-                                        <a href="{{ route($card['route']) }}"
-                                            class="text-{{ $card['color'] }} fw-medium small">View</a>
-                                    </div>
-                                </div>
+
+                                <h3 class="card-count mb-1">{{ $card['count'] }}</h3>
+                                <p class="card-label text-muted mb-3">{{ $card['label'] }}</p>
+
+                                <a href="{{ route($card['route']) }}"
+                                    class="card-link text-{{ $card['color'] }} text-decoration-none fw-medium d-flex align-items-center">
+                                    View Details
+                                    <i class="fas fa-arrow-right ms-2 transition-all"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -253,37 +450,8 @@
             </div>
             <!-- [Dashboard Cards] end -->
 
-            <!-- [Recent Implant Logs] start -->
-            @if (auth()->user()->staff_role == 1)
-                <div class="row">
-                    <div class="col-lg-12 col-md-12">
-                        <div class="card shadow-sm border-0 hover-shadow">
-                            <div class="card-body">
-                                <h5 class="card-title mb-0 text-muted fw-semibold">
-                                    <i class="fas fa-history me-2 text-muted fw-semibold"></i>Recent Implant Logs
-                                </h5>
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-borderless align-middle data-table w-100">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th class="text-muted small" style="width: 120px;">Date</th>
-                                                <th class="text-muted small" style="width: 120px;">Implant</th>
-                                                <th class="text-muted small">Recent Activity</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endif
-            <!-- [Recent Implant Logs] end -->
-
             <!-- [Charts] start -->
-            <div class="row">
+            <div class="row mb-4">
                 <div class="col-sm-6">
                     <div class="card shadow-sm rounded-lg">
                         <div class="card-body">
@@ -298,7 +466,7 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="col-sm-6">
+                <div class="col-sm-6">
                     <div class="card shadow-sm rounded-lg">
                         <div class="card-body">
                             <canvas id="generatorQtyBarChart" height="300"></canvas>
@@ -311,9 +479,39 @@
                             <canvas id="implantModelMonthlyChart" height="300"></canvas>
                         </div>
                     </div>
-                </div> --}}
+                </div>
             </div>
             <!-- [Charts] end -->
+
+            <!-- [Recent Implant Logs] start -->
+            @if (auth()->user()->staff_role == 1)
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="card shadow-sm border-0 hover-shadow">
+                            <div class="card-body">
+                                <h5 class="card-title mb-0 text-muted fw-semibold">
+                                    <i class="fas fa-history me-2 text-muted fw-semibold"></i>Recent Implant Activity
+                                </h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-borderless align-middle data-table w-100">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="small">ID</th>
+                                                <th class="small" style="width: 120px;">Date</th>
+                                                <th class="small" style="width: 120px;">Implant</th>
+                                                <th class="small">Recent Activity</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+            <!-- [Recent Implant Logs] end -->
 
             <!-- [ Main Content ] end -->
         </div>
@@ -329,44 +527,39 @@
                 processing: true,
                 serverSide: true,
                 responsive: true,
-                paging: false,
                 searching: false,
-                info: false,
+                ajax: "{{ route('staff-dashboard-page') }}",
                 order: [
                     [0, 'desc']
                 ],
-                ajax: "{{ route('staff-dashboard-page') }}", // <-- Replace with actual route
+                pageLength: 5,
+                lengthMenu: [
+                    [5, 10, 20, 30],
+                    [5, 10, 20, 30]
+                ],
                 columns: [{
+                        data: 'id',
+                        name: 'id',
+                        visible: false,
+                    },
+                    {
                         data: 'log_datetime',
                         name: 'log_datetime',
-                        className: 'text-nowrap text-muted small',
+                        className: 'text-nowrap small',
                     },
                     {
                         data: 'implant_refno',
                         name: 'implant_refno',
-                        className: 'text-body small',
+                        className: 'small',
                     },
                     {
                         data: 'log_activity',
                         name: 'log_activity',
-                        render: function(data, type, row) {
-                            if (type === 'display') {
-                                const cleanText = $('<div>').html(data).text();
-                                const shortText = cleanText.length > 80 ? cleanText.substring(0,
-                                    80) + '...' : cleanText;
-                                return `<span data-bs-toggle="tooltip" title="${cleanText}">${shortText}</span>`;
-                            }
-                            return data;
-                        },
-                        className: 'text-body small',
+                        className: 'small',
                     }
                 ],
-                drawCallback: function() {
-                    const tooltips = [].slice.call(document.querySelectorAll(
-                        '[data-bs-toggle="tooltip"]'));
-                    tooltips.map(t => new bootstrap.Tooltip(t));
-                }
             });
+
 
 
         });
