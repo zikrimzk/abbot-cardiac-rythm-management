@@ -1,9 +1,10 @@
-<footer class="pc-footer text-center">
-    <div class="footer-wrapper container-fluid">
-        <div class="row">
-            <div class="col my-1">
-                <p class="m-0 ">CRMD Copyright © @php echo date("Y"); @endphp  All rights reserved</p>
-            </div>
-        </div>
+<footer class="pc-footer text-center py-3 border-top">
+    <div class="container">
+        <p class="mb-1 text-dark fw-medium">
+            Cardiac Rhythm Management Division
+        </p>
+        <p class="mb-0 text-muted small">
+            &copy; {{ date('Y') }} All rights reserved | Version {{ env('APP_VERSION') }}
+        </p>
     </div>
 </footer>

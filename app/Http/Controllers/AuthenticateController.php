@@ -28,14 +28,13 @@ class AuthenticateController extends Controller
                     ->with('error', 'Your account has been disabled. Please contact the administrator for more details.');
             }
 
-            // Only allow login if staff_status is 1
             if ($user->staff_status == 1 && Auth::attempt($credentials)) {
                 return redirect()->route('staff-dashboard-page');
             }
         }
 
         return redirect()->route('login-page')
-            ->with('error', 'Oops! You have entered invalid credentials.');
+            ->with('error', 'Oops! You have entered invalid credentials. Please try again.');
     }
 
     public function staffLogout(Request $request)
@@ -113,7 +112,10 @@ class AuthenticateController extends Controller
         $data = User::where('email', $request->email)->first();
 
         if (!$data) {
-            return redirect()->back()->with('error', 'No staff found with this email address.');
+            return redirect()->back()->with(
+                'error',
+                'No account found with this email address. Please try again using a valid email address or contact the system administrator.'
+            );
         }
 
         $password = 'crmd@' . Str::random(8);
@@ -127,6 +129,9 @@ class AuthenticateController extends Controller
             'password' => $password,
             'opt' => 2
         ]));
-        return redirect()->back()->with('success', 'Temporary Password has been emailed successfully. Please change it after logging in.');
+        return redirect()->route('login-page')->with(
+            'success',
+            'A temporary password has been emailed to you. Please check your inbox (and your Spam/Junk folder if you don’t see it). Remember to change your password immediately after logging in for security purposes.'
+        );
     }
 }

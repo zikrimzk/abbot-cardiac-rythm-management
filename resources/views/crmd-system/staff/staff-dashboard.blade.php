@@ -147,17 +147,18 @@
             <!-- [ Main Content ] start -->
 
             <!-- [Startup Alert] start -->
-            <div class="dashboard-welcome-container mb-3">
+            <div class="dashboard-welcome-container mb-4">
                 <div class="accordion custom-accordion" id="systemAccordion">
                     <div class="accordion-item shadow-sm rounded-3">
                         <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            <button class="accordion-button collapsed p-4" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                                 <div class="d-flex align-items-center w-100">
-                                    <i class="fas fa-heartbeat me-3 text-primary fs-4"></i>
+                                    <i class="fas fa-heartbeat me-3 text-danger fs-5"></i>
                                     <div class="flex-grow-1">
-                                        <h4 class="mb-2">Welcome to the Cardiac Rhythm Management Division System</h4>
-                                        <small class="text-muted">Click to expand system information</small>
+                                        <h4 class="mb-1">Welcome back, {{ auth()->user()->staff_name }}.</h4>
+                                        <small class="text-muted">Access your dashboard and system information
+                                            below.</small>
                                     </div>
                                 </div>
                             </button>
@@ -334,8 +335,49 @@
             </div> --}}
             <!-- [Greeting] end [UNUSED FOR A MOMENT] -->
 
+            <!-- [Quick Access] start -->   
+            <div class="mb-4">
+                <h5 class="mb-3">⚡ Quick Access</h5>
+                <div class="row g-3">
+                    <!-- Add Implant -->
+                    <div class="col-md-6">
+                        <a href="{{ route('add-implant-page') }}" class="card shadow-sm border-0 h-100 text-decoration-none">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="rounded-circle bg-danger bg-opacity-10 text-danger d-flex align-items-center justify-content-center"
+                                    style="width: 50px; height: 50px;">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-0 fw-bold text-dark">Add Implant</h6>
+                                    <small class="text-muted">Register new implant quickly</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Generate Quotation -->
+                    <div class="col-md-6">
+                        <a href="{{ route('generate-quotation-page') }}" class="card shadow-sm border-0 h-100 text-decoration-none">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="rounded-circle bg-danger bg-opacity-10 text-danger d-flex align-items-center justify-content-center"
+                                    style="width: 50px; height: 50px;">
+                                    <i class="fas fa-file-invoice"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-0 fw-bold text-dark">Generate Quotation</h6>
+                                    <small class="text-muted">Create quotation instantly</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- [Quick Access] end -->
+
             <!-- [Dashboard Cards] start -->
             <div class="row">
+                <h5 class="mb-3">📌 Key Metrics</h5>
+
                 @php
                     $cards = [];
 
@@ -452,6 +494,8 @@
 
             <!-- [Charts] start -->
             <div class="row">
+                <h5 class="mb-3">📊 Analytics & Trends</h5>
+
                 <div class="col-sm-6">
                     <div class="card shadow-sm rounded-lg">
                         <div class="card-body">
@@ -486,12 +530,11 @@
             <!-- [Recent Implant Logs] start -->
             @if (auth()->user()->staff_role == 1)
                 <div class="row">
+                    <h5 class="mb-3">⏱ Recent Implant Activity</h5>
+
                     <div class="col-lg-12 col-md-12">
                         <div class="card shadow-sm border-0 hover-shadow">
                             <div class="card-body">
-                                <h5 class="card-title mb-0 text-muted fw-semibold">
-                                    <i class="fas fa-history me-2 text-muted fw-semibold"></i>Recent Implant Activity
-                                </h5>
                                 <div class="table-responsive">
                                     <table class="table table-hover table-borderless align-middle data-table w-100">
                                         <thead class="table-light">
